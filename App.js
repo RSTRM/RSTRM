@@ -1,25 +1,20 @@
 import React from 'react'
-import { StyleSheet, Text, View, Dimensions } from 'react-native'
-import GoogleMapView from './components/GoogleMapView'
+import { NavigationContainer } from '@react-navigation/native';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import Home from './screens/Home'
+import Map from './screens/Map'
+
 
 export default function App() {
+  const Tab = createBottomTabNavigator();
   return (
-    <View style={styles.container}>
-      <Text>Welcome to RSTRM! For when you gotta go...</Text>
-      <GoogleMapView />
-    </View>
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen name="Home" component={Home} />
+        <Tab.Screen name="Map" component={Map} />
+      </Tab.Navigator>
+    </NavigationContainer>
   )
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  mapStyle: {
-    width: Dimensions.get('window').width,
-    height: Dimensions.get('window').height,
-  },
-})
+
