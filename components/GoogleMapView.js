@@ -3,6 +3,8 @@ import { StyleSheet, Dimensions, View, Text } from "react-native";
 import MapView, { PROVIDER_GOOGLE, Marker, Circle } from "react-native-maps";
 import seedArray from "../assets/initialSeed";
 import Carousel from "react-native-snap-carousel";
+import { getDistance } from "geolib";
+import * as Location from "expo-location";
 
 export default class GoogleMapView extends Component {
   constructor() {
@@ -14,7 +16,9 @@ export default class GoogleMapView extends Component {
         latitudeDelta: 0.0922,
         longitudeDelta: 0.0421,
       },
+      location: null,
       markers: [],
+      errorMsg: null,
     };
     this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
     this.renderCarouselItem = this.renderCarouselItem.bind(this);
@@ -22,37 +26,40 @@ export default class GoogleMapView extends Component {
     this.onMarkerPressed = this.onMarkerPressed.bind(this);
   }
 
+  async componentDidMount() {
+    let { status } = await Location.requestPermissionsAsync();
+    if (status !== "granted") {
+      this.setState({ errorMsg: "Please turn on your GPS" });
+    }
+
+    let location = await Location.getCurrentPositionAsync({});
+    this.setState({ location });
+  }
+
   onRegionChangeComplete(region) {
     this.setState({ region });
   }
 
-  // useEffect(() => {
-  //   (async () => {
-  //     let { status } = await Location.requestPermissionsAsync();
-  //     if (status !== "granted") {
-  //       setErrorMsg("Please turn on your GPS");
-  //     }
-
   onCarouselItemChange = (index) => {
     let location = seedArray[index];
 
-    this._map.animateToRegion({
-      latitude: location.latitude,
-      longitude: location.longitude,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    });
+    // this._map.animateToRegion({
+    //   latitude: location.latitude,
+    //   longitude: location.longitude,
+    //   latitudeDelta: 0.0922,
+    //   longitudeDelta: 0.0421,
+    // });
 
     this.state.markers[index].showCallout();
   };
 
   onMarkerPressed = (location, index) => {
-    this._map.animateToRegion({
-      latitude: location.latitude,
-      longitude: location.longitude,
-      latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
-    });
+    // this._map.animateToRegion({
+    //   latitude: location.latitude,
+    //   longitude: location.longitude,
+    //   latitudeDelta: 0.0922,
+    //   longitudeDelta: 0.0421,
+    // });
 
     this._carousel.snapToItem(index);
   };
@@ -75,26 +82,46 @@ export default class GoogleMapView extends Component {
           region={this.state.region}
           onRegionChangeComplete={this.onRegionChangeComplete}
         >
-          {seedArray.map((marker, index) => (
-            <Marker
-              key={index}
-              ref={(ref) => (this.state.markers[index] = ref)}
-              onPress={() => this.onMarkerPressed(marker, index)}
-              coordinate={{
-                latitude: marker.latitude,
-                longitude: marker.longitude,
-              }}
-              title={marker.name}
-              description={marker.directions}
-            />
-          ))}
+          {seedArray
+            .filter(
+              (marker) =>
+                getDistance(
+                  { latitude: marker.latitude, longitude: marker.longitude },
+                  {
+                    latitude: this.state.region.latitude,
+                    longitude: this.state.region.longitude,
+                  }
+                ) < 1000
+            )
+            .map((marker, index) => (
+              <Marker
+                key={index}
+                ref={(ref) => (this.state.markers[index] = ref)}
+                onPress={() => this.onMarkerPressed(marker, index)}
+                coordinate={{
+                  latitude: marker.latitude,
+                  longitude: marker.longitude,
+                }}
+                title={marker.name}
+                description={`Go: ${marker.directions}\nTip: ${marker.comment}`}
+              />
+            ))}
           <Circle center={this.state.region} radius={1000} />
         </MapView>
         <Carousel
           ref={(c) => {
             this._carousel = c;
           }}
-          data={seedArray}
+          data={seedArray.filter(
+            (marker) =>
+              getDistance(
+                { latitude: marker.latitude, longitude: marker.longitude },
+                {
+                  latitude: this.state.region.latitude,
+                  longitude: this.state.region.longitude,
+                }
+              ) < 1000
+          )}
           containerCustomStyle={styles.carousel}
           renderItem={this.renderCarouselItem}
           sliderWidth={Dimensions.get("window").width}
@@ -106,27 +133,6 @@ export default class GoogleMapView extends Component {
     );
   }
 }
-
-// if (!location || !region) {
-//   return <Text style={styles.permissions}>{errorMsg}</Text>;
-//   }
-//   return (
-//     <MapView
-//       style={styles.mapStyle}
-//       provider="google"
-//       initialRegion={region}
-//       showsUserLocation={true}
-//       onRegionChangeComplete={onRegionChangeComplete}
-//     >
-//       {seedArray.map((marker, i) => (
-//         <Marker 
-//           key={i}
-//           coordinate={{
-//             latitude: marker.latitude,
-//             longitude: marker.longitude,
-//           }}
-//           title={marker.name}
-//           description={`Go: ${marker.directions}\nTip: ${marker.comment}`}
 
 const styles = StyleSheet.create({
   container: {
@@ -158,6 +164,6 @@ const styles = StyleSheet.create({
   },
   permissions: {
     marginTop: 10,
-    color: "red"
-  }
+    color: "red",
+  },
 });
