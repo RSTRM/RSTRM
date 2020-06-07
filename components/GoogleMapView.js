@@ -18,7 +18,7 @@ export default GoogleMapView = () => {
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
       if (status !== "granted") {
-        setErrorMsg("Permission to access location was denied");
+        setErrorMsg("Please turn on your GPS");
       }
 
       let location = await Location.getCurrentPositionAsync({});
@@ -31,7 +31,7 @@ export default GoogleMapView = () => {
   };
 
   if (!location || !region) {
-    return <Text>Loading...</Text>;
+  return <Text style={styles.permissions}>{errorMsg}</Text>;
   }
   return (
     <MapView
@@ -41,14 +41,16 @@ export default GoogleMapView = () => {
       showsUserLocation={true}
       onRegionChangeComplete={onRegionChangeComplete}
     >
-      {seedArray.map((marker) => (
-        <Marker
+      {seedArray.map((marker, i) => (
+        <Marker 
+          key={i}
           coordinate={{
             latitude: marker.latitude,
             longitude: marker.longitude,
           }}
           title={marker.name}
-          description={marker.directions}
+          description={`Go: ${marker.directions}\nTip: ${marker.comment}`}
+
         />
       ))}
       <Circle center={region} radius={500} />
@@ -61,4 +63,8 @@ const styles = StyleSheet.create({
     width: Dimensions.get("window").width,
     height: Dimensions.get("window").height - 196,
   },
+  permissions: {
+    marginTop: 10,
+    color: "red"
+  }
 });
