@@ -26,6 +26,13 @@ export default class GoogleMapView extends Component {
     this.setState({ region });
   }
 
+  // useEffect(() => {
+  //   (async () => {
+  //     let { status } = await Location.requestPermissionsAsync();
+  //     if (status !== "granted") {
+  //       setErrorMsg("Please turn on your GPS");
+  //     }
+
   onCarouselItemChange = (index) => {
     let location = seedArray[index];
 
@@ -100,6 +107,27 @@ export default class GoogleMapView extends Component {
   }
 }
 
+// if (!location || !region) {
+//   return <Text style={styles.permissions}>{errorMsg}</Text>;
+//   }
+//   return (
+//     <MapView
+//       style={styles.mapStyle}
+//       provider="google"
+//       initialRegion={region}
+//       showsUserLocation={true}
+//       onRegionChangeComplete={onRegionChangeComplete}
+//     >
+//       {seedArray.map((marker, i) => (
+//         <Marker 
+//           key={i}
+//           coordinate={{
+//             latitude: marker.latitude,
+//             longitude: marker.longitude,
+//           }}
+//           title={marker.name}
+//           description={`Go: ${marker.directions}\nTip: ${marker.comment}`}
+
 const styles = StyleSheet.create({
   container: {
     // ...StyleSheet.absoluteFillObject,
@@ -128,4 +156,8 @@ const styles = StyleSheet.create({
     fontSize: 20,
     alignSelf: "center",
   },
+  permissions: {
+    marginTop: 10,
+    color: "red"
+  }
 });
