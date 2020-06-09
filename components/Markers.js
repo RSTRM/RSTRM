@@ -15,7 +15,9 @@ export default function Markers() {
                     longitude: marker.longitude,
                   }}
                   title={marker.name}
-                  description={`Go: ${marker.directions}\nTip: ${marker.comment}`}/>
+                  description={`Go: ${marker.directions}\nTip: ${marker.comment}`}
+                  //onCalloutPress=
+                />
             ))}
         </View>
     )

@@ -7,8 +7,11 @@ export default function Home({navigation}) {
         <View style={styles.container}>
             <Text>Welcome to RSTRM!</Text>
             <Text>For when you gotta go...</Text>
-            <Button title="Go to Map"
-                onPress={() => navigation.navigate('Map')}
+            <Button title="User Sign/Login"
+                onPress={() => navigation.navigate('User')}
+            />
+            <Button title="Account Settings"
+                onPress={() => navigation.navigate('Setting')}
             />
         </View>
     );

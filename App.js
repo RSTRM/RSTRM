@@ -2,8 +2,8 @@ import React from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from '@expo/vector-icons/Ionicons'
-import Home from './screens/Home'
-import Map from './screens/Map'
+import HomeStackScreen from './screens/HomeStackScreen'
+import MapStackScreen from './screens/MapStackScreen'
 
 
 export default function App() {
@@ -26,8 +26,8 @@ export default function App() {
         activeTintColor: 'tomato',
         inactiveTintColor: 'gray',
       }}>
-        <Tab.Screen name="Home" component={Home} />
-        <Tab.Screen name="Map" component={Map} />
+        <Tab.Screen name="Home" component={HomeStackScreen} />
+        <Tab.Screen name="Map" component={MapStackScreen} />
       </Tab.Navigator>
     </NavigationContainer>
   )
