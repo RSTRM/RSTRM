@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, Dimensions } from "react-native";
-import MapView, { Marker, Circle } from "react-native-maps";
-import seedArray from "../assets/initialSeed";
+import MapView, { Circle } from "react-native-maps";
+import Markers from './Markers'
 import * as Location from "expo-location";
 
 export default GoogleMapView = () => {
@@ -46,19 +46,13 @@ export default GoogleMapView = () => {
       showsUserLocation={true}
       onRegionChangeComplete={onRegionChangeComplete}
     >
-      {seedArray.map((marker, i) => (
-        <Marker 
-          key={i}
-          coordinate={{
-            latitude: marker.latitude,
-            longitude: marker.longitude,
-          }}
-          title={marker.name}
-          description={`Go: ${marker.directions}\nTip: ${marker.comment}`}
-
-        />
-      ))}
-      <Circle center={region} radius={500} />
+      <Markers/>
+      <Circle center={{
+        latitude: location.coords.latitude,
+        longitude: location.coords.longitude
+        }} 
+        radius={500} 
+      />
     </MapView>
   );
 };
