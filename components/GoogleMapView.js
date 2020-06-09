@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Text, StyleSheet, Dimensions } from "react-native";
+import { View, Text, StyleSheet, Dimensions } from "react-native";
 import MapView, { Marker, Circle } from "react-native-maps";
 import seedArray from "../assets/initialSeed";
 import * as Location from "expo-location";
@@ -18,7 +18,8 @@ export default GoogleMapView = () => {
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
       if (status !== "granted") {
-        setErrorMsg("Please turn on your GPS");
+        setErrorMsg("Permission to access location was denied");
+        return;
       }
 
       let location = await Location.getCurrentPositionAsync({});
@@ -31,7 +32,11 @@ export default GoogleMapView = () => {
   };
 
   if (!location || !region) {
-  return <Text style={styles.permissions}>{errorMsg}</Text>;
+    return (
+      <View style={styles.permissions}>
+        <Text style={styles.text}>{errorMsg}</Text>
+      </View>
+    )
   }
   return (
     <MapView
@@ -61,10 +66,14 @@ export default GoogleMapView = () => {
 const styles = StyleSheet.create({
   mapStyle: {
     width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height - 196,
+    height: Dimensions.get("window").height,
   },
   permissions: {
-    marginTop: 10,
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center'
+  },
+  text: {
     color: "red"
   }
 });
