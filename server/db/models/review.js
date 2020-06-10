@@ -1,4 +1,4 @@
-const { UUID, UUIDV4, STRING, INTEGER, FLOAT } = require('sequelize')
+const { UUID, UUIDV4, STRING, INTEGER } = require('sequelize')
 const db = require('../db')
 
 const Review = db.define('review', {
@@ -8,7 +8,7 @@ const Review = db.define('review', {
     defaultValue: UUIDV4,
   },
   rating: {
-    type: Sequelize.INTEGER,
+    type: INTEGER,
     allowNull: false,
     validate: {
       min: 1,
@@ -17,7 +17,7 @@ const Review = db.define('review', {
     },
   },
   comments: {
-    type: Sequelize.STRING,
+    type: STRING,
     allowNull: false,
     validate: {
       len: [4, 1000],

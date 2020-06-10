@@ -1,4 +1,12 @@
-const { UUID, UUIDV4, STRING, INTEGER, ENUM, BOOLEAN } = require('sequelize')
+const {
+  UUID,
+  UUIDV4,
+  STRING,
+  TEXT,
+  INTEGER,
+  BOOLEAN,
+  FLOAT,
+} = require('sequelize')
 const db = require('../db')
 
 const Bathroom = db.define('bathroom', {
@@ -11,8 +19,8 @@ const Bathroom = db.define('bathroom', {
     type: INTEGER,
     unique: true,
   },
-  type: {
-    type: ENUM(['N', 'F', 'M']),
+  unisex: {
+    type: BOOLEAN,
   },
   accessible: {
     type: BOOLEAN,
@@ -21,20 +29,45 @@ const Bathroom = db.define('bathroom', {
     type: BOOLEAN,
   },
   directions: {
-    type: STRING,
+    type: TEXT,
   },
-  rating: {
+  AvgRating: {
     type: INTEGER,
     validate: {
       min: 1,
       max: 5,
     },
   },
-  confirmed: {
-    type: BOOLEAN,
-  },
   checkinCount: {
     type: INTEGER,
+  },
+  establishment: {
+    type: STRING,
+    allowNull: false,
+    validate: {
+      notEmpty: true,
+    },
+  },
+  street: {
+    type: STRING,
+  },
+  city: {
+    type: STRING,
+  },
+  state: {
+    type: STRING,
+  },
+  country: {
+    type: STRING,
+  },
+  latitude: {
+    type: FLOAT,
+  },
+  longitude: {
+    type: FLOAT,
+  },
+  website: {
+    type: STRING,
   },
 })
 
