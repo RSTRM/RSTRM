@@ -17,9 +17,28 @@ async function seed() {
   console.log('db synced!')
 
   const filtered = refugeArray.filter(
-    (item) => !item.updated_at.includes('2020-04-14T21')
+    (item) => !item.updated_at.includes('2020-04-14T21') && !!item.name
   )
-  console.log(refugeArray.length, filtered.length)
+  console.log(`kept ${filtered.length} items of ${refugeArray.length}`)
+
+  const bathrooms = await Promise.all(
+    filtered.map((item) => {
+      return Bathroom.create({
+        refugeId: item.id,
+        unisex: item.unisex,
+        accessible: item.accessible,
+        changingTable: item.changing_table,
+        directions: item.directions,
+        establishment: item.name,
+        street: item.street,
+        city: item.city,
+        state: item.state,
+        country: item.country,
+        latitude: item.latitude,
+        longitude: item.longitude,
+      })
+    })
+  )
 
   console.log(`seeded successfully`)
 }
