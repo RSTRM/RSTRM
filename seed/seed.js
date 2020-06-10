@@ -16,9 +16,23 @@ async function seed() {
   await db.sync({ force: true })
   console.log('db synced!')
 
-  const filtered = refugeArray.filter(
-    (item) => !item.updated_at.includes('2020-04-14T21') && !!item.name
-  )
+  //clean data
+  const filtered = []
+  const map = new Map()
+
+  for (const item of refugeArray) {
+    if (
+      //filter duplicate items
+      !map.has(item.id) &&
+      //filter erroneous items
+      !item.updated_at.includes('2020-04-14T21') &&
+      //filter nameless items
+      !!item.name
+    ) {
+      map.set(item.id, true)
+      filtered.push(item)
+    }
+  }
   console.log(`kept ${filtered.length} items of ${refugeArray.length}`)
 
   const bathrooms = await Promise.all(

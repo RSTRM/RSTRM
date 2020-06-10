@@ -17,7 +17,7 @@ const Bathroom = db.define('bathroom', {
   },
   refugeId: {
     type: INTEGER,
-    // unique: true,
+    unique: true,
   },
   unisex: {
     type: BOOLEAN,
