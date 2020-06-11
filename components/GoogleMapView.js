@@ -10,12 +10,7 @@ export default class GoogleMapView extends Component {
   constructor() {
     super();
     this.state = {
-      region: {
-        latitude: 40.7061,
-        longitude: -73.9969,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      },
+      region: null,
       location: null,
       markers: [],
       radius: 1000,
@@ -32,20 +27,28 @@ export default class GoogleMapView extends Component {
     let { status } = await Location.requestPermissionsAsync();
     if (status !== "granted") {
       this.setState({ errorMsg: "Please turn on your GPS" });
+      this.setState({
+        region: {
+          latitude: 40.7061,
+          longitude: -73.9969,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        },
+      });
     } else {
       let location = await Location.getCurrentPositionAsync({});
       this.setState({ location });
 
       // USER'S LOCATION
 
-      // this.setState({
-      //   region: {
-      //     latitude: this.state.location.coords.latitude,
-      //     longitude: this.state.location.coords.longitude,
-      //     latitudeDelta: 0.0922,
-      //     longitudeDelta: 0.0421,
-      //   },
-      // });
+      this.setState({
+        region: {
+          latitude: this.state.location.coords.latitude,
+          longitude: this.state.location.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        },
+      });
     }
 
     const restrooms = await seedArray.filter(
@@ -63,7 +66,7 @@ export default class GoogleMapView extends Component {
 
   async componentDidUpdate(prevProps, prevState) {
     if (
-      prevState.region !== this.state.region ||
+      (prevState.region !== this.state.region && prevState.region !== null) ||
       prevState.radius !== this.state.radius
     ) {
       const restrooms = await seedArray.filter(
@@ -122,6 +125,7 @@ export default class GoogleMapView extends Component {
   }
 
   render() {
+    if (!this.state.region) return <Text>Loading...</Text>;
     return (
       <View style={styles.container}>
         <MapView
@@ -129,6 +133,7 @@ export default class GoogleMapView extends Component {
           ref={(map) => (this._map = map)}
           style={styles.mapStyle}
           region={this.state.region}
+          showsUserLocation={true}
           onRegionChangeComplete={this.onRegionChangeComplete}
         >
           {this.state.restrooms.map((marker, index) => (
@@ -174,7 +179,7 @@ export default class GoogleMapView extends Component {
           step={200}
           onValueChange={(value) => this.setState({ radius: value })}
         >
-          <Text>{this.state.radius}</Text>
+          <Text>{this.state.radius} meters</Text>
         </Slider>
       </View>
     );
