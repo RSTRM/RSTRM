@@ -16,7 +16,7 @@ async function seed() {
   await db.sync({ force: true })
   console.log('db synced!')
 
-  //clean data
+  //clean refuge data
   const filtered = []
   const map = new Map()
 
@@ -33,8 +33,9 @@ async function seed() {
       filtered.push(item)
     }
   }
-  console.log(`kept ${filtered.length} items of ${refugeArray.length}`)
+  console.log(`kept ${filtered.length} bathrooms of ${refugeArray.length}`)
 
+  //BATHROOMS
   const bathrooms = await Promise.all(
     filtered.map((item) => {
       return Bathroom.create({
@@ -53,6 +54,91 @@ async function seed() {
       })
     })
   )
+
+  console.log(`seeded ${bathrooms.length} bathrooms sucessfully`)
+
+  const people = [
+    { nameFirst: 'Katt', nameLast: 'Baum' },
+    { nameFirst: 'Denis', nameLast: 'McPhillips' },
+    { nameFirst: 'Valmik', nameLast: 'Vyas' },
+    { nameFirst: 'Yeung', nameLast: 'Lo' },
+  ]
+
+  //USERS
+  const users = await Promise.all(
+    people.map((person) => {
+      const { nameFirst, nameLast } = person
+      const username = nameFirst[0].toLowerCase() + nameLast.toLowerCase()
+      const email = username + '@email.com'
+      return User.create({
+        username,
+        nameFirst,
+        nameLast,
+        email,
+        password: '123',
+        admin: true,
+      })
+    })
+  )
+
+  console.log(`seeded ${users.length} users sucessfully`)
+
+  //CHECKINS
+  const createCheckins = () => {
+    const checkinsPerUser = new Array(users.length)
+      .fill(1)
+      .map((num) => (num = Math.floor(Math.random() * 10)))
+    const checkinArr = []
+    users.forEach((user, idx) => {
+      for (let i = 0; i < checkinsPerUser[idx]; i++) {
+        const randBathoom =
+          bathrooms[Math.floor(Math.random() * bathrooms.length)]
+        const today = new Date()
+        checkinArr.push(
+          Checkin.create({
+            userId: user.id,
+            bathroomsId: randBathoom.id,
+            checkinDate: today.setDate(
+              today.getDate() - Math.floor(Math.random() * 30)
+            ),
+          })
+        )
+      }
+    })
+    return checkinArr
+  }
+
+  const checkins = await Promise.all(createCheckins())
+
+  console.log(`seeded ${checkins.length} checkins sucessfully`)
+
+  //REVIEWS
+  const randComments = [
+    'This bathroom is horrible.',
+    'I probably would not use this bathroom again if I could help it.',
+    'Usable...',
+    'Decent!',
+    'Excellent! Clean and beautiful.',
+  ]
+
+  const reviews = await Promise.all(
+    checkins.reduce((acc, checkin, idx) => {
+      if (idx % 2 === 0) {
+        const rating = Math.floor(Math.random() * (5 - 1 + 1)) + 1
+        acc.push(
+          Review.create({
+            rating,
+            comments: randComments[rating],
+            userId: checkin.userId,
+            bathroomsId: checkin.bathroomsId,
+          })
+        )
+      }
+      return acc
+    }, [])
+  )
+
+  console.log(`seeded ${reviews.length} reviews sucessfully`)
 
   console.log(`seeded successfully`)
 }
