@@ -71,4 +71,15 @@ const Bathroom = db.define('bathroom', {
   },
 })
 
+/**
+ * instanceMethods
+ */
+
+/**
+ * classMethods
+ */
+
+/**
+ * hooks
+ */
 module.exports = Bathroom
