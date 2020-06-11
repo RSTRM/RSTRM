@@ -29,7 +29,8 @@ export default class GoogleMapView extends Component {
   async componentDidMount() {
     let { status } = await Location.requestPermissionsAsync();
     if (status !== "granted") {
-      this.setState({ errorMsg: "Please turn on your GPS" });
+      this.setState({ errorMsg: "Permission denied" });
+      return;
     }
 
     let location = await Location.getCurrentPositionAsync({});
@@ -136,14 +137,10 @@ export default class GoogleMapView extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    // ...StyleSheet.absoluteFillObject,
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height - 196,
+    ...StyleSheet.absoluteFillObject,
   },
   mapStyle: {
-    // ...StyleSheet.absoluteFillObject,
-    width: Dimensions.get("window").width,
-    height: Dimensions.get("window").height - 196,
+    ...StyleSheet.absoluteFillObject,
   },
   carousel: {
     position: "absolute",
