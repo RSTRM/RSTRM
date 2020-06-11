@@ -124,11 +124,11 @@ async function seed() {
   const reviews = await Promise.all(
     checkins.reduce((acc, checkin, idx) => {
       if (idx % 2 === 0) {
-        const rating = Math.floor(Math.random() * (5 - 1 + 1)) + 1
+        const rand = Math.floor(Math.random() * 5)
         acc.push(
           Review.create({
-            rating,
-            comments: randComments[rating],
+            rating: rand + 1,
+            comments: randComments[rand],
             userId: checkin.userId,
             bathroomsId: checkin.bathroomsId,
           })
