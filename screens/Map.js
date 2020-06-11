@@ -1,13 +1,13 @@
 import React from 'react'
 import GoogleMapView from '../components/GoogleMapView'
-import {StyleSheet, SafeAreaView} from 'react-native'
+import {StyleSheet, View} from 'react-native'
 
 
 export default function Map() {
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             <GoogleMapView />
-        </SafeAreaView>
+        </View>
     );
 }
 
