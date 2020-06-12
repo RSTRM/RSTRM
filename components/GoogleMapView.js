@@ -173,6 +173,7 @@ export default class GoogleMapView extends Component {
           onSnapToItem={(index) => this.onCarouselItemChange(index)}
         />
         <Slider
+          style={styles.slider}
           value={this.state.radius}
           maximumValue={2000}
           minimumValue={200}
@@ -213,5 +214,8 @@ const styles = StyleSheet.create({
   permissions: {
     marginTop: 10,
     color: "red",
+  },
+  slider: {
+    paddingTop: 100,
   },
 });
