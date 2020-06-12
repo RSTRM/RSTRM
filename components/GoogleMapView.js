@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { StyleSheet, Dimensions, View, Text } from "react-native";
+import { StyleSheet, Dimensions, View, Text, Slider } from "react-native";
 import MapView, { PROVIDER_GOOGLE, Marker, Circle } from "react-native-maps";
 import seedArray from "../assets/initialSeed";
 import Carousel from "react-native-snap-carousel";
@@ -10,14 +10,11 @@ export default class GoogleMapView extends Component {
   constructor() {
     super();
     this.state = {
-      region: {
-        latitude: 40.7061,
-        longitude: -73.9969,
-        latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      },
+      region: null,
       location: null,
       markers: [],
+      radius: 1000,
+      restrooms: [],
       errorMsg: null,
     };
     this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
@@ -30,11 +27,60 @@ export default class GoogleMapView extends Component {
     let { status } = await Location.requestPermissionsAsync();
     if (status !== "granted") {
       this.setState({ errorMsg: "Permission denied" });
-      return;
+      this.setState({
+        region: {
+          latitude: 40.7061,
+          longitude: -73.9969,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        },
+      });
+    } else {
+      let location = await Location.getCurrentPositionAsync({});
+      this.setState({ location });
+
+      // USER'S LOCATION
+
+      this.setState({
+        region: {
+          latitude: this.state.location.coords.latitude,
+          longitude: this.state.location.coords.longitude,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        },
+      });
     }
 
-    let location = await Location.getCurrentPositionAsync({});
-    this.setState({ location });
+    const restrooms = await seedArray.filter(
+      (marker) =>
+        getDistance(
+          { latitude: marker.latitude, longitude: marker.longitude },
+          {
+            latitude: this.state.region.latitude,
+            longitude: this.state.region.longitude,
+          }
+        ) < this.state.radius
+    );
+    this.setState({ restrooms });
+  }
+
+  async componentDidUpdate(prevProps, prevState) {
+    if (
+      (prevState.region !== this.state.region && prevState.region !== null) ||
+      prevState.radius !== this.state.radius
+    ) {
+      const restrooms = await seedArray.filter(
+        (marker) =>
+          getDistance(
+            { latitude: marker.latitude, longitude: marker.longitude },
+            {
+              latitude: this.state.region.latitude,
+              longitude: this.state.region.longitude,
+            }
+          ) < this.state.radius
+      );
+      this.setState({ restrooms });
+    }
   }
 
   onRegionChangeComplete(region) {
@@ -73,41 +119,37 @@ export default class GoogleMapView extends Component {
     );
   };
 
+  async getRestrooms() {
+    const newRadius = await event.target.value;
+    this.setState({ radius: newRadius });
+  }
+
   render() {
+    if (!this.state.region) return <Text>Loading...</Text>;
     return (
       <View style={styles.container}>
         <MapView
           provider={PROVIDER_GOOGLE}
           ref={(map) => (this._map = map)}
           style={styles.mapStyle}
-          region={this.state.region}
+          initialRegion={this.state.region}
+          showsUserLocation={true}
           onRegionChangeComplete={this.onRegionChangeComplete}
         >
-          {seedArray
-            .filter(
-              (marker) =>
-                getDistance(
-                  { latitude: marker.latitude, longitude: marker.longitude },
-                  {
-                    latitude: this.state.region.latitude,
-                    longitude: this.state.region.longitude,
-                  }
-                ) < 1000
-            )
-            .map((marker, index) => (
-              <Marker
-                key={index}
-                ref={(ref) => (this.state.markers[index] = ref)}
-                onPress={() => this.onMarkerPressed(marker, index)}
-                coordinate={{
-                  latitude: marker.latitude,
-                  longitude: marker.longitude,
-                }}
-                title={marker.name}
-                description={`Go: ${marker.directions}\nTip: ${marker.comment}`}
-              />
-            ))}
-          <Circle center={this.state.region} radius={1000} />
+          {this.state.restrooms.map((marker, index) => (
+            <Marker
+              key={index}
+              ref={(ref) => (this.state.markers[index] = ref)}
+              onPress={() => this.onMarkerPressed(marker, index)}
+              coordinate={{
+                latitude: marker.latitude,
+                longitude: marker.longitude,
+              }}
+              title={marker.name}
+              description={`Go: ${marker.directions}\nTip: ${marker.comment}`}
+            />
+          ))}
+          <Circle center={this.state.region} radius={this.state.radius} />
         </MapView>
         <Carousel
           ref={(c) => {
@@ -121,7 +163,7 @@ export default class GoogleMapView extends Component {
                   latitude: this.state.region.latitude,
                   longitude: this.state.region.longitude,
                 }
-              ) < 1000
+              ) < this.state.radius
           )}
           containerCustomStyle={styles.carousel}
           renderItem={this.renderCarouselItem}
@@ -130,6 +172,16 @@ export default class GoogleMapView extends Component {
           removeClippedSubviews={false}
           onSnapToItem={(index) => this.onCarouselItemChange(index)}
         />
+        <Slider
+          style={styles.slider}
+          value={this.state.radius}
+          maximumValue={2000}
+          minimumValue={200}
+          step={200}
+          onValueChange={(value) => this.setState({ radius: value })}
+        >
+          <Text>{this.state.radius} meters</Text>
+        </Slider>
       </View>
     );
   }
@@ -162,5 +214,8 @@ const styles = StyleSheet.create({
   permissions: {
     marginTop: 10,
     color: "red",
+  },
+  slider: {
+    paddingTop: 100,
   },
 });
