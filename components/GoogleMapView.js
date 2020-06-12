@@ -38,9 +38,6 @@ export default class GoogleMapView extends Component {
     } else {
       let location = await Location.getCurrentPositionAsync({});
       this.setState({ location });
-
-      // USER'S LOCATION
-
       this.setState({
         region: {
           latitude: this.state.location.coords.latitude,
@@ -83,30 +80,35 @@ export default class GoogleMapView extends Component {
     }
   }
 
-  onRegionChangeComplete(region) {
-    this.setState({ region });
+  onRegionChangeComplete(event) {
+    this.setState({
+      region: {
+        latitude: event.nativeEvent.coordinate.latitude,
+        longitude: event.nativeEvent.coordinate.longitude,
+      },
+    });
   }
 
   onCarouselItemChange = (index) => {
-    let location = seedArray[index];
+    let location = this.state.restrooms[index];
 
-    // this._map.animateToRegion({
-    //   latitude: location.latitude,
-    //   longitude: location.longitude,
-    //   latitudeDelta: 0.0922,
-    //   longitudeDelta: 0.0421,
-    // });
+    this._map.animateToRegion({
+      latitude: location.latitude,
+      longitude: location.longitude,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    });
 
     this.state.markers[index].showCallout();
   };
 
   onMarkerPressed = (location, index) => {
-    // this._map.animateToRegion({
-    //   latitude: location.latitude,
-    //   longitude: location.longitude,
-    //   latitudeDelta: 0.0922,
-    //   longitudeDelta: 0.0421,
-    // });
+    this._map.animateToRegion({
+      latitude: location.latitude,
+      longitude: location.longitude,
+      latitudeDelta: 0.0922,
+      longitudeDelta: 0.0421,
+    });
 
     this._carousel.snapToItem(index);
   };
@@ -134,8 +136,17 @@ export default class GoogleMapView extends Component {
           style={styles.mapStyle}
           initialRegion={this.state.region}
           showsUserLocation={true}
-          onRegionChangeComplete={this.onRegionChangeComplete}
+          // onRegionChangeComplete={this.onRegionChangeComplete}
         >
+          <Marker
+            pinColor="blue"
+            draggable
+            onDragEnd={this.onRegionChangeComplete}
+            coordinate={{
+              latitude: this.state.region.latitude,
+              longitude: this.state.region.longitude,
+            }}
+          />
           {this.state.restrooms.map((marker, index) => (
             <Marker
               key={index}
@@ -155,16 +166,7 @@ export default class GoogleMapView extends Component {
           ref={(c) => {
             this._carousel = c;
           }}
-          data={seedArray.filter(
-            (marker) =>
-              getDistance(
-                { latitude: marker.latitude, longitude: marker.longitude },
-                {
-                  latitude: this.state.region.latitude,
-                  longitude: this.state.region.longitude,
-                }
-              ) < this.state.radius
-          )}
+          data={this.state.restrooms}
           containerCustomStyle={styles.carousel}
           renderItem={this.renderCarouselItem}
           sliderWidth={Dimensions.get("window").width}
@@ -216,6 +218,9 @@ const styles = StyleSheet.create({
     color: "red",
   },
   slider: {
-    paddingTop: 100,
+    flex: 1,
+    position: "absolute",
+    bottom: 0,
+    width: "100%",
   },
 });
