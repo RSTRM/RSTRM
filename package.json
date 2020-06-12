@@ -1,6 +1,8 @@
 {
   "main": "node_modules/expo/AppEntry.js",
+  "name": "rstrm",
   "scripts": {
+    "seed": "node seed/seed.js",
     "start": "expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
