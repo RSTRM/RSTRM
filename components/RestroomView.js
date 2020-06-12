@@ -68,6 +68,7 @@ export default class RestroomView extends React.Component {
               <Text size={12} color={theme.COLORS.GRADIENT_END} onPress={() => this.props.navigation.navigate('Home')}>Tweet</Text>
             </Block>
             <Block  style={{ paddingBottom: -HeaderHeight * 2 }}>
+                
               <Block row space="between" style={{ flexWrap: 'wrap' }} >
               <Text size={16}>"This place is the absolute best"</Text>
               <Text size={16}>"Spacious stalls everywhere and it smells nice"</Text>

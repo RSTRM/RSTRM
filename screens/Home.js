@@ -5,9 +5,13 @@ import { StyleSheet, Text, View, Button } from 'react-native'
 export default function Home({navigation}) {
     return (
         <View style={styles.container}>
-            <Text>Welcome to RSTRM! For when you gotta go...</Text>
-            <Button title="Go to Map"
-                onPress={() => navigation.navigate('Map')}
+            <Text>Welcome to RSTRM!</Text>
+            <Text>For when you gotta go...</Text>
+            <Button title="User Sign/Login"
+                onPress={() => navigation.navigate('User')}
+            />
+            <Button title="Account Settings"
+                onPress={() => navigation.navigate('Setting')}
             />
         </View>
     );
@@ -21,3 +25,4 @@ const styles = StyleSheet.create({
       justifyContent: 'center',
     }
 })
+
