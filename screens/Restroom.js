@@ -5,9 +5,9 @@ import {StyleSheet, SafeAreaView} from 'react-native'
 
 export default function Map() {
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             <RestroomView />
-        </SafeAreaView>
+        </View>
     );
 }
 

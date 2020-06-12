@@ -80,7 +80,7 @@ export default class GoogleMapView extends Component {
           provider={PROVIDER_GOOGLE}
           ref={(map) => (this._map = map)}
           style={styles.mapStyle}
-          region={this.state.region}
+          initialRegion={this.state.region}
           onRegionChangeComplete={this.onRegionChangeComplete}
         >
           {seedArray
