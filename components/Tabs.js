@@ -1,3 +1,5 @@
+//This is a Tabs component for RN/CSS reference
+
 import React from 'react';
 import { StyleSheet, Dimensions, FlatList, Animated } from 'react-native';
 import { Block, theme } from 'galio-framework';

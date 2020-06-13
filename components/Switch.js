@@ -1,3 +1,6 @@
+//This is a "Switch" component for RN/CSS reference
+
+
 import React from 'react';
 import { Switch, Platform } from 'react-native';
 

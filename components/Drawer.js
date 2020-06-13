@@ -1,3 +1,6 @@
+//This is a Drawer component for RN/CSS reference
+
+
 import React from "react";
 import { TouchableOpacity, StyleSheet } from "react-native";
 import { Block, Text, theme } from "galio-framework";
