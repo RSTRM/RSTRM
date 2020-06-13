@@ -35,8 +35,8 @@ export default class GoogleMapView extends Component {
           latitude: 40.7061,
           longitude: -73.9969,
           latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        },
+          longitudeDelta: 0.0421
+        }
       });
     } else {
       let location = await Location.getCurrentPositionAsync({});
@@ -46,18 +46,18 @@ export default class GoogleMapView extends Component {
           latitude: this.state.location.coords.latitude,
           longitude: this.state.location.coords.longitude,
           latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        },
+          longitudeDelta: 0.0421
+        }
       });
     }
 
     const restrooms = await seedArray.filter(
-      (marker) =>
+      marker =>
         getDistance(
           { latitude: marker.latitude, longitude: marker.longitude },
           {
             latitude: this.state.region.latitude,
-            longitude: this.state.region.longitude,
+            longitude: this.state.region.longitude
           }
         ) < this.state.radius
     );
@@ -70,12 +70,12 @@ export default class GoogleMapView extends Component {
       prevState.radius !== this.state.radius
     ) {
       const restrooms = await seedArray.filter(
-        (marker) =>
+        marker =>
           getDistance(
             { latitude: marker.latitude, longitude: marker.longitude },
             {
               latitude: this.state.region.latitude,
-              longitude: this.state.region.longitude,
+              longitude: this.state.region.longitude
             }
           ) < this.state.radius
       );
@@ -106,6 +106,13 @@ export default class GoogleMapView extends Component {
   };
 
   onMarkerPressed = (location, index) => {
+   
+    // this._map.animateToRegion({
+    //   latitude: location.latitude,
+    //   longitude: location.longitude,
+    //   latitudeDelta: 0.0922,
+    //   longitudeDelta: 0.0421,
+    // });
     this._map.animateToRegion({
       latitude: location.latitude,
       longitude: location.longitude,
@@ -139,7 +146,7 @@ export default class GoogleMapView extends Component {
       <View style={styles.container}>
         <MapView
           provider={PROVIDER_GOOGLE}
-          ref={(map) => (this._map = map)}
+          ref={map => (this._map = map)}
           style={styles.mapStyle}
           initialRegion={this.state.region}
           showsUserLocation={true}
@@ -157,11 +164,11 @@ export default class GoogleMapView extends Component {
           {this.state.restrooms.map((marker, index) => (
             <Marker
               key={index}
-              ref={(ref) => (this.state.markers[index] = ref)}
+              ref={ref => (this.state.markers[index] = ref)}
               onPress={() => this.onMarkerPressed(marker, index)}
               coordinate={{
                 latitude: marker.latitude,
-                longitude: marker.longitude,
+                longitude: marker.longitude
               }}
             >
               <Callout 
@@ -183,7 +190,7 @@ export default class GoogleMapView extends Component {
           <RestroomView backButton={this.backButton}/>
         </Modal>
         <Carousel
-          ref={(c) => {
+          ref={c => {
             this._carousel = c;
           }}
           data={this.state.restrooms}
@@ -192,7 +199,7 @@ export default class GoogleMapView extends Component {
           sliderWidth={Dimensions.get("window").width}
           itemWidth={300}
           removeClippedSubviews={false}
-          onSnapToItem={(index) => this.onCarouselItemChange(index)}
+          onSnapToItem={index => this.onCarouselItemChange(index)}
         />
         <Slider
           style={styles.slider}
@@ -200,7 +207,7 @@ export default class GoogleMapView extends Component {
           maximumValue={2000}
           minimumValue={200}
           step={200}
-          onValueChange={(value) => this.setState({ radius: value })}
+          onValueChange={value => this.setState({ radius: value })}
         >
           <Text>{this.state.radius} meters</Text>
         </Slider>
@@ -211,31 +218,31 @@ export default class GoogleMapView extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFillObject
   },
   mapStyle: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFillObject
   },
   carousel: {
     position: "absolute",
     bottom: 0,
-    marginBottom: 48,
+    marginBottom: 48
   },
   cardContainer: {
     backgroundColor: "rgba(0, 0, 0, 0.6)",
     height: 50,
     width: 300,
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 10
   },
   cardTitle: {
     color: "white",
     fontSize: 20,
-    alignSelf: "center",
+    alignSelf: "center"
   },
   permissions: {
     marginTop: 10,
-    color: "red",
+    color: "red"
   },
   slider: {
     flex: 1,
