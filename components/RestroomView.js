@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Dimensions, ScrollView, Image, ImageBackground, Platform } from 'react-native';
+import { StyleSheet, Dimensions, ScrollView, Image, ImageBackground, Platform, Button } from 'react-native';
 import { Block, Text, theme } from 'galio-framework';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -87,6 +87,7 @@ export default class RestroomView extends React.Component {
             </Block>
           </ScrollView>
         </Block>
+        <Button style={styles.backButton} title='Back to Map' onPress={()=>closeModal}/>
       </Block>
     );
   }
@@ -155,4 +156,8 @@ const styles = StyleSheet.create({
     height: '30%',
     position: 'absolute',
   },
+  backButton: {
+    position: 'absolute',
+    bottom: 100
+  }
 });
