@@ -64,8 +64,8 @@ class GoogleMapView extends Component {
           longitudeDelta: 0.0421
         }
       });
+      const restrooms = await this.props.load(this.state.region, this.state.radius);
     }
-    const restrooms = await this.props.load(this.state.region, this.state.radius);
 
     // const restrooms = await seedArray.filter(
     //   marker =>
