@@ -106,18 +106,7 @@ export default class GoogleMapView extends Component {
   };
 
   onMarkerPressed = (location, index) => {
-    // return (
-    //   <View>
-    //     <Modal
-    //      animationType="slide"
-    //      transparent={true}
-    //      >
-    //       <View style={styles.modalView}>
-    //         <RestroomView />
-    //       </View>
-    //     </Modal>
-    //   </View>
-    // );
+   
     // this._map.animateToRegion({
     //   latitude: location.latitude,
     //   longitude: location.longitude,
