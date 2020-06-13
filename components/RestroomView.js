@@ -203,6 +203,7 @@ const styles = StyleSheet.create({
   backButton: {
     alignSelf: "flex-end",
     marginTop: 20,
-    position: "absolute"
+    position: "absolute",
+    opacity: .7
   }
 });

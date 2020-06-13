@@ -1,5 +1,5 @@
 import axios from "axios";
-
+const HOST = "http://localhost:8080"
 /**
  * ACTION TYPES ------------------------------------------------
  */
@@ -26,9 +26,10 @@ const _deleteBathroom = (id) => ({ type: DELETE_BATHROOM, id });
  */
 // UPDATE WITH OUR API
 
-const loadBathrooms = () => {
+const loadBathrooms = (region, radius) => {
+  console.log(region,'region', radius, 'radius in thunk');
   return async (dispatch) => {
-    const response = (await axios.get("/api/bathrooms")).data;
+    const response = (await axios.get(`${HOST}/api/bathrooms/`, {region, radius})).data;
     dispatch(_loadBathrooms(response));
   };
 };
