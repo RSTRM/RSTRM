@@ -1,13 +1,13 @@
 import React from 'react'
 import RestroomView from '../components/RestroomView'
-import {StyleSheet, SafeAreaView} from 'react-native'
+import {StyleSheet, View} from 'react-native'
 
 
 export default function Map() {
     return (
-        <SafeAreaView style={styles.container}>
+        <View style={styles.container}>
             <RestroomView />
-        </SafeAreaView>
+        </View>
     );
 }
 

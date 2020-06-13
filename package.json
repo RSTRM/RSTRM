@@ -3,11 +3,12 @@
   "name": "rstrm",
   "scripts": {
     "seed": "node seed/seed.js",
-    "start": "expo start",
+    "start": "npm run server & expo start",
     "android": "expo start --android",
     "ios": "expo start --ios",
     "web": "expo start --web",
-    "eject": "expo eject"
+    "eject": "expo eject",
+    "server": "node server"
   },
   "dependencies": {
     "@react-native-community/masked-view": "0.1.6",
@@ -17,27 +18,41 @@
     "@react-navigation/native": "^5.5.1",
     "@react-navigation/stack": "^5.5.1",
     "axios": "^0.19.2",
+    "connect-session-sequelize": "^6.1.1",
     "expo": "~37.0.3",
     "expo-location": "~8.1.0",
+    "express": "^4.17.1",
+    "express-session": "^1.17.1",
     "galio-framework": "^0.6.3",
     "geolib": "^3.3.1",
+    "nodemon": "^2.0.4",
+    "passport": "^0.4.1",
+    "passport-google-oauth": "^2.0.0",
     "pg": "^8.2.1",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-37.0.1.tar.gz",
+    "react-native-elements": "^2.0.2",
     "react-native-gesture-handler": "~1.6.0",
     "react-native-maps": "0.26.1",
+    "react-native-modal": "^11.5.6",
     "react-native-modal-dropdown": "^0.7.0",
     "react-native-reanimated": "~1.7.0",
     "react-native-safe-area-context": "0.7.3",
     "react-native-screens": "~2.2.0",
     "react-native-snap-carousel": "^3.9.1",
     "react-native-web": "~0.11.7",
-    "sequelize": "^5.21.12"
+    "react-redux": "^7.2.0",
+    "redux": "^4.0.5",
+    "redux-logger": "^3.0.6",
+    "redux-thunk": "^2.3.0",
+    "sequelize": "^5.21.12",
+    "socket.io": "^2.3.0"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
-    "babel-preset-expo": "~8.1.0"
+    "babel-preset-expo": "~8.1.0",
+    "redux-devtools-extension": "^2.13.8"
   },
   "private": true
 }
