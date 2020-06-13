@@ -139,7 +139,7 @@ export default class GoogleMapView extends Component {
     if (!this.state.region) return <Text>Loading...</Text>;
     return (
       <View style={styles.container}>
-        <Container>
+        <Container style={styles.header}>
           <Header>
             <Left>
               <Button transparent>
@@ -222,12 +222,10 @@ export default class GoogleMapView extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1
-    //...StyleSheet.absoluteFillObject,
+    flex: 1,
   },
   mapStyle: {
-    flex: 1
-    //...StyleSheet.absoluteFillObject,
+    height: Dimensions.get('window').height -133
   },
   carousel: {
     position: "absolute",
@@ -256,5 +254,5 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     bottom: 20,
     width: "85%",
-  }
+  },
 });
