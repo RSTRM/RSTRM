@@ -31,7 +31,6 @@ export default function App() {
       }}>
         <Tab.Screen name="Home" component={HomeStack} />
         <Tab.Screen name="Map" component={MapStack} />
-        <Tab.Screen name="Restroom" component={RestroomView} />
       </Tab.Navigator>
     </NavigationContainer>
   )
