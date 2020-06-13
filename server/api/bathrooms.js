@@ -19,7 +19,7 @@ router.get("/:latitude/:longitude/:radius", async (req, res, next) => {
         longitude: { [Op.between]: [result[0].longitude, result[1].longitude] }
       }
     });
-    res.json({ count: bathrooms.length, bathrooms });
+    res.json(bathrooms);
   } catch (err) {
     next(err);
   }
