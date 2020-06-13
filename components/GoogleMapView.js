@@ -1,10 +1,11 @@
 import React, { Component } from "react";
-import { StyleSheet, Dimensions, View, Text, Slider } from "react-native";
-import MapView, { PROVIDER_GOOGLE, Marker, Circle } from "react-native-maps";
+import { StyleSheet, Dimensions, View, Text, Slider, Modal, TouchableHighlight } from "react-native";
+import MapView, { PROVIDER_GOOGLE, Marker, Circle, Callout } from "react-native-maps";
 import seedArray from "../assets/initialSeed";
 import Carousel from "react-native-snap-carousel";
 import { getDistance } from "geolib";
 import * as Location from "expo-location";
+import RestroomView from "./RestroomView";
 
 export default class GoogleMapView extends Component {
   constructor() {
@@ -16,11 +17,13 @@ export default class GoogleMapView extends Component {
       radius: 1000,
       restrooms: [],
       errorMsg: null,
+      modalVisible: false
     };
     this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
     this.renderCarouselItem = this.renderCarouselItem.bind(this);
     this.onCarouselItemChange = this.onCarouselItemChange.bind(this);
     this.onMarkerPressed = this.onMarkerPressed.bind(this);
+    this.backButton = this.backButton.bind(this)
   }
 
   async componentDidMount() {
@@ -113,6 +116,10 @@ export default class GoogleMapView extends Component {
     this._carousel.snapToItem(index);
   };
 
+  backButton = () => {
+    this.setState({modalVisible: false})
+  }
+
   renderCarouselItem = ({ item }) => {
     return (
       <View style={styles.cardContainer}>
@@ -136,7 +143,7 @@ export default class GoogleMapView extends Component {
           style={styles.mapStyle}
           initialRegion={this.state.region}
           showsUserLocation={true}
-          // onRegionChangeComplete={this.onRegionChangeComplete}
+          //onRegionChangeComplete={this.onRegionChangeComplete}
         >
           <Marker
             pinColor="blue"
@@ -156,12 +163,25 @@ export default class GoogleMapView extends Component {
                 latitude: marker.latitude,
                 longitude: marker.longitude,
               }}
-              title={marker.name}
-              description={`Go: ${marker.directions}\nTip: ${marker.comment}`}
-            />
+            >
+              <Callout 
+                style={styles.callout}
+                onPress={()=> this.setState({modalVisible: true})}
+              >
+                <Text>{marker.name}</Text>
+                <Text>{`Go: ${marker.directions}\nTip: ${marker.comment}`}</Text>
+              </Callout>
+            </Marker>           
           ))}
           <Circle center={this.state.region} radius={this.state.radius} />
         </MapView>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+        >
+          <RestroomView backButton={this.backButton}/>
+        </Modal>
         <Carousel
           ref={(c) => {
             this._carousel = c;
@@ -220,7 +240,8 @@ const styles = StyleSheet.create({
   slider: {
     flex: 1,
     position: "absolute",
-    bottom: 0,
-    width: "100%",
-  },
+    alignSelf: "center",
+    bottom: 20,
+    width: "85%",
+  }
 });
