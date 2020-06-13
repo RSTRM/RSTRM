@@ -3,10 +3,10 @@ import GoogleMapView from '../components/GoogleMapView'
 import {StyleSheet, View} from 'react-native'
 
 
-export default function Map() {
+export default function Map({navigation}) {
     return (
         <View style={styles.container}>
-            <GoogleMapView />
+            <GoogleMapView navigation={navigation}/>
         </View>
     );
 }

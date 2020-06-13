@@ -1,11 +1,13 @@
 import React, { Component } from "react";
-import { StyleSheet, Dimensions, View, Text, Slider, Modal, TouchableHighlight } from "react-native";
+import { StyleSheet, Dimensions, View, Text, Slider, Modal } from "react-native";
 import MapView, { PROVIDER_GOOGLE, Marker, Circle, Callout } from "react-native-maps";
 import seedArray from "../assets/initialSeed";
 import Carousel from "react-native-snap-carousel";
 import { getDistance } from "geolib";
 import * as Location from "expo-location";
 import RestroomView from "./RestroomView";
+import { Container, Header, Left, Button, Icon } from 'native-base';
+
 
 export default class GoogleMapView extends Component {
   constructor() {
@@ -137,6 +139,15 @@ export default class GoogleMapView extends Component {
     if (!this.state.region) return <Text>Loading...</Text>;
     return (
       <View style={styles.container}>
+        <Container>
+          <Header>
+            <Left>
+              <Button transparent>
+                <Icon name='ios-menu' onPress={()=> this.props.navigation.openDrawer()}/>
+              </Button>
+            </Left>
+          </Header>
+        </Container>
         <MapView
           provider={PROVIDER_GOOGLE}
           ref={(map) => (this._map = map)}
@@ -211,10 +222,12 @@ export default class GoogleMapView extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
+    flex: 1
+    //...StyleSheet.absoluteFillObject,
   },
   mapStyle: {
-    ...StyleSheet.absoluteFillObject,
+    flex: 1
+    //...StyleSheet.absoluteFillObject,
   },
   carousel: {
     position: "absolute",
