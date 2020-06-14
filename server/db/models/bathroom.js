@@ -6,6 +6,7 @@ const {
   INTEGER,
   BOOLEAN,
   FLOAT,
+  Op,
 } = require('sequelize')
 const db = require('../db')
 
@@ -75,12 +76,34 @@ const Bathroom = db.define('bathroom', {
  * instanceMethods
  */
 
-Bathroom.prototype.getReviews = async function () {
-  return db.models.review.findAll({ where: { bathroomId: this.id } })
+Bathroom.prototype.getReviews = async function (daysWithin) {
+  if (daysWithin) {
+    const date = new Date()
+    date.setDate(date.getDate() - daysWithin)
+    return db.models.review.findAll({
+      where: { bathroomId: this.id, createdAt: { [Op.gte]: date } },
+      order: [['createdAt', 'DESC']],
+    })
+  }
+  return db.models.review.findAll({
+    where: { bathroomId: this.id },
+    order: [['createdAt', 'DESC']],
+  })
 }
 
-Bathroom.prototype.getCheckins = async function () {
-  return db.models.checkin.findAll({ where: { bathroomId: this.id } })
+Bathroom.prototype.getCheckins = async function (daysWithin) {
+  if (daysWithin) {
+    const date = new Date()
+    date.setDate(date.getDate() - daysWithin)
+    return db.models.checkin.findAll({
+      where: { bathroomId: this.id, createdAt: { [Op.gte]: date } },
+      order: [['createdAt', 'DESC']],
+    })
+  }
+  return db.models.checkin.findAll({
+    where: { bathroomId: this.id },
+    order: [['createdAt', 'DESC']],
+  })
 }
 
 /**
