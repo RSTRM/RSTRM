@@ -3,14 +3,13 @@ const { Bathroom } = require("../db/models");
 const geolib = require("geolib");
 const { Op } = require("sequelize");
 
-router.get("/", async (req, res, next) => {
+router.get("/:latitude/:longitude/:radius", async (req, res, next) => {
   try {
-    // const region = req.body.region;
-    // const radius = req.params.radius;
-    console.log(req.body,'req.params in server')
+    console.log(req.body, 'body');
+    const radius = req.params.radius;
     const point = {
-      latitude: region.latitude,
-      longitude: region.longitude
+      latitude: req.params.latitude,
+      longitude: req.params.longitude
     };
     const result = geolib.getBoundsOfDistance(point, radius);
     console.log(result, "result");
@@ -20,7 +19,7 @@ router.get("/", async (req, res, next) => {
         longitude: { [Op.between]: [result[0].longitude, result[1].longitude] }
       }
     });
-    res.json({ count: bathrooms.length, bathrooms });
+    res.json(bathrooms);
   } catch (err) {
     next(err);
   }

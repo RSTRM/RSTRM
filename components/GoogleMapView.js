@@ -65,8 +65,8 @@ class GoogleMapView extends Component {
         }
       });
     }
-    const restrooms = await this.props.load(this.state.region, this.state.radius);
-
+    let restrooms = await this.props.load(this.state.region, this.state.radius);
+    restrooms = this.props.bathrooms;
     // const restrooms = await seedArray.filter(
     //   marker =>
     //     getDistance(
@@ -77,7 +77,8 @@ class GoogleMapView extends Component {
     //       }
     //     ) < this.state.radius
     // );
-    // this.setState({ restrooms });
+
+    this.setState({ restrooms });
   }
 
   async componentDidUpdate(prevProps, prevState) {
@@ -85,8 +86,11 @@ class GoogleMapView extends Component {
       (prevState.region !== this.state.region && prevState.region !== null) ||
       prevState.radius !== this.state.radius
     ) {
-      const restrooms = await this.props.load(this.state.region, this.state.radius);
-
+      let restrooms = await this.props.load(
+        this.state.region,
+        this.state.radius
+      );
+      restrooms = this.props.bathrooms;
       // const restrooms = await seedArray.filter(
       //   marker =>
       //     getDistance(
@@ -97,7 +101,7 @@ class GoogleMapView extends Component {
       //       }
       //     ) < this.state.radius
       // );
-      // this.setState({ restrooms });
+      this.setState({ restrooms });
     }
   }
 
@@ -158,6 +162,7 @@ class GoogleMapView extends Component {
   }
 
   render() {
+    // console.log(this.state.restrooms, 'restrooms in state');
     if (!this.state.region) return <Text>Loading...</Text>;
     return (
       <View style={styles.container}>
@@ -270,7 +275,7 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return state;
 };
 
