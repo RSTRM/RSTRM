@@ -162,7 +162,7 @@ class GoogleMapView extends Component {
   }
 
   render() {
-    // console.log(this.state.restrooms, 'restrooms in state');
+    console.log(this.state.restrooms, 'restrooms in state');
     if (!this.state.region) return <Text>Loading...</Text>;
     return (
       <View style={styles.container}>
