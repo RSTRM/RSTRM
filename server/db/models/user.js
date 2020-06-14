@@ -72,6 +72,36 @@ User.prototype.correctPassword = function (candidatePwd) {
   return User.encryptPassword(candidatePwd, this.salt()) === this.password()
 }
 
+User.prototype.getReviews = async function (daysWithin) {
+  if (daysWithin) {
+    const date = new Date()
+    date.setDate(date.getDate() - daysWithin)
+    return db.models.review.findAll({
+      where: { userId: this.id, createdAt: { [Op.gte]: date } },
+      order: [['createdAt', 'DESC']],
+    })
+  }
+  return db.models.review.findAll({
+    where: { userId: this.id },
+    order: [['createdAt', 'DESC']],
+  })
+}
+
+User.prototype.getCheckins = async function (daysWithin) {
+  if (daysWithin) {
+    const date = new Date()
+    date.setDate(date.getDate() - daysWithin)
+    return db.models.checkin.findAll({
+      where: { userId: this.id, createdAt: { [Op.gte]: date } },
+      order: [['createdAt', 'DESC']],
+    })
+  }
+  return db.models.checkin.findAll({
+    where: { userId: this.id },
+    order: [['createdAt', 'DESC']],
+  })
+}
+
 /**
  * classMethods
  */
