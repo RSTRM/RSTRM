@@ -151,7 +151,19 @@ class GoogleMapView extends Component {
   renderCarouselItem = ({ item }) => {
     return (
       <View style={styles.cardContainer}>
-        <Text style={styles.cardTitle}>{item.name}</Text>
+        <Text
+          style={styles.cardTitle}
+          onPress={() => this.setState({ modalVisible: true })}
+        >
+          {item.establishment}
+        </Text>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+        >
+          <RestroomView backButton={this.backButton} restroom={item} />
+        </Modal>
       </View>
     );
   };
@@ -162,7 +174,7 @@ class GoogleMapView extends Component {
   }
 
   render() {
-    console.log(this.state.restrooms, 'restrooms in state');
+    // console.log(this.state.restrooms, 'restrooms in state');
     if (!this.state.region) return <Text>Loading...</Text>;
     return (
       <View style={styles.container}>
@@ -197,20 +209,14 @@ class GoogleMapView extends Component {
                 style={styles.callout}
                 onPress={() => this.setState({ modalVisible: true })}
               >
-                <Text>{marker.name}</Text>
+                <Text>{marker.establishment}</Text>
                 <Text>{`Go: ${marker.directions}\nTip: ${marker.comment}`}</Text>
               </Callout>
             </Marker>
           ))}
           <Circle center={this.state.region} radius={this.state.radius} />
         </MapView>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.modalVisible}
-        >
-          <RestroomView backButton={this.backButton} />
-        </Modal>
+
         <Carousel
           ref={c => {
             this._carousel = c;
