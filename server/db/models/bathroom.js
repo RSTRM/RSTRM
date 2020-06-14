@@ -75,6 +75,14 @@ const Bathroom = db.define('bathroom', {
  * instanceMethods
  */
 
+Bathroom.prototype.getReviews = async function () {
+  return db.models.review.findAll({ where: { bathroomId: this.id } })
+}
+
+Bathroom.prototype.getCheckins = async function () {
+  return db.models.checkin.findAll({ where: { bathroomId: this.id } })
+}
+
 /**
  * classMethods
  */

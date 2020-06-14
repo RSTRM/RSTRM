@@ -72,6 +72,14 @@ User.prototype.correctPassword = function (candidatePwd) {
   return User.encryptPassword(candidatePwd, this.salt()) === this.password()
 }
 
+User.prototype.getReviews = async function () {
+  return db.models.review.findAll({ where: { userId: this.id } })
+}
+
+User.prototype.getCheckins = async function () {
+  return db.models.checkin.findAll({ where: { userId: this.id } })
+}
+
 /**
  * classMethods
  */
