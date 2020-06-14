@@ -91,6 +91,14 @@ Bathroom.prototype.getReviews = async function (daysWithin) {
   })
 }
 
+Bathroom.prototype.getAvgRating = async function () {
+  const reviews = await this.getReviews()
+  const allRatings = reviews.reduce((acc, curr) => {
+    return acc + curr.rating
+  }, 0)
+  return Math.floor(allRatings / reviews.length)
+}
+
 Bathroom.prototype.getCheckins = async function (daysWithin) {
   if (daysWithin) {
     const date = new Date()

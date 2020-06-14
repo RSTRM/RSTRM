@@ -26,7 +26,7 @@ router.get('/:latitude/:longitude/:radius', async (req, res, next) => {
 })
 
 router.get('/:id/reviews', async (req, res, next) => {
-  //To get recent, pass number of days to /:id/checkins?daysWithin=<numOfDays>
+  //To get recent, pass number of days to /:id/reviews?daysWithin=<numOfDays>
   try {
     const bathroom = await Bathroom.findByPk(req.params.id)
     let reviews
@@ -36,6 +36,16 @@ router.get('/:id/reviews', async (req, res, next) => {
       reviews = await bathroom.getReviews()
     }
     res.json(reviews)
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/:id/rating', async (req, res, next) => {
+  try {
+    const bathroom = await Bathroom.findByPk(req.params.id)
+    const rating = await bathroom.getAvgRating()
+    res.json(rating)
   } catch (err) {
     next(err)
   }
