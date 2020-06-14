@@ -1,28 +1,60 @@
-const router = require("express").Router();
-const { Bathroom } = require("../db/models");
-const geolib = require("geolib");
-const { Op } = require("sequelize");
+const router = require('express').Router()
+const { Bathroom } = require('../db/models')
+const geolib = require('geolib')
+const { Op } = require('sequelize')
 
-router.get("/:latitude/:longitude/:radius", async (req, res, next) => {
+router.get('/:latitude/:longitude/:radius', async (req, res, next) => {
   try {
-    console.log(req.body, 'body');
-    const radius = req.params.radius;
+    // console.log(req.body, 'body')
+    const radius = req.params.radius
     const point = {
       latitude: req.params.latitude,
-      longitude: req.params.longitude
-    };
-    const result = geolib.getBoundsOfDistance(point, radius);
-    console.log(result, "result");
+      longitude: req.params.longitude,
+    }
+    const result = geolib.getBoundsOfDistance(point, radius)
+    // console.log(result, 'result')
     const bathrooms = await Bathroom.findAll({
       where: {
         latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
-        longitude: { [Op.between]: [result[0].longitude, result[1].longitude] }
-      }
-    });
-    res.json(bathrooms);
+        longitude: { [Op.between]: [result[0].longitude, result[1].longitude] },
+      },
+    })
+    res.json(bathrooms)
   } catch (err) {
-    next(err);
+    next(err)
   }
-});
+})
 
-module.exports = router;
+router.get('/:id/reviews', async (req, res, next) => {
+  //To get recent, pass number of days to /:id/checkins?daysWithin=<numOfDays>
+  try {
+    const bathroom = await Bathroom.findByPk(req.params.id)
+    let reviews
+    if (req.query.daysWithin) {
+      reviews = await bathroom.getReviews(req.query.daysWithin)
+    } else {
+      reviews = await bathroom.getReviews()
+    }
+    res.json(reviews)
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/:id/checkins', async (req, res, next) => {
+  //To get recent, pass number of days to /:id/checkins?daysWithin=<numOfDays>
+  try {
+    const bathroom = await Bathroom.findByPk(req.params.id)
+    let checkins
+    if (req.query.daysWithin) {
+      checkins = await bathroom.getReviews(req.query.daysWithin)
+    } else {
+      checkins = await bathroom.getReviews()
+    }
+    res.json(checkins)
+  } catch (err) {
+    next(err)
+  }
+})
+
+module.exports = router
