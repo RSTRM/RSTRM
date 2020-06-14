@@ -97,7 +97,7 @@ async function seed() {
         checkinArr.push(
           Checkin.create({
             userId: user.id,
-            bathroomsId: randBathoom.id,
+            bathroomId: randBathoom.id,
             checkinDate: today.setDate(
               today.getDate() - Math.floor(Math.random() * 30)
             ),
@@ -130,7 +130,8 @@ async function seed() {
             rating: rand + 1,
             comments: randComments[rand],
             userId: checkin.userId,
-            bathroomsId: checkin.bathroomsId,
+            bathroomId: checkin.bathroomId,
+            checkinId: checkin.id,
           })
         )
       }
