@@ -8,7 +8,7 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "server": "nodemon server"
+    "server": "nodemon server -e html,js,scss --ignore components --ignore screens"
   },
   "dependencies": {
     "@react-native-community/geolocation": "^2.0.2",
