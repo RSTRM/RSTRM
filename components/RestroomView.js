@@ -23,7 +23,7 @@ export default class RestroomView extends Component {
   }
   render() {
     const backButton = this.props.backButton;
-
+    const restroom = this.props.restroom
     return (
       <Block flex style={styles.profile}>
         <Block flex>
@@ -46,7 +46,7 @@ export default class RestroomView extends Component {
                   />
                 </Block>
                 <Text color="white" size={28} style={{ paddingBottom: 36 }}>
-                  Hotel Restroom{" "}
+                  {restroom.establishment}{" "}
                 </Text>
                 <Block row space="between">
                   <Block row>

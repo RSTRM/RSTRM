@@ -30,7 +30,7 @@ const loadBathrooms = (region, radius) => {
   const latitude = region.latitude
   const longitude = region.longitude
   
-  console.log(latitude,'latitude in thunk', radius, 'radius in thunk');
+  //console.log(latitude,'latitude in thunk', radius, 'radius in thunk');
   return async (dispatch) => {
     const response = (await axios.get(`${HOST}/api/bathrooms/${latitude}/${longitude}/${radius}`)).data;
     dispatch(_loadBathrooms(response));

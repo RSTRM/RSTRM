@@ -15,3 +15,35 @@ router.get('/', async (req, res, next) => {
     next(err)
   }
 })
+
+router.get('/:id/reviews', async (req, res, next) => {
+  //To get recent, pass number of days to /:id/checkins?daysWithin=<numOfDays>
+  try {
+    const user = await User.findByPk(req.params.id)
+    let reviews
+    if (req.query.daysWithin) {
+      reviews = await user.getReviews(req.query.daysWithin)
+    } else {
+      reviews = await user.getReviews()
+    }
+    res.json(reviews)
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/:id/checkins', async (req, res, next) => {
+  //To get recent, pass number of days to /:id/checkins?daysWithin=<numOfDays>
+  try {
+    const user = await User.findByPk(req.params.id)
+    let checkins
+    if (req.query.daysWithin) {
+      checkins = await user.getReviews(req.query.daysWithin)
+    } else {
+      checkins = await user.getReviews()
+    }
+    res.json(checkins)
+  } catch (err) {
+    next(err)
+  }
+})
