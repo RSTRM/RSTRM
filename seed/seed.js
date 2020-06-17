@@ -8,6 +8,8 @@ const {
   Image,
   Review,
   User,
+  Badge,
+  UserBadge,
 } = require('../server/db/models')
 
 const refugeArray = require('./refugeData')
@@ -56,6 +58,53 @@ async function seed() {
   )
 
   console.log(`seeded ${bathrooms.length} bathrooms sucessfully`)
+
+  const badgesInfo = [
+    {
+      name: 'welcome',
+      nameDisplay: 'Welcome to RSTRM',
+      table: 'user',
+      formula: 'user exists',
+    },
+    {
+      name: 'firstCheckin',
+      nameDisplay: 'First Check-in',
+      table: 'checkin',
+      formula: 'checkins = 1',
+    },
+    {
+      name: 'firstReview',
+      nameDisplay: 'First Review',
+      table: 'review',
+      formula: 'reviews = 1',
+    },
+    {
+      name: 'newYork',
+      nameDisplay: "Answering Nature's Call in New York",
+      table: 'checkin',
+      formula: 'checkin.state = NY',
+    },
+    {
+      name: 'colorado',
+      nameDisplay: 'Seeking the Commode in Colorado',
+      table: 'checkin',
+      formula: 'checkin.state = CO',
+    },
+    {
+      name: 'ohio',
+      nameDisplay: 'Checking Out the Outhouse in Ohio',
+      table: 'checkin',
+      formula: 'checkin.state = OH',
+    },
+  ]
+
+  const badges = await Promise.all(
+    badgesInfo.map((badge) => {
+      const { name, nameDisplay, table, formula } = badge
+      return Badge.create({ name, nameDisplay, table, formula })
+    })
+  )
+  console.log(`seeded ${badges.length} badges sucessfully`)
 
   const people = [
     { nameFirst: 'Katt', nameLast: 'Baum' },
