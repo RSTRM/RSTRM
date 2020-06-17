@@ -1,5 +1,5 @@
 const crypto = require('crypto')
-const { UUID, UUIDV4, STRING, BOOLEAN } = require('sequelize')
+const { UUID, UUIDV4, STRING, BOOLEAN, INTEGER } = require('sequelize')
 const db = require('../db')
 
 const User = db.define('user', {
@@ -60,6 +60,14 @@ const User = db.define('user', {
   admin: {
     type: BOOLEAN,
     defaultValue: false,
+  },
+  totalCheckins: {
+    type: INTEGER,
+    defaultValue: 0,
+  },
+  totalReviews: {
+    type: INTEGER,
+    defaultValue: 0,
   },
 })
 
@@ -131,4 +139,11 @@ User.beforeCreate(setSaltAndPassword)
 User.beforeUpdate(setSaltAndPassword)
 User.beforeBulkCreate((users) => {
   users.forEach(setSaltAndPassword)
+})
+User.afterCreate(async function (user) {
+  const badge = await db.models.badge.findOne({ where: { name: 'welcome' } })
+  return await db.models.userBadge.create({
+    userId: user.id,
+    badgeId: badge.id,
+  })
 })

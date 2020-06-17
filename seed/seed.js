@@ -8,6 +8,8 @@ const {
   Image,
   Review,
   User,
+  Badge,
+  UserBadge,
 } = require('../server/db/models')
 
 const refugeArray = require('./refugeData')
@@ -57,17 +59,68 @@ async function seed() {
 
   console.log(`seeded ${bathrooms.length} bathrooms sucessfully`)
 
+  const badgesInfo = [
+    {
+      name: 'welcome',
+      nameDisplay: 'Welcome to RSTRM',
+      table: 'user',
+      formula: 'user exists',
+    },
+    {
+      name: 'firstCheckin',
+      nameDisplay: 'First Check-in',
+      table: 'checkin',
+      formula: 'checkins = 1',
+    },
+    {
+      name: 'firstReview',
+      nameDisplay: 'First Review',
+      table: 'review',
+      formula: 'reviews = 1',
+    },
+    {
+      name: 'newYork',
+      nameDisplay: "Answering Nature's Call in New York",
+      table: 'checkin',
+      formula: 'checkin.state = NY',
+    },
+    {
+      name: 'colorado',
+      nameDisplay: 'Seeking the Commode in Colorado',
+      table: 'checkin',
+      formula: 'checkin.state = CO',
+    },
+    {
+      name: 'ohio',
+      nameDisplay: 'Checking Out the Outhouse in Ohio',
+      table: 'checkin',
+      formula: 'checkin.state = OH',
+    },
+  ]
+
+  const badges = await Promise.all(
+    badgesInfo.map((badge) => {
+      const { name, nameDisplay, table, formula } = badge
+      return Badge.create({ name, nameDisplay, table, formula })
+    })
+  )
+  console.log(`seeded ${badges.length} badges sucessfully`)
+
   const people = [
-    { nameFirst: 'Katt', nameLast: 'Baum' },
-    { nameFirst: 'Denis', nameLast: 'McPhillips' },
-    { nameFirst: 'Valmik', nameLast: 'Vyas' },
-    { nameFirst: 'Yeung', nameLast: 'Lo' },
+    { nameFirst: 'Katt', nameLast: 'Baum', admin: true },
+    { nameFirst: 'Denis', nameLast: 'McPhillips', admin: true },
+    { nameFirst: 'Valmik', nameLast: 'Vyas', admin: true },
+    { nameFirst: 'Yeung', nameLast: 'Lo', admin: true },
+    { nameFirst: 'Eric', nameLast: 'Katz' },
+    { nameFirst: 'Manny', nameLast: 'Bugallo' },
+    { nameFirst: 'Peet', nameLast: 'Klecha' },
+    { nameFirst: 'Mark', nameLast: 'Bae' },
   ]
 
   //USERS
   const users = await Promise.all(
     people.map((person) => {
-      const { nameFirst, nameLast } = person
+      const { nameFirst, nameLast, admin } = person
       const username = nameFirst[0].toLowerCase() + nameLast.toLowerCase()
       const email = username + '@email.com'
       return User.create({
@@ -76,20 +129,23 @@ async function seed() {
         nameLast,
         email,
         password: '123',
-        admin: true,
+        admin,
       })
     })
   )
 
   console.log(`seeded ${users.length} users sucessfully`)
 
+  const adminUsers = users.filter((user) => user.admin)
+  const regUsers = users.filter((user) => !user.admin)
+
   //CHECKINS
-  const createCheckins = () => {
-    const checkinsPerUser = new Array(users.length)
+  const createAdminCheckins = () => {
+    const checkinsPerUser = new Array(adminUsers.length)
       .fill(1)
       .map((num) => (num = Math.floor(Math.random() * 10)))
     const checkinArr = []
-    users.forEach((user, idx) => {
+    adminUsers.forEach((user, idx) => {
       for (let i = 0; i < checkinsPerUser[idx]; i++) {
         const randBathoom =
           bathrooms[Math.floor(Math.random() * bathrooms.length)]
@@ -108,9 +164,25 @@ async function seed() {
     return checkinArr
   }
 
-  const checkins = await Promise.all(createCheckins())
+  const adminCheckins = await Promise.all(createAdminCheckins())
 
-  console.log(`seeded ${checkins.length} checkins sucessfully`)
+  console.log(`seeded ${adminCheckins.length} admin checkins sucessfully`)
+
+  const checkins = await Promise.all(
+    bathrooms.map((bathroom) => {
+      const randUser = regUsers[Math.floor(Math.random() * regUsers.length)]
+      const today = new Date()
+      return Checkin.create({
+        bathroomId: bathroom.id,
+        userId: randUser.id,
+        checkinDate: today.setDate(
+          today.getDate() - Math.floor(Math.random() * 30)
+        ),
+      })
+    })
+  )
+
+  console.log(`seeded ${checkins.length} regular checkins sucessfully`)
 
   //REVIEWS
   const randComments = [
@@ -121,8 +193,8 @@ async function seed() {
     'Excellent! Clean and beautiful.',
   ]
 
-  const reviews = await Promise.all(
-    checkins.reduce((acc, checkin, idx) => {
+  const adminReviews = await Promise.all(
+    adminCheckins.reduce((acc, checkin, idx) => {
       if (idx % 2 === 0) {
         const rand = Math.floor(Math.random() * 5)
         acc.push(
@@ -139,7 +211,30 @@ async function seed() {
     }, [])
   )
 
-  console.log(`seeded ${reviews.length} reviews sucessfully`)
+  console.log(`seeded ${adminReviews.length} admin reviews sucessfully`)
+
+  const moreRandComments = [
+    'Never. Again.',
+    "User only if you're desperate!",
+    'Great in a pinch',
+    'Solid choice for all your restoroom needs.',
+    'I want to live in this bathroom!',
+  ]
+
+  const reviews = await Promise.all(
+    checkins.map((checkin) => {
+      const rand = Math.floor(Math.random() * 5)
+      return Review.create({
+        rating: rand + 1,
+        comments: moreRandComments[rand],
+        userId: checkin.userId,
+        bathroomId: checkin.bathroomId,
+        checkinId: checkin.id,
+      })
+    })
+  )
+
+  console.log(`seeded ${reviews.length} regular reviews sucessfully`)
 
   console.log(`seeded successfully`)
 }
