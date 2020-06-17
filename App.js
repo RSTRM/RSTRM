@@ -4,7 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "./screens/Home";
 import Map from "./screens/Map";
-import RestroomView from "./screens/Restroom";
+import BathroomView from "./screens/Restroom";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import HomeStack from "./screens/HomeStack";
 import MapStack from "./screens/MapStack";

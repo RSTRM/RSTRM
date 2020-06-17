@@ -5,17 +5,17 @@ import {
   View,
   Text,
   Slider,
-  Modal,
+  Modal
 } from "react-native";
 import MapView, {
   PROVIDER_GOOGLE,
   Marker,
   Circle,
-  Callout,
+  Callout
 } from "react-native-maps";
 import Carousel from "react-native-snap-carousel";
 import * as Location from "expo-location";
-import RestroomView from "./RestroomView";
+import BathroomView from "./BathroomView";
 import { loadBathrooms } from "../store/bathrooms";
 import { connect } from "react-redux";
 import GoogleSearchBar from "./GoogleSearchBar";
@@ -31,6 +31,7 @@ class GoogleMapView extends Component {
       radius: 1000,
       errorMsg: null,
       modalVisible: false,
+      idx: 0
     };
     this.onSearchRegionChange = this.onSearchRegionChange.bind(this);
     this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
@@ -49,8 +50,8 @@ class GoogleMapView extends Component {
           latitude: 40.7061,
           longitude: -73.9969,
           latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        },
+          longitudeDelta: 0.0421
+        }
       });
     } else {
       let location = await Location.getCurrentPositionAsync({});
@@ -60,8 +61,8 @@ class GoogleMapView extends Component {
           latitude: this.state.location.coords.latitude,
           longitude: this.state.location.coords.longitude,
           latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        },
+          longitudeDelta: 0.0421
+        }
       });
     }
     await this.props.load(this.state.region, this.state.radius);
@@ -82,8 +83,8 @@ class GoogleMapView extends Component {
         latitude: event.nativeEvent.coordinate.latitude,
         longitude: event.nativeEvent.coordinate.longitude,
         latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      },
+        longitudeDelta: 0.0421
+      }
     });
   }
 
@@ -93,26 +94,26 @@ class GoogleMapView extends Component {
         latitude: coordinates.lat,
         longitude: coordinates.lng,
         latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      },
+        longitudeDelta: 0.0421
+      }
     });
 
     this._map.animateToRegion({
       latitude: coordinates.lat,
       longitude: coordinates.lng,
       latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
+      longitudeDelta: 0.0421
     });
   }
 
-  onCarouselItemChange = (index) => {
+  onCarouselItemChange = index => {
     let location = this.props.bathrooms[index];
-
+    this.setState({ idx: index });
     this._map.animateToRegion({
       latitude: location.latitude,
       longitude: location.longitude,
       latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
+      longitudeDelta: 0.0421
     });
 
     this.state.markers[index].showCallout();
@@ -123,7 +124,7 @@ class GoogleMapView extends Component {
       latitude: location.latitude,
       longitude: location.longitude,
       latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
+      longitudeDelta: 0.0421
     });
 
     this._carousel.snapToItem(index);
@@ -146,8 +147,13 @@ class GoogleMapView extends Component {
           animationType="slide"
           transparent={true}
           visible={this.state.modalVisible}
+          on
         >
-          <RestroomView backButton={this.backButton} restroom={item} />
+          <BathroomView
+            backButton={this.backButton}
+            bathroom={item}
+            index={this.state.idx}
+          />
         </Modal>
       </View>
     );
@@ -166,7 +172,7 @@ class GoogleMapView extends Component {
         {/* <TouchableWithoutFeedback> */}
         <MapView
           provider={PROVIDER_GOOGLE}
-          ref={(map) => (this._map = map)}
+          ref={map => (this._map = map)}
           style={styles.mapStyle}
           initialRegion={this.state.region}
           showsUserLocation={true}
@@ -177,17 +183,17 @@ class GoogleMapView extends Component {
             onDragEnd={this.onRegionChangeComplete}
             coordinate={{
               latitude: this.state.region.latitude,
-              longitude: this.state.region.longitude,
+              longitude: this.state.region.longitude
             }}
           />
           {this.props.bathrooms.map((marker, index) => (
             <Marker
               key={index}
-              ref={(ref) => (this.state.markers[index] = ref)}
+              ref={ref => (this.state.markers[index] = ref)}
               onPress={() => this.onMarkerPressed(marker, index)}
               coordinate={{
                 latitude: marker.latitude,
-                longitude: marker.longitude,
+                longitude: marker.longitude
               }}
             >
               <Callout
@@ -206,7 +212,7 @@ class GoogleMapView extends Component {
           <GoogleSearchBar onSearchRegionChange={this.onSearchRegionChange} />
         </View>
         <Carousel
-          ref={(c) => {
+          ref={c => {
             this._carousel = c;
           }}
           data={this.props.bathrooms}
@@ -215,7 +221,7 @@ class GoogleMapView extends Component {
           sliderWidth={Dimensions.get("window").width}
           itemWidth={300}
           removeClippedSubviews={false}
-          onSnapToItem={(index) => this.onCarouselItemChange(index)}
+          onSnapToItem={index => this.onCarouselItemChange(index)}
         />
         <Slider
           style={styles.slider}
@@ -223,7 +229,7 @@ class GoogleMapView extends Component {
           maximumValue={2000}
           minimumValue={200}
           step={100}
-          onValueChange={(value) => this.setState({ radius: value })}
+          onValueChange={value => this.setState({ radius: value })}
         >
           <Text>{this.state.radius} meters</Text>
         </Slider>
@@ -234,55 +240,55 @@ class GoogleMapView extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFillObject
   },
   mapStyle: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFillObject
   },
   carousel: {
     position: "absolute",
     bottom: 0,
-    marginBottom: 70,
+    marginBottom: 70
   },
   cardContainer: {
     backgroundColor: "rgba(0, 0, 0, 0.6)",
     height: 50,
     width: 300,
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 10
   },
   cardTitle: {
     color: "white",
     fontSize: 20,
-    alignSelf: "center",
+    alignSelf: "center"
   },
   permissions: {
     marginTop: 10,
-    color: "red",
+    color: "red"
   },
   slider: {
     flex: 1,
     position: "absolute",
     alignSelf: "center",
     bottom: 15,
-    width: "85%",
+    width: "85%"
   },
   searchBar: {
     flex: 1,
     position: "absolute",
     alignSelf: "center",
     width: "85%",
-    marginTop: 30,
-  },
+    marginTop: 30
+  }
 });
 
 const mapStateToProps = ({ bathrooms }) => ({ bathrooms });
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     load(region, radius) {
       dispatch(loadBathrooms(region, radius));
-    },
+    }
   };
 };
 
