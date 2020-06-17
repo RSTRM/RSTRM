@@ -1,30 +1,11 @@
 const { UUID, UUIDV4, STRING } = require('sequelize')
 const db = require('../db')
 
-const Badge = db.define('badge', {
+const Criteria = db.define('criteria', {
   id: {
     type: UUID,
     primaryKey: true,
     defaultValue: UUIDV4,
-  },
-  name: {
-    type: STRING,
-    unique: true,
-    allowNull: false,
-    validate: {
-      notEmpty: true,
-    },
-  },
-  nameDisplay: {
-    type: STRING,
-    unique: true,
-    allowNull: false,
-    validate: {
-      notEmpty: true,
-    },
-  },
-  imageURL: {
-    type: STRING,
   },
   table: {
     type: STRING,
@@ -42,4 +23,4 @@ const Badge = db.define('badge', {
   },
 })
 
-module.exports = Badge
+module.exports = Criteria
