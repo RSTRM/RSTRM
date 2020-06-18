@@ -71,7 +71,7 @@ class GoogleMapView extends Component {
     if ((prevState.region !== this.state.region && prevState.region !== null) || 
       prevState.radius !== this.state.radius || prevState.filter !== this.state.filter
     ) {
-      await this.props.load(this.state.region, this.state.radius, this.state.filter);      
+      await this.props.load(this.state.region, this.state.radius, this.state.filter);    
     }
   }
 
@@ -167,10 +167,10 @@ class GoogleMapView extends Component {
       this.setState({filter})
     } 
   }
-
+  //|| !this.props.bathrooms.length
   render() {
 
-    if (!this.state.region || !this.props.bathrooms.length)
+    if (!this.state.region)
       return <Text>Loading...</Text>;
 
     return (
@@ -202,6 +202,7 @@ class GoogleMapView extends Component {
             }}
           />
           {this.props.bathrooms.map((marker, index) => (
+            
               <Marker
                 key={index}
                 ref={(ref) => (this.state.markers[index] = ref)}
