@@ -1,7 +1,6 @@
 import React from "react";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import { StyleSheet, textInputContainer } from "react-native";
-// import Geolocation from "@react-native-community/geolocation";
+
 
 const GoogleSearchBar = ({ onSearchRegionChange }) => {
   return (

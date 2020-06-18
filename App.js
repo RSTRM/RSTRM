@@ -1,14 +1,9 @@
 import React from "react";
-import { AppRegistry } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Home from "./screens/Home";
-import Map from "./screens/Map";
-import BathroomView from "./screens/Restroom";
 import Ionicons from "@expo/vector-icons/Ionicons";
 import HomeStack from "./screens/HomeStack";
 import MapStack from "./screens/MapStack";
-import { connect } from "react-redux";
 import store from "./store";
 import { Provider } from "react-redux";
 
