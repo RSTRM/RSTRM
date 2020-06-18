@@ -5,7 +5,8 @@ import {
   View,
   Text,
   Slider,
-  Modal
+  Modal,
+  Button
 } from "react-native";
 import MapView, {
   PROVIDER_GOOGLE,
@@ -151,7 +152,6 @@ class GoogleMapView extends Component {
         >
           <BathroomView
             backButton={this.backButton}
-            bathroom={item}
             index={this.state.idx}
           />
         </Modal>
@@ -251,7 +251,7 @@ const styles = StyleSheet.create({
     marginBottom: 70
   },
   cardContainer: {
-    backgroundColor: "rgba(0, 0, 0, 0.6)",
+    backgroundColor: "rgba(0, 100, 150, .6)",
     height: 50,
     width: 300,
     padding: 10,
@@ -260,7 +260,8 @@ const styles = StyleSheet.create({
   cardTitle: {
     color: "white",
     fontSize: 20,
-    alignSelf: "center"
+    alignSelf:"center"
+    
   },
   permissions: {
     marginTop: 10,

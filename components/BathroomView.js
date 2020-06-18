@@ -14,6 +14,7 @@ import { Icon } from "react-native-elements";
 import { Images, materialTheme } from "../constants";
 import { HeaderHeight } from "../constants/utils";
 import { connect } from "react-redux";
+import { loadReviews } from "../store/bathrooms";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -27,22 +28,28 @@ class BathroomView extends Component {
   }
   async componentDidMount() {
     this.setState({ index: this.props.index });
+    const index = this.state.index;
+    if (this.props.bathrooms.length) {
+    //  await this.props.loadReviews(this.props.bathrooms[index].id);
+    }
   }
+
   async componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
       this.setState({ index: this.props.index });
+      const index = this.state.index;
+      // this.props.loadReviews(this.props.bathrooms[index].id);
     }
   }
   render() {
+    // this.props.loadReviews(bathroom.id, 10)
     const backButton = this.props.backButton;
     const index = this.state.index || 0;
     const bathroom = this.props.bathrooms[index] || {};
-    const bathroomReviews = this.props.reviews.filter(review => {
-      return review.bathroomId === bathroom.id ? review : "";
-    });
-    console.log(bathroomReviews, "reviews");
+    const reviews = this.props.reviews;
 
-    // console.log(bathroom, 'bathroom vv');
+    // console.log(reviews.comments, "reviews");
+    // console.log(bathroom, "bathroom in render");
     return (
       <Block flex style={styles.profile}>
         <Block flex>
@@ -83,7 +90,7 @@ class BathroomView extends Component {
                   </Block>
                   <Block>
                     <Text color={theme.COLORS.MUTED} size={16}>
-                      {` `} {bathroom.city} {' '} 
+                      {` `} {bathroom.city}{" "}
                     </Text>
                   </Block>
                 </Block>
@@ -100,7 +107,7 @@ class BathroomView extends Component {
             <Block row space="between" style={{ padding: theme.SIZES.BASE }}>
               <Block middle>
                 <Text bold size={12} style={{ marginBottom: 8 }}>
-                  {bathroomReviews.length}
+                  {reviews.length}
                 </Text>
                 <Text muted size={12}>
                   Reviews
@@ -140,7 +147,6 @@ class BathroomView extends Component {
             </Block>
             <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
               <Block row space="between" style={{ flexWrap: "wrap" }}>
-                
                 <Text size={16}>"This place is the absolute best"</Text>
                 <Text size={16}>
                   "Spacious stalls everywhere and it smells nice"
@@ -231,4 +237,12 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = ({ bathrooms, reviews }) => ({ bathrooms, reviews });
 
-export default connect(mapStateToProps, null)(BathroomView);
+const mapDispatchToProps = dispatch => {
+  return {
+    loadReviews(bathroomId) {
+      dispatch(loadReviews(bathroomId));
+    }
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(BathroomView);
