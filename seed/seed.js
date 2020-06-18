@@ -150,37 +150,48 @@ async function seed() {
         const randBathoom =
           bathrooms[Math.floor(Math.random() * bathrooms.length)]
         const today = new Date()
-        checkinArr.push(
-          Checkin.create({
+        checkinArr.push({
             userId: user.id,
             bathroomId: randBathoom.id,
             checkinDate: today.setDate(
               today.getDate() - Math.floor(Math.random() * 30)
             ),
-          })
-        )
+          });
       }
     })
     return checkinArr
   }
 
-  const adminCheckins = await Promise.all(createAdminCheckins())
+  //utility function will create data in sequence. this is needed because postgres is multi-threaded
+  const runInSequence = async (data, model)=> {
+    let results = [];
+    let chain = Promise.resolve();
+    data.forEach(d => {
+      chain = chain.then(async()=> {
+        let result = await model.create(d);
+        results.push(result);
+      });
+    });
+    await chain;
+    return results;
+  };
 
+  const adminCheckins = await runInSequence(createAdminCheckins(), Checkin); 
+  
   console.log(`seeded ${adminCheckins.length} admin checkins sucessfully`)
 
-  const checkins = await Promise.all(
-    bathrooms.map((bathroom) => {
+  const _checkins = bathrooms.map( bathroom => {
       const randUser = regUsers[Math.floor(Math.random() * regUsers.length)]
       const today = new Date()
-      return Checkin.create({
+      return {
         bathroomId: bathroom.id,
         userId: randUser.id,
         checkinDate: today.setDate(
-          today.getDate() - Math.floor(Math.random() * 30)
-        ),
-      })
-    })
-  )
+          today.getDate() - Math.floor(Math.random() * 30))
+      }
+  });
+
+  const checkins = await runInSequence(_checkins, Checkin); 
 
   console.log(`seeded ${checkins.length} regular checkins sucessfully`)
 
