@@ -19,7 +19,7 @@
       "supportsTablet": true,
       "bundleIdentifier": "io.expo.RSTRM",
       "config": {
-        "googleMapsApiKey": "AIzaSyAg3aikbYJ2TdSIyOE8ExZOmWx3xFeRHvU"
+        "googleMapsApiKey": "./secrets/process.env.GOOGLE_KEY"
         }
     },
     "android": {

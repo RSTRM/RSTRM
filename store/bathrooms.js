@@ -26,13 +26,24 @@ const _deleteBathroom = (id) => ({ type: DELETE_BATHROOM, id });
  */
 // UPDATE WITH OUR API
 
-const loadBathrooms = (region, radius) => {
+const loadBathrooms = (region, radius, filter = '') => {
   const latitude = region.latitude
   const longitude = region.longitude
   
-  //console.log(latitude,'latitude in thunk', radius, 'radius in thunk');
   return async (dispatch) => {
-    const response = (await axios.get(`${HOST}/api/bathrooms/${latitude}/${longitude}/${radius}`)).data;
+    
+    let filterText = ''
+    // if(filter === 'unisex'){
+    //   filterText = '?filter=unisex'
+    // }
+    // if(filter === 'accessible'){
+    //   filterText = '?filter=accessible'
+    // }
+    // if(filterText === 'changingTable'){
+    //   filterText = '?filter=changingTable'
+    // } 
+    
+    const response = (await axios.get(`${HOST}/api/bathrooms/${latitude}/${longitude}/${radius}${filterText}`)).data;
     dispatch(_loadBathrooms(response));
   };
 };
