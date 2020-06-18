@@ -1,11 +1,11 @@
 import React from "react";
-import RestroomView from "../components/RestroomView";
+import BathroomView from "../components/BathroomView";
 import { StyleSheet, View } from "react-native";
 
 export default function Restroom() {
   return (
     <View style={styles.container}>
-      <RestroomView />
+      <BathroomView />
     </View>
   );
 }

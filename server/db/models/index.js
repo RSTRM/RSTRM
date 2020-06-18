@@ -4,7 +4,9 @@ const Review = require('./review')
 const Checkin = require('./checkin')
 const Image = require('./image')
 const Badge = require('./badge')
-const UserBadge = require('./userbadge')
+const UserBadge = require('./user-badge')
+// const BadgeCriteria = require('./badge-criteria')
+// const Criteria = require('./criteria')
 
 Review.belongsTo(User)
 User.hasMany(Review, {
@@ -57,6 +59,20 @@ Badge.hasMany(UserBadge, {
   },
 })
 
+// BadgeCriteria.belongsTo(Badge)
+// Badge.hasMany(BadgeCriteria, {
+//   foreignKey: {
+//     allowNull: false,
+//   },
+// })
+
+// BadgeCriteria.belongsTo(Criteria)
+// Criteria.hasMany(BadgeCriteria, {
+//   foreignKey: {
+//     allowNull: false,
+//   },
+// })
+
 module.exports = {
   User,
   Bathroom,
@@ -65,4 +81,6 @@ module.exports = {
   Image,
   Badge,
   UserBadge,
+  // BadgeCriteria,
+  // Criteria,
 }

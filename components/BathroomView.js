@@ -13,17 +13,36 @@ import { LinearGradient } from "expo-linear-gradient";
 import { Icon } from "react-native-elements";
 import { Images, materialTheme } from "../constants";
 import { HeaderHeight } from "../constants/utils";
+import { connect } from "react-redux";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
 
-export default class RestroomView extends Component {
+class BathroomView extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      index: 0
+    };
+  }
+  async componentDidMount() {
+    this.setState({ index: this.props.index });
+  }
+  async componentDidUpdate(prevProps) {
+    if (prevProps !== this.props) {
+      this.setState({ index: this.props.index });
+    }
   }
   render() {
     const backButton = this.props.backButton;
-    const restroom = this.props.restroom
+    const index = this.state.index || 0;
+    const bathroom = this.props.bathrooms[index] || {};
+    const bathroomReviews = this.props.reviews.filter(review => {
+      return review.bathroomId === bathroom.id ? review : "";
+    });
+    console.log(bathroomReviews, "reviews");
+
+    // console.log(bathroom, 'bathroom vv');
     return (
       <Block flex style={styles.profile}>
         <Block flex>
@@ -46,7 +65,7 @@ export default class RestroomView extends Component {
                   />
                 </Block>
                 <Text color="white" size={28} style={{ paddingBottom: 36 }}>
-                  {restroom.establishment}{" "}
+                  {bathroom.establishment}{" "}
                 </Text>
                 <Block row space="between">
                   <Block row>
@@ -64,7 +83,7 @@ export default class RestroomView extends Component {
                   </Block>
                   <Block>
                     <Text color={theme.COLORS.MUTED} size={16}>
-                      {` `} New York, NY
+                      {` `} {bathroom.city} {' '} 
                     </Text>
                   </Block>
                 </Block>
@@ -81,7 +100,7 @@ export default class RestroomView extends Component {
             <Block row space="between" style={{ padding: theme.SIZES.BASE }}>
               <Block middle>
                 <Text bold size={12} style={{ marginBottom: 8 }}>
-                  36
+                  {bathroomReviews.length}
                 </Text>
                 <Text muted size={12}>
                   Reviews
@@ -89,10 +108,10 @@ export default class RestroomView extends Component {
               </Block>
               <Block middle>
                 <Text bold size={12} style={{ marginBottom: 8 }}>
-                  5
+                  {bathroom.AvgRating || 0}
                 </Text>
                 <Text muted size={12}>
-                  Stars
+                  Avg Rating
                 </Text>
               </Block>
               <Block middle>
@@ -109,17 +128,19 @@ export default class RestroomView extends Component {
               space="between"
               style={{ paddingVertical: 16, alignItems: "baseline" }}
             >
-              <Text size={16}>Recent comments</Text>
+              <Text size={16}>Recent Reviews</Text>
+
               <Text
                 size={12}
                 color={theme.COLORS.GRADIENT_END}
-                onPress={() => this.props.navigation.navigate("Home")}
+                // onPress={() => this.props.navigation.navigate("Home")}
               >
                 Tweet
               </Text>
             </Block>
             <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
               <Block row space="between" style={{ flexWrap: "wrap" }}>
+                
                 <Text size={16}>"This place is the absolute best"</Text>
                 <Text size={16}>
                   "Spacious stalls everywhere and it smells nice"
@@ -204,6 +225,10 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     marginTop: 20,
     position: "absolute",
-    opacity: .7
+    opacity: 0.7
   }
 });
+
+const mapStateToProps = ({ bathrooms, reviews }) => ({ bathrooms, reviews });
+
+export default connect(mapStateToProps, null)(BathroomView);
