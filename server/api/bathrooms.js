@@ -4,20 +4,45 @@ const geolib = require('geolib')
 const { Op } = require('sequelize')
 
 router.get('/:latitude/:longitude/:radius', async (req, res, next) => {
-  try {
-    // console.log(req.body, 'body')
+  try {   
+
     const radius = req.params.radius
-    const point = {
-      latitude: req.params.latitude,
-      longitude: req.params.longitude,
-    }
+    const point = {latitude: req.params.latitude, longitude: req.params.longitude}
     const result = geolib.getBoundsOfDistance(point, radius)
-    // console.log(result, 'result')
-    const bathrooms = await Bathroom.findAll({
-      where: {
-        latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
-        longitude: { [Op.between]: [result[0].longitude, result[1].longitude] },
-      },
+
+    // let bathrooms
+    // if(req.query.filter === 'unisex'){
+    //   bathrooms = await Bathroom.findAll({
+    //     where: {
+    //       latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
+    //       longitude: { [Op.between]: [result[0].longitude, result[1].longitude] },
+    //       unisex: true
+    //     },
+    //   })
+    // }
+    // if(req.query.filter === 'accessible'){
+    //   bathrooms = await Bathroom.findAll({
+    //     where: {
+    //       latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
+    //       longitude: { [Op.between]: [result[0].longitude, result[1].longitude] },
+    //       accessible: true
+    //     },
+    //   })
+    // }
+    // if(req.query.filter === 'changingTable'){
+    //   bathrooms = await Bathroom.findAll({
+    //     where: {
+    //       latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
+    //       longitude: { [Op.between]: [result[0].longitude, result[1].longitude] },
+    //       changingTable: true
+    //     },
+    //   })
+    // } 
+    bathrooms = await Bathroom.findAll({
+        where: {
+          latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
+          longitude: { [Op.between]: [result[0].longitude, result[1].longitude] },
+        },
     })
     res.json(bathrooms)
   } catch (err) {
