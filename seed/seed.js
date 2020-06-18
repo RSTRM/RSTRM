@@ -123,7 +123,6 @@ async function seed() {
     { nameFirst: 'Andres', nameLast: 'Callanaupa' },
     { nameFirst: 'Dan', nameLast: 'Yoo' },
     { nameFirst: 'Diana', nameLast: 'Aguilar' },
-    { nameFirst: 'Crystal', nameLast: 'Fields-Sam' },
     { nameFirst: 'Jonathan', nameLast: 'Cordero' },
     { nameFirst: 'Joshua', nameLast: 'Buchman' },
     { nameFirst: 'Kalvin', nameLast: 'Zhao' },
