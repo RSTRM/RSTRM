@@ -31,7 +31,7 @@ export const me = () => async (dispatch) => {
   }
 };
 
-export const auth = (email, password, method) => async (dispatch) => {
+export const auth = (email, password, method, props) => async (dispatch) => {
   let res;
   try {
     res = await axios.post(`${HOST}/auth/${method}`, { email, password });
@@ -41,6 +41,7 @@ export const auth = (email, password, method) => async (dispatch) => {
 
   try {
     dispatch(getUser(res.data));
+    props.navigation.navigate("Home");
   } catch (dispatchOrHistoryErr) {
     console.error(dispatchOrHistoryErr);
   }

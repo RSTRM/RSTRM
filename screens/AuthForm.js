@@ -1,18 +1,10 @@
 import React, { useState } from "react";
 import { StyleSheet, Text, View, Button, TextInput } from "react-native";
 import { connect } from "react-redux";
-import user, { auth, me } from "../store/user";
+import { auth } from "../store/user";
 
 const AuthForm = (props) => {
-  const {
-    name,
-    displayName,
-    handleSubmit,
-    error,
-    navigation,
-    user,
-    getCurrentUser,
-  } = props;
+  const { name, handleSubmit, error } = props;
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   return (
@@ -36,9 +28,8 @@ const AuthForm = (props) => {
         disabled={!email || !password}
         name={name}
         title="Log In"
-        onPress={async () => {
-          await handleSubmit(email, password);
-          navigation.navigate("Home");
+        onPress={() => {
+          handleSubmit(email, password, props);
         }}
       ></Button>
       {error && error.response && <Text> {error.response.data} </Text>}
@@ -65,11 +56,8 @@ const mapSignup = (state) => {
 
 const mapDispatch = (dispatch) => {
   return {
-    handleSubmit(email, password) {
-      dispatch(auth(email, password, "login"));
-    },
-    getCurrentUser() {
-      dispatch(me());
+    handleSubmit(email, password, props) {
+      dispatch(auth(email, password, "login", props));
     },
   };
 };

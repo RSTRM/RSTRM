@@ -6,7 +6,8 @@ import {
   Image,
   ImageBackground,
   Platform,
-  Button
+  Button,
+  Modal,
 } from "react-native";
 import { Block, Text, theme } from "galio-framework";
 import { LinearGradient } from "expo-linear-gradient";
@@ -14,6 +15,7 @@ import { Icon } from "react-native-elements";
 import { Images, materialTheme } from "../constants";
 import { HeaderHeight } from "../constants/utils";
 import { connect } from "react-redux";
+import AddReview from "./AddReview";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -22,7 +24,8 @@ class BathroomView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      index: 0
+      index: 0,
+      modalVisible: false,
     };
   }
   async componentDidMount() {
@@ -33,15 +36,17 @@ class BathroomView extends Component {
       this.setState({ index: this.props.index });
     }
   }
+  backButton = () => {
+    this.setState({ modalVisible: false });
+  };
   render() {
     const backButton = this.props.backButton;
     const index = this.state.index || 0;
     const bathroom = this.props.bathrooms[index] || {};
-    const bathroomReviews = this.props.reviews.filter(review => {
+    const bathroomReviews = this.props.reviews.filter((review) => {
       return review.bathroomId === bathroom.id ? review : "";
     });
-    console.log(bathroomReviews, "reviews");
-
+    // console.log(bathroomReviews, "reviews");
     // console.log(bathroom, 'bathroom vv');
     return (
       <Block flex style={styles.profile}>
@@ -83,7 +88,7 @@ class BathroomView extends Component {
                   </Block>
                   <Block>
                     <Text color={theme.COLORS.MUTED} size={16}>
-                      {` `} {bathroom.city} {' '} 
+                      {` `} {bathroom.city}{" "}
                     </Text>
                   </Block>
                 </Block>
@@ -140,7 +145,6 @@ class BathroomView extends Component {
             </Block>
             <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
               <Block row space="between" style={{ flexWrap: "wrap" }}>
-                
                 <Text size={16}>"This place is the absolute best"</Text>
                 <Text size={16}>
                   "Spacious stalls everywhere and it smells nice"
@@ -151,6 +155,21 @@ class BathroomView extends Component {
                 <Text size={16}>"I might just move in here!"</Text>
               </Block>
             </Block>
+            <Button
+              title="Add Review"
+              onPress={() => this.setState({ modalVisible: true })}
+            ></Button>
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={this.state.modalVisible}
+              on
+            >
+              <AddReview
+                backButton={this.backButton}
+                bathroom={this.props.bathrooms[index]}
+              />
+            </Modal>
           </ScrollView>
         </Block>
       </Block>
@@ -161,25 +180,25 @@ class BathroomView extends Component {
 const styles = StyleSheet.create({
   profile: {
     marginTop: Platform.OS === "android" ? -HeaderHeight : 0,
-    marginBottom: -HeaderHeight * 2
+    marginBottom: -HeaderHeight * 2,
   },
   profileImage: {
     width: width * 1.1,
-    height: "auto"
+    height: "auto",
   },
   profileContainer: {
     width: width,
-    height: height / 2
+    height: height / 2,
   },
   profileDetails: {
     paddingTop: theme.SIZES.BASE * 4,
     justifyContent: "flex-end",
-    position: "relative"
+    position: "relative",
   },
   profileTexts: {
     paddingHorizontal: theme.SIZES.BASE * 2,
     paddingVertical: theme.SIZES.BASE * 2,
-    zIndex: 2
+    zIndex: 2,
   },
   pro: {
     backgroundColor: materialTheme.COLORS.ACTIVE,
@@ -187,10 +206,10 @@ const styles = StyleSheet.create({
     marginRight: theme.SIZES.BASE / 2,
     borderRadius: 4,
     height: 19,
-    width: 38
+    width: 38,
   },
   seller: {
-    marginRight: theme.SIZES.BASE / 2
+    marginRight: theme.SIZES.BASE / 2,
   },
   options: {
     position: "relative",
@@ -204,14 +223,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 8,
     shadowOpacity: 0.2,
-    zIndex: 2
+    zIndex: 2,
   },
   thumb: {
     borderRadius: 4,
     marginVertical: 4,
     alignSelf: "center",
     width: thumbMeasure,
-    height: thumbMeasure
+    height: thumbMeasure,
   },
   gradient: {
     zIndex: 1,
@@ -219,14 +238,14 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: "30%",
-    position: "absolute"
+    position: "absolute",
   },
   backButton: {
     alignSelf: "flex-end",
     marginTop: 20,
     position: "absolute",
-    opacity: 0.7
-  }
+    opacity: 0.7,
+  },
 });
 
 const mapStateToProps = ({ bathrooms, reviews }) => ({ bathrooms, reviews });
