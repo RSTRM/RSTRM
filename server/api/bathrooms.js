@@ -19,33 +19,31 @@ router.get('/:latitude/:longitude/:radius', async (req, res, next) => {
           unisex: true
         },
       })
-      console.log('bat', bathrooms)
+    } else if(req.query.filter === 'accessible'){
+      bathrooms = await Bathroom.findAll({
+        where: {
+          latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
+          longitude: { [Op.between]: [result[0].longitude, result[1].longitude] },
+          accessible: true
+        },
+      })
+    } else if(req.query.filter === 'changingTable'){
+      bathrooms = await Bathroom.findAll({
+        where: {
+          latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
+          longitude: { [Op.between]: [result[0].longitude, result[1].longitude] },
+          changingTable: true
+        },
+      })
+    } else {
+      bathrooms = await Bathroom.findAll({
+        where: {
+          latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
+          longitude: { [Op.between]: [result[0].longitude, result[1].longitude] },
+        },
+      })
     }
-    // if(req.query.filter === 'accessible'){
-    //   bathrooms = await Bathroom.findAll({
-    //     where: {
-    //       latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
-    //       longitude: { [Op.between]: [result[0].longitude, result[1].longitude] },
-    //       accessible: true
-    //     },
-    //   })
-    // }
-    // if(req.query.filter === 'changingTable'){
-    //   bathrooms = await Bathroom.findAll({
-    //     where: {
-    //       latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
-    //       longitude: { [Op.between]: [result[0].longitude, result[1].longitude] },
-    //       changingTable: true
-    //     },
-    //   })
-    // } 
-    // bathrooms = await Bathroom.findAll({
-    //     where: {
-    //       latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
-    //       longitude: { [Op.between]: [result[0].longitude, result[1].longitude] },
-    //     },
-    // })
-    console.log('filterbathrooms', bathrooms)
+    
     res.json(bathrooms)
   } catch (err) {
     next(err)

@@ -161,10 +161,10 @@ class GoogleMapView extends Component {
       this.setState({filter})
     } 
   }
-
+  //|| !this.props.bathrooms.length
   render() {
 
-    if (!this.state.region || !this.props.bathrooms.length)
+    if (!this.state.region)
       return <Text>Loading...</Text>;
 
     return (

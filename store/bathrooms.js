@@ -36,12 +36,12 @@ const loadBathrooms = (region, radius, filter = '') => {
     if(filter === 'unisex'){
       filterText = '?filter=unisex'
     }
-    // if(filter === 'accessible'){
-    //   filterText = '?filter=accessible'
-    // }
-    // if(filter === 'changingTable'){
-    //   filterText = '?filter=changingTable'
-    // } 
+    if(filter === 'accessible'){
+      filterText = '?filter=accessible'
+    }
+    if(filter === 'changingTable'){
+      filterText = '?filter=changingTable'
+    } 
     
     const response = (await axios.get(`${HOST}/api/bathrooms/${latitude}/${longitude}/${radius}${filterText}`)).data;
     dispatch(_loadBathrooms(response));
