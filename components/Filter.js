@@ -12,11 +12,13 @@ export default function Filter({filterFn}) {
     const toggleSwitch2 = () => setIsEnabled2(!isEnabled2); 
     const toggleSwitch3 = () => setIsEnabled3(!isEnabled3); 
     
-    // useEffect(() => {
-    //     if(isEnabled){
-    //         filterFn(isEnabled, 'unisex')
-    //     }
-    // }, [isEnabled])
+    useEffect(() => {
+        if(isEnabled){
+            filterFn(isEnabled, 'unisex')
+        } else {
+            filterFn(!isEnabled, '')
+        }
+    }, [isEnabled])
 
     // useEffect(() => {
     //     isEnabled2 ? filterFn(isEnabled2, 'accessible') : filterFn(!isEnabled2, '')

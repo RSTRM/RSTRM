@@ -33,13 +33,13 @@ const loadBathrooms = (region, radius, filter = '') => {
   return async (dispatch) => {
     
     let filterText = ''
-    // if(filter === 'unisex'){
-    //   filterText = '?filter=unisex'
-    // }
+    if(filter === 'unisex'){
+      filterText = '?filter=unisex'
+    }
     // if(filter === 'accessible'){
     //   filterText = '?filter=accessible'
     // }
-    // if(filterText === 'changingTable'){
+    // if(filter === 'changingTable'){
     //   filterText = '?filter=changingTable'
     // } 
     

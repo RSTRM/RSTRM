@@ -66,11 +66,11 @@ class GoogleMapView extends Component {
     await this.props.load(this.state.region, this.state.radius, this.state.filter);
   }
 
-  async componentDidUpdate(prevState) {
+  async componentDidUpdate(prevProps, prevState) {
     if ((prevState.region !== this.state.region && prevState.region !== null) || 
-      prevState.radius !== this.state.radius //|| prevState.filter !== this.state.filter
+      prevState.radius !== this.state.radius || prevState.filter !== this.state.filter
     ) {
-      await this.props.load(this.state.region, this.state.radius, this.state.filter);      
+      await this.props.load(this.state.region, this.state.radius, this.state.filter);    
     }
   }
 
@@ -196,6 +196,7 @@ class GoogleMapView extends Component {
             }}
           />
           {this.props.bathrooms.map((marker, index) => (
+            
               <Marker
                 key={index}
                 ref={(ref) => (this.state.markers[index] = ref)}

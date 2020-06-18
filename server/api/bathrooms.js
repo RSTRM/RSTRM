@@ -10,16 +10,17 @@ router.get('/:latitude/:longitude/:radius', async (req, res, next) => {
     const point = {latitude: req.params.latitude, longitude: req.params.longitude}
     const result = geolib.getBoundsOfDistance(point, radius)
 
-    // let bathrooms
-    // if(req.query.filter === 'unisex'){
-    //   bathrooms = await Bathroom.findAll({
-    //     where: {
-    //       latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
-    //       longitude: { [Op.between]: [result[0].longitude, result[1].longitude] },
-    //       unisex: true
-    //     },
-    //   })
-    // }
+    let bathrooms
+    if(req.query.filter === 'unisex'){
+      bathrooms = await Bathroom.findAll({
+        where: {
+          latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
+          longitude: { [Op.between]: [result[0].longitude, result[1].longitude] },
+          unisex: true
+        },
+      })
+      console.log('bat', bathrooms)
+    }
     // if(req.query.filter === 'accessible'){
     //   bathrooms = await Bathroom.findAll({
     //     where: {
@@ -38,12 +39,13 @@ router.get('/:latitude/:longitude/:radius', async (req, res, next) => {
     //     },
     //   })
     // } 
-    bathrooms = await Bathroom.findAll({
-        where: {
-          latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
-          longitude: { [Op.between]: [result[0].longitude, result[1].longitude] },
-        },
-    })
+    // bathrooms = await Bathroom.findAll({
+    //     where: {
+    //       latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
+    //       longitude: { [Op.between]: [result[0].longitude, result[1].longitude] },
+    //     },
+    // })
+    console.log('filterbathrooms', bathrooms)
     res.json(bathrooms)
   } catch (err) {
     next(err)
