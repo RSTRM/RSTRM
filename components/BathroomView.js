@@ -29,8 +29,9 @@ class BathroomView extends Component {
   async componentDidMount() {
     this.setState({ index: this.props.index });
     const index = this.state.index;
-    if (this.props.bathrooms.length) {
-    //  await this.props.loadReviews(this.props.bathrooms[index].id);
+    // this.props.loadReviews();
+    if (this.props.bathrooms) {
+      this.props.loadReviews(this.props.bathrooms[index].id)
     }
   }
 
@@ -38,18 +39,16 @@ class BathroomView extends Component {
     if (prevProps !== this.props) {
       this.setState({ index: this.props.index });
       const index = this.state.index;
-      // this.props.loadReviews(this.props.bathrooms[index].id);
     }
   }
+
   render() {
-    // this.props.loadReviews(bathroom.id, 10)
     const backButton = this.props.backButton;
     const index = this.state.index || 0;
     const bathroom = this.props.bathrooms[index] || {};
+    // const reviews = this.props.reviews.filter(review => review.bathroomId === bathroom.id );
     const reviews = this.props.reviews;
-
-    // console.log(reviews.comments, "reviews");
-    // console.log(bathroom, "bathroom in render");
+    console.log(reviews, "reviews in redner", bathroom);
     return (
       <Block flex style={styles.profile}>
         <Block flex>
@@ -107,7 +106,7 @@ class BathroomView extends Component {
             <Block row space="between" style={{ padding: theme.SIZES.BASE }}>
               <Block middle>
                 <Text bold size={12} style={{ marginBottom: 8 }}>
-                  {reviews.length}
+                  {/* {reviews.length} */}
                 </Text>
                 <Text muted size={12}>
                   Reviews
@@ -123,7 +122,7 @@ class BathroomView extends Component {
               </Block>
               <Block middle>
                 <Text bold size={12} style={{ marginBottom: 8 }}>
-                  2
+                  +
                 </Text>
                 <Text muted size={12}>
                   Add Review
@@ -235,12 +234,14 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = ({ bathrooms, reviews }) => ({ bathrooms, reviews });
+const mapStateToProps = ({ bathrooms, reviews }) => {
+  return { bathrooms, reviews };
+};
 
 const mapDispatchToProps = dispatch => {
   return {
-    loadReviews(bathroomId) {
-      dispatch(loadReviews(bathroomId));
+    loadReviews() {
+      dispatch(loadReviews());
     }
   };
 };

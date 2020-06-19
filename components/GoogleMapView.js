@@ -6,7 +6,7 @@ import {
   Text,
   Slider,
   Modal,
-  Button
+  
 } from "react-native";
 import MapView, {
   PROVIDER_GOOGLE,

@@ -28,43 +28,45 @@ const _loadReviews = reviews => ({ type: LOAD_REVIEWS, reviews });
  */
 // UPDATE WITH OUR API
 
-const loadBathrooms = (region, radius, filter = '') => {
-  const latitude = region.latitude
-  const longitude = region.longitude
-  
-  return async (dispatch) => {
-    
-    let filterText = ''
-    if(filter === 'unisex'){
-      filterText = '?filter=unisex'
+const loadBathrooms = (region, radius, filter = "") => {
+  const latitude = region.latitude;
+  const longitude = region.longitude;
+
+  return async dispatch => {
+    let filterText = "";
+    if (filter === "unisex") {
+      filterText = "?filter=unisex";
     }
-    if(filter === 'accessible'){
-      filterText = '?filter=accessible'
+    if (filter === "accessible") {
+      filterText = "?filter=accessible";
     }
-    if(filter === 'changingTable'){
-      filterText = '?filter=changingTable'
-    } 
-    
-    const response = (await axios.get(`${HOST}/api/bathrooms/${latitude}/${longitude}/${radius}${filterText}`)).data;
+    if (filter === "changingTable") {
+      filterText = "?filter=changingTable";
+    }
+
+    const response = (
+      await axios.get(
+        `${HOST}/api/bathrooms/${latitude}/${longitude}/${radius}${filterText}`
+      )
+    ).data;
     dispatch(_loadBathrooms(response));
   };
 };
 
 const loadReviews = (bathroomId, daysWithin) => {
   return async dispatch => {
-    // let response;
-    // if (daysWithin !== undefined || null) {
-    //    response = (
-    //     await axios.get(
-    //       `${HOST}/api/bathrooms/${bathroomId}/reviews?daysWithin=${daysWithin}`
-    //     )
-    //   ).data;
-    // } 
-    // else {
-       const response = (
+    let response;
+    if (daysWithin !== undefined || null) {
+      response = (
+        await axios.get(
+          `${HOST}/api/bathrooms/${bathroomId}/reviews?daysWithin=${daysWithin}`
+        )
+      ).data;
+    } else {
+      response = (
         await axios.get(`${HOST}/api/bathrooms/${bathroomId}/:reviews`)
       ).data;
-    
+    }
     dispatch(_loadReviews(response));
   };
 };
