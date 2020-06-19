@@ -147,3 +147,33 @@ User.afterCreate(async function (user) {
     badgeId: badge.id,
   })
 })
+
+User.afterUpdate(async function (user) {
+  let badge
+  if (user.totalCheckins === 1) {
+    badge = await db.models.badge.findOne({
+      where: { formula: 'totalCheckins === 1' },
+    })
+  }
+  if (user.totalReviews === 1) {
+    badge = db.models.badge.findOne({
+      where: { formula: 'totalReviews === 1' },
+    })
+  }
+  if (user.totalCheckins === 10) {
+    badge = await db.models.badge.findOne({
+      where: { formula: 'totalCheckins === 10' },
+    })
+  }
+  if (user.totalReviews === 10) {
+    badge = db.models.badge.findOne({
+      where: { formula: 'totalReviews === 10' },
+    })
+  }
+  if (badge) {
+    return await db.models.userBadge.create({
+      userId: user.id,
+      badgeId: badge.id,
+    })
+  }
+})
