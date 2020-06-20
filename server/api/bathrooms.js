@@ -60,20 +60,17 @@ router.get("/:latitude/:longitude/:radius", async (req, res, next) => {
   }
 });
 
-router.get("/:bathroomId/:reviews", async (req, res, next) => {
+router.get("/:bathroomId/reviews", async (req, res, next) => {
   //To get recent, pass number of days to /:id/reviews?daysWithin=<numOfDays>
   try {
     let bathroom = await Bathroom.findByPk(req.params.bathroomId)
       
-    // bathroom = bathroom[0];
-    console.log(bathroom, 'vuv');
     let reviews = {};
     if (req.query.daysWithin !== undefined) {
       reviews = await bathroom.getReviews(req.query.daysWithin);
     } else {
       reviews = await bathroom.getReviews();
     }
-    console.log(reviews, "review in api");
     res.json(reviews);
   } catch (err) {
     next(err);

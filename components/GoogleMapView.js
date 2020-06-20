@@ -22,7 +22,7 @@ import { connect } from "react-redux";
 import { Container, Header, Left, Button, Icon } from 'native-base';
 import GoogleSearchBar from "./GoogleSearchBar";
 import Filter from "./Filter";
-
+import iconmarker from "../assets/icon.png" 
 
 class GoogleMapView extends Component {
   constructor() {
@@ -204,6 +204,7 @@ class GoogleMapView extends Component {
           {this.props.bathrooms.map((marker, index) => (
             
               <Marker
+                icon='https://cdn.iconscout.com/icon/free/png-512/toilet-194-1154273.png'
                 key={index}
                 ref={(ref) => (this.state.markers[index] = ref)}
                 onPress={() => this.onMarkerPressed(marker, index)}

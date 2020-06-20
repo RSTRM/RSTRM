@@ -6,12 +6,15 @@ import HomeStack from "./screens/HomeStack";
 import MapStack from "./screens/MapStack";
 import store from "./store";
 import { Provider } from "react-redux";
+import AnimatedSplash from "react-native-animated-splash-screen";
+
 
 export default function App() {
   const Tab = createBottomTabNavigator();
   return (
     <Provider store={store}>
       <NavigationContainer>
+      
         <Tab.Navigator
           screenOptions={({ route }) => ({
             tabBarIcon: ({ color, size }) => {

@@ -14,7 +14,7 @@ import { Icon } from "react-native-elements";
 import { Images, materialTheme } from "../constants";
 import { HeaderHeight } from "../constants/utils";
 import { connect } from "react-redux";
-import { loadReviews } from "../store/bathrooms";
+import { loadReviews } from "../store/reviews";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -31,7 +31,7 @@ class BathroomView extends Component {
     const index = this.state.index;
     // this.props.loadReviews();
     if (this.props.bathrooms) {
-      this.props.loadReviews(this.props.bathrooms[index].id)
+      this.props.loadReviews(this.props.bathrooms[index].id);
     }
   }
 
@@ -47,8 +47,7 @@ class BathroomView extends Component {
     const index = this.state.index || 0;
     const bathroom = this.props.bathrooms[index] || {};
     // const reviews = this.props.reviews.filter(review => review.bathroomId === bathroom.id );
-    const reviews = this.props.reviews;
-    console.log(reviews, "reviews in redner", bathroom);
+    const { reviews } = this.props;
     return (
       <Block flex style={styles.profile}>
         <Block flex>
@@ -106,7 +105,7 @@ class BathroomView extends Component {
             <Block row space="between" style={{ padding: theme.SIZES.BASE }}>
               <Block middle>
                 <Text bold size={12} style={{ marginBottom: 8 }}>
-                  {/* {reviews.length} */}
+                  {reviews.length}
                 </Text>
                 <Text muted size={12}>
                   Reviews
@@ -121,9 +120,13 @@ class BathroomView extends Component {
                 </Text>
               </Block>
               <Block middle>
-                <Text bold size={12} style={{ marginBottom: 8 }}>
-                  +
-                </Text>
+                <Icon
+                    name="emoticon-poop"
+                    type="material-community"
+                    color="brown"
+                    size = {24}
+                    // onPress={() => ()}
+                  />
                 <Text muted size={12}>
                   Add Review
                 </Text>
@@ -146,14 +149,9 @@ class BathroomView extends Component {
             </Block>
             <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
               <Block row space="between" style={{ flexWrap: "wrap" }}>
-                <Text size={16}>"This place is the absolute best"</Text>
-                <Text size={16}>
-                  "Spacious stalls everywhere and it smells nice"
-                </Text>
-                <Text size={16}>
-                  "Theres mouth wash and they have mints too!"
-                </Text>
-                <Text size={16}>"I might just move in here!"</Text>
+                {reviews.map(review => (
+                  <Text size={16} key={review.id} >{review.comments}</Text>
+                ))}
               </Block>
             </Block>
           </ScrollView>
@@ -240,8 +238,8 @@ const mapStateToProps = ({ bathrooms, reviews }) => {
 
 const mapDispatchToProps = dispatch => {
   return {
-    loadReviews() {
-      dispatch(loadReviews());
+    loadReviews(id) {
+      dispatch(loadReviews(id));
     }
   };
 };

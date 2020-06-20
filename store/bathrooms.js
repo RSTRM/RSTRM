@@ -7,7 +7,7 @@ const LOAD_BATHROOMS = "LOAD_BATHROOMS";
 const CREATE_BATHROOM = "CREATE_BATHROOM";
 const UPDATE_BATHROOM = "UPDATE_BATHROOM";
 const DELETE_BATHROOM = "DELETE_BATHROOM";
-const LOAD_REVIEWS = "LOAD_REVIEWS";
+// const LOAD_REVIEWS = "LOAD_REVIEWS";
 
 /**
  * INITIAL STATE --------------------------------------------------
@@ -21,7 +21,7 @@ const _loadBathrooms = bathrooms => ({ type: LOAD_BATHROOMS, bathrooms });
 const _createBathroom = bathroom => ({ type: CREATE_BATHROOM, bathroom });
 const _updateBathroom = bathroom => ({ type: UPDATE_BATHROOM, bathroom });
 const _deleteBathroom = id => ({ type: DELETE_BATHROOM, id });
-const _loadReviews = reviews => ({ type: LOAD_REVIEWS, reviews });
+// const _loadReviews = reviews => ({ type: LOAD_REVIEWS, reviews });
 
 /**
  * THUNK CREATORS -------------------------------------------------
@@ -53,23 +53,6 @@ const loadBathrooms = (region, radius, filter = "") => {
   };
 };
 
-const loadReviews = (bathroomId, daysWithin) => {
-  return async dispatch => {
-    let response;
-    if (daysWithin !== undefined || null) {
-      response = (
-        await axios.get(
-          `${HOST}/api/bathrooms/${bathroomId}/reviews?daysWithin=${daysWithin}`
-        )
-      ).data;
-    } else {
-      response = (
-        await axios.get(`${HOST}/api/bathrooms/${bathroomId}/:reviews`)
-      ).data;
-    }
-    dispatch(_loadReviews(response));
-  };
-};
 
 const createBathroom = bathroom => {
   return async dispatch => {
@@ -114,9 +97,6 @@ const bathrooms = function(state = initialState, action) {
     case DELETE_BATHROOM:
       return state.filter(bathroom => bathroom.id !== action.id);
 
-    case LOAD_REVIEWS:
-      return action.reviews;
-
     default:
       return state;
   }
@@ -127,6 +107,5 @@ export {
   loadBathrooms,
   createBathroom,
   updateBathroom,
-  deleteBathroom,
-  loadReviews
+  deleteBathroom
 };
