@@ -1,5 +1,5 @@
 const crypto = require('crypto')
-const { UUID, UUIDV4, STRING, BOOLEAN, INTEGER } = require('sequelize')
+const { UUID, UUIDV4, STRING, BOOLEAN, INTEGER, Op } = require('sequelize')
 const db = require('../db')
 
 const User = db.define('user', {
@@ -110,6 +110,34 @@ User.prototype.getCheckins = async function (daysWithin) {
   })
 }
 
+User.prototype.updateUserCheckinBadges = async function () {
+  try {
+    const userBadges = await db.models.userBadge.findAll({
+      where: { userId: this.id },
+    })
+    const userBadgeIds = userBadges.map((badge) => badge.badgeId)
+    const badges = await db.models.badge.findAll({
+      where: {
+        id: { [Op.notIn]: userBadgeIds },
+        table: 'user',
+        formula: { [Op.startsWith]: 'total' },
+      },
+    })
+
+    badges.forEach(async (badge) => {
+      const critera = 'this' + '.' + badge.formula
+      if (eval(critera)) {
+        await db.models.userBadge.create({
+          userId: this.id,
+          badgeId: badge.id,
+        })
+      }
+    })
+  } catch (ex) {
+    console.log(ex)
+  }
+}
+
 /**
  * classMethods
  */
@@ -149,31 +177,5 @@ User.afterCreate(async function (user) {
 })
 
 User.afterUpdate(async function (user) {
-  let badge
-  if (user.totalCheckins === 1) {
-    badge = await db.models.badge.findOne({
-      where: { formula: 'totalCheckins === 1' },
-    })
-  }
-  if (user.totalReviews === 1) {
-    badge = db.models.badge.findOne({
-      where: { formula: 'totalReviews === 1' },
-    })
-  }
-  if (user.totalCheckins === 10) {
-    badge = await db.models.badge.findOne({
-      where: { formula: 'totalCheckins === 10' },
-    })
-  }
-  if (user.totalReviews === 10) {
-    badge = db.models.badge.findOne({
-      where: { formula: 'totalReviews === 10' },
-    })
-  }
-  if (badge) {
-    return await db.models.userBadge.create({
-      userId: user.id,
-      badgeId: badge.id,
-    })
-  }
+  await user.updateUserCheckinBadges()
 })
