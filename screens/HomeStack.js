@@ -11,7 +11,7 @@ export default function HomeStack() {
     <HomeStack.Navigator>
       <HomeStack.Screen name="Home" component={Home} />
       <HomeStack.Screen name="User" component={User} />
-      <HomeStack.Screen name="User Profile" component={UserProfile} />
+      <HomeStack.Screen name="UserProfile" component={UserProfile} />
       <HomeStack.Screen name="Setting" component={Setting} />
     </HomeStack.Navigator>
   )

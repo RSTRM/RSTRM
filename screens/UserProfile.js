@@ -1,131 +1,151 @@
 import React from 'react'
 import { StyleSheet, View, Text, Image } from 'react-native'
 import { Icon, Card, Button, Block } from 'galio-framework'
-import { LinearGradient } from 'expo'
+import { LinearGradient } from 'expo-linear-gradient'
+import { Badge } from 'react-native-elements'
 import { ScrollView } from 'react-native-gesture-handler'
 
 export default function UserProfile() {
   return (
     <View style={styles.container}>
-      <LinearGradient style={styles.gradient} colors={['#61045f', '#20011f']}>
-        {/*<Card style={styles.cardSelena}></Card>*/}
-        <View>
-          <Text>Image?</Text>
-          {/* <Image source={require('../Images/5.jpg')} style={styles.imageSS} /> */}
+      <LinearGradient
+        style={styles.gradient}
+        colors={['#C0C0C0', '#808080']}
+        start={{ x: 1, y: 1 }}
+        end={{ x: 0, y: 0 }}>
+        <Text style={styles.profileText}>Profile</Text>
+
+        <LinearGradient
+          style={styles.gradientJob}
+          start={{ x: 1, y: 1 }}
+          end={{ x: 0, y: 0 }}
+          colors={['#808080', '#C0C0C0']}>
+          <View
+            style={{ flexDirection: 'row', marginLeft: '5%', marginTop: '5%' }}>
+            <Text>IMAGE</Text>
+            <View style={{ flexDirection: 'row' }}>
+              <View style={{ flexDirection: 'colum' }}>
+                <Text h5 style={styles.Mao}>
+                  Hippie Mao
+                </Text>
+                <Text h6 style={styles.Designer}>
+                  {'UI/UX Designer Job \nhunting'}
+                </Text>
+              </View>
+              <Icon
+                style={styles.maoIcon}
+                name="chevron-small-right"
+                family="Entypo"
+                color={'#fff'}
+                size={35}
+              />
+            </View>
+          </View>
+        </LinearGradient>
+
+        {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+          <Text h5 style={styles.horizontalText}>
+            You make know{' '}
+          </Text>
+          <Text h5 style={styles.textRow1}>
+            More
+          </Text>
+        </View> */}
+
+        {/* <View style={{ height: '4%' }}>
+          <View
+            style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
+            <Button
+              size="small"
+              shadowless
+              style={styles.horizontalButton}
+              onPress={() => this.props.navigation.navigate('Screen2')}>
+              <Text>IMAGE</Text>
+            </Button>
+
+            <Button
+              size="small"
+              shadowless
+              style={styles.horizontalButton}
+              onPress={() => this.props.navigation.navigate('Screen2')}>
+              <Text>IMAGE</Text>
+            </Button>
+            <Button
+              size="small"
+              shadowless
+              style={styles.horizontalButton}
+              onPress={() => this.props.navigation.navigate('Screen2')}>
+              <Text>IMAGE</Text>
+            </Button>
+            <Button
+              size="small"
+              shadowless
+              style={styles.horizontalButton}
+              onPress={() => this.props.navigation.navigate('Screen2')}>
+              <Text>IMAGE</Text>
+            </Button>
+          </View>
+        </View> */}
+
+        <View style={{ marginTop: 60, flexDirection: 'row' }}>
+          <Text h5 style={styles.MessageText}>
+            Message{' '}
+          </Text>
+          <Badge style={styles.badge} value="99+" status="error" />
+        </View>
+        <View style={{ alignSelf: 'flex-end', marginTop: '-9%' }}>
+          <Text h5 style={styles.textRow2}>
+            More
+          </Text>
         </View>
 
-        <Text style={styles.textSelena}>Selena Gomez</Text>
-        <Text style={styles.designer}>Designer</Text>
-
         <ScrollView>
-          <View style={{ justifyContent: 'space-around' }}>
-            <View style={styles.cards12}>
-              <Card style={styles.cards1}>
-                <LinearGradient
-                  style={styles.LinearGradient1}
-                  start={{ x: 1, y: 1 }}
-                  end={{ x: 0, y: 0 }}
-                  colors={['#61045f', '#20011f']}>
-                  <Icon
-                    style={styles.icon1}
-                    name="user-circle"
-                    family="FontAwesome"
-                    color={'#43bff9'}
-                    size={45}
-                  />
-
-                  <Text h1 style={styles.textNr1}>
-                    2853
-                  </Text>
-                  <Text h1 style={styles.Followers}>
-                    Followers
-                  </Text>
-                </LinearGradient>
-              </Card>
-
-              <Card style={styles.cards2}>
-                <LinearGradient
-                  style={styles.LinearGradient2}
-                  start={{ x: 1, y: 1 }}
-                  end={{ x: 0, y: 0 }}
-                  colors={['#61045f', '#20011f']}>
-                  <Icon
-                    style={styles.star}
-                    name="stars"
-                    family="MaterialIcons"
-                    color={'#fc408a'}
-                    size={45}
-                  />
-                  <Text h1 style={styles.textNr2}>
-                    3252
-                  </Text>
-                  <Text h1 style={styles.Collection}>
-                    Collection
-                  </Text>
-                </LinearGradient>
-              </Card>
+          <View style={{ marginTop: '2%' }}>
+            <View
+              style={{
+                flexDirection: 'row',
+                backgroundColor: '#5a0e54',
+                marginLeft: '5%',
+                marginRight: '5%',
+                borderRadius: '10%',
+                marginBottom: '3%',
+              }}>
+              <Icon
+                style={styles.loginIcon}
+                name="user-circle"
+                family="FontAwesome"
+                color={'#fc408a'}
+                size={35}
+              />
+              <Text style={styles.textLogin}>
+                {'We detected an unusal\n Login attempt'}
+              </Text>
             </View>
 
-            <View style={styles.cards34}>
-              <Card style={styles.cards3}>
-                <LinearGradient
-                  style={styles.LinearGradient3}
-                  start={{ x: 1, y: 1 }}
-                  end={{ x: 0, y: 0 }}
-                  colors={['#61045f', '#20011f']}>
-                  <Icon
-                    style={styles.heart}
-                    name="heart-circle"
-                    family="MaterialCommunityIcons"
-                    color={'red'}
-                    size={45}
-                  />
-
-                  <Text h1 style={styles.textNr3}>
-                    123K
-                  </Text>
-                  <Text h1 style={styles.Likes}>
-                    {' '}
-                    Likes you{' '}
-                  </Text>
-                </LinearGradient>
-              </Card>
-
-              <Card style={styles.cards4}>
-                <LinearGradient
-                  style={styles.LinearGradient4}
-                  start={{ x: 1, y: 1 }}
-                  end={{ x: 0, y: 0 }}
-                  colors={['#61045f', '#20011f']}>
-                  <Icon
-                    style={styles.comment}
-                    name="comment-text"
-                    family="MaterialCommunityIcons"
-                    color={'#7a52d1'}
-                    size={45}
-                  />
-                  <Text h1 style={styles.textNr4}>
-                    337
-                  </Text>
-                  <Text h1 style={styles.Comments}>
-                    Comments
-                  </Text>
-                </LinearGradient>
-              </Card>
+            <View
+              style={{
+                flexDirection: 'row',
+                backgroundColor: '#5a0e54',
+                marginLeft: '5%',
+                marginRight: '5%',
+                borderRadius: '10%',
+                paddingBottom: '5%',
+              }}>
+              <Icon
+                style={styles.locationIcon}
+                name="location-pin"
+                family="Entypo"
+                color={'#4ec5f9'}
+                size={35}
+              />
+              <Text style={styles.locationText}>
+                {
+                  'Pleas turn on real-time position \nto ensure that your friends can \ninteract with you at any time '
+                }
+              </Text>
             </View>
           </View>
         </ScrollView>
-
-        <View style={styles.friendsView}>
-          <Button
-            size="small"
-            shadowless
-            color="#fc408a"
-            style={styles.friends}
-            onPress={() => this.props.navigation.navigate('Screen1')}>
-            Add to friends
-          </Button>
-        </View>
       </LinearGradient>
     </View>
   )
@@ -134,189 +154,127 @@ export default function UserProfile() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // marginTop:'65%',
   },
   gradient: {
     flex: 1,
   },
-  cardSelena: {
-    borderColor: '#fff',
-    padding: '15%',
-    borderRadius: 450,
-    marginLeft: '32%',
-    marginRight: '32%',
-    marginTop: '11%',
+  gradientJob: {
+    marginLeft: '5%',
+    marginRight: '5%',
+    height: '20%',
+    borderRadius: 15,
+  },
+  profileText: {
+    fontSize: 40,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginTop: '13%',
+    marginLeft: '5%',
     marginBottom: '2%',
   },
-  textSelena: {
-    fontSize: 29,
-    fontWeight: 'bold',
-    alignSelf: 'center',
+  jobCard: {
+    height: '100%',
+    borderColor: 'transparent',
+  },
+  horizontalText: {
+    fontWeight: '700',
     color: '#fff',
+    marginLeft: '5%',
+    marginTop: '3%',
+    paddingBottom: '3%',
   },
-  designer: {
-    color: '#00d8ff',
-    alignSelf: 'center',
-    fontSize: 20,
-    fontWeight: '500',
+  horizontalButton: {
+    borderRadius: 230,
+    width: '5%',
+    justifyContent: 'space-between',
     marginTop: '1%',
   },
-  cards12: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
+  img1S1: {
+    height: 75,
+    width: 75,
+    borderRadius: 35,
   },
-  cards1: {
-    // paddingBottom:'25%',
+  MessageText: {
+    alignSelf: 'flex-start',
+    fontWeight: '700',
 
-    paddingLeft: '16%',
-    paddingRight: '16%',
-    backgroundColor: 'transparent',
+    color: '#fff',
+    marginLeft: '5%',
+    marginTop: '2%',
+  },
+  loginCard: {
+    marginLeft: '5%',
+    marginRight: '5%',
+    backgroundColor: '#680d64',
     borderColor: 'transparent',
   },
-
-  cards2: {
-    // paddingBottom:'25%',
-    // marginTop:'-1%',
-
-    paddingLeft: '16%',
-    paddingRight: '16%',
-    backgroundColor: 'transparent',
-    borderColor: 'transparent',
-  },
-  cards34: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    // marginTop:'12%'
-  },
-  cards3: {
-    // paddingBottom:'35%',
-    // marginTop:'2%',
-    paddingLeft: '16%',
-    paddingRight: '16%',
-    backgroundColor: 'transparent',
-    borderColor: 'transparent',
-  },
-  cards4: {
-    // paddingTop:'20%',
-    // marginTop:'2%',
-    paddingLeft: '16%',
-    paddingRight: '16%',
-    backgroundColor: 'transparent',
-    borderColor: 'transparent',
-  },
-  friendsView: {
-    marginTop: '1%',
-    paddingBottom: '5%',
-  },
-  friends: {
-    borderRadius: 100,
-    alignSelf: 'center',
-    // marginTop:'4%',
-  },
-  imageSS: {
-    alignSelf: 'center',
-    marginTop: '20%',
+  loginIcon: {
+    paddingLeft: '7%',
     marginBottom: '5%',
-    // height:'50%',
-    // width:'25%',
-    borderRadius: 50,
+    marginTop: '5%',
   },
-  icon1: {
-    //   // marginTop:'-45%',
-    alignSelf: 'center',
-    paddingTop: '10%',
-  },
-  textNr1: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 20,
-    alignSelf: 'center',
-  },
-  Followers: {
+  textLogin: {
+    fontSize: 15,
+    fontWeight: '400',
     color: 'grey',
     alignSelf: 'center',
-    paddingTop: '1%',
-    paddingBottom: '-5%',
+    paddingLeft: '5%',
+    marginBottom: '3%',
   },
-  star: {
-    alignSelf: 'center',
-    paddingTop: '10%',
+  locationCard: {
+    marginLeft: '5%',
+    marginRight: '5%',
+    backgroundColor: '#680d64',
+    borderColor: 'transparent',
   },
-  textNr2: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 20,
-    alignSelf: 'center',
+  locationIcon: {
+    paddingLeft: '7%',
+    marginTop: '6%',
   },
-  Collection: {
+  locationText: {
+    fontSize: 15,
+    fontWeight: '400',
     color: 'grey',
     alignSelf: 'center',
-    paddingTop: '1%',
-    paddingBottom: '-5%',
+    marginTop: '2%',
+    paddingLeft: '5%',
   },
-  heart: {
-    alignSelf: 'center',
-    paddingTop: '10%',
+  textRow1: {
+    color: 'grey',
+    marginRight: '5%',
+    marginTop: '3%',
+    paddingBottom: '3%',
+    fontWeight: 'bold',
   },
-  textNr3: {
+  textRow2: {
+    color: 'grey',
+    marginRight: '5%',
+    marginTop: '3%',
+    paddingBottom: '3%',
+    fontWeight: 'bold',
+  },
+  firstCardImg: {
+    borderRadius: 25,
+    marginLeft: '5%',
+    width: 50,
+    height: 50,
+  },
+  Mao: {
     color: '#fff',
     fontWeight: 'bold',
-    fontSize: 20,
-    alignSelf: 'center',
+    marginLeft: '15%',
+    // paddingTop:'2%'
   },
-  Likes: {
+  maoIcon: {
+    // paddingBottom:'40%',
+    // marginTop:'2%'
+  },
+  Designer: {
     color: 'grey',
-    alignSelf: 'center',
-    paddingTop: '1%',
-    paddingBottom: '5%',
+    marginLeft: '15%',
+    marginBottom: '25%',
   },
-  comment: {
-    alignSelf: 'center',
-    paddingTop: '10%',
-  },
-  textNr4: {
-    color: '#fff',
-    fontWeight: 'bold',
-    fontSize: 20,
-    alignSelf: 'center',
-  },
-  Comments: {
-    color: 'grey',
-    alignSelf: 'center',
-    paddingTop: '1%',
-    paddingBottom: '5%',
-  },
-  LinearGradient1: {
-    borderRadius: 5,
-    // padding:'5%',
-    paddingLeft: '12%',
-    paddingRight: '12%',
-    paddingBottom: '15%',
-    marginLeft: '-2%',
-  },
-  LinearGradient2: {
-    borderRadius: 5,
-    // padding:'5%',
-    paddingLeft: '12%',
-    paddingRight: '12%',
-    paddingBottom: '15%',
-    marginLeft: '-2%',
-  },
-  LinearGradient3: {
-    borderRadius: 5,
-    // padding:'5%',
-    paddingLeft: '11%',
-    paddingRight: '11%',
-    paddingBottom: '5%',
-    // marginBottom:'3%'
-    marginLeft: '-2%',
-  },
-  LinearGradient4: {
-    borderRadius: 5,
-    // padding:'5%',
-    paddingLeft: '11%',
-    paddingRight: '11%',
-    paddingBottom: '5%',
-    marginLeft: '-2%',
+  badge: {
+    // marginTop:'5%'
   },
 })
