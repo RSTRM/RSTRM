@@ -12,7 +12,7 @@ const {
   UserBadge,
 } = require('../server/db/models')
 
-const refugeArray = require('./refugeData')
+const seedData = require('./seedData')
 
 async function seed() {
   await db.sync({ force: true })
@@ -22,7 +22,7 @@ async function seed() {
   const filtered = []
   const map = new Map()
 
-  for (const item of refugeArray) {
+  for (const item of seedData.bathroomInfo) {
     if (
       //filter duplicate items
       !map.has(item.id) &&
@@ -35,7 +35,9 @@ async function seed() {
       filtered.push(item)
     }
   }
-  console.log(`kept ${filtered.length} bathrooms of ${refugeArray.length}`)
+  console.log(
+    `kept ${filtered.length} bathrooms of ${seedData.bathroomInfo.length}`
+  )
 
   //BATHROOMS
   const bathrooms = await Promise.all(
@@ -59,67 +61,18 @@ async function seed() {
 
   console.log(`seeded ${bathrooms.length} bathrooms sucessfully`)
 
-  const badgesInfo = [
-    {
-      name: 'welcome',
-      nameDisplay: 'Welcome to RSTRM',
-      table: 'user',
-      formula: 'user exists',
-    },
-    {
-      name: 'firstCheckin',
-      nameDisplay: 'First Check-in',
-      table: 'checkin',
-      formula: 'checkins = 1',
-    },
-    {
-      name: 'firstReview',
-      nameDisplay: 'First Review',
-      table: 'review',
-      formula: 'reviews = 1',
-    },
-    {
-      name: 'newYork',
-      nameDisplay: "Answering Nature's Call in New York",
-      table: 'checkin',
-      formula: 'checkin.state = NY',
-    },
-    {
-      name: 'colorado',
-      nameDisplay: 'Seeking the Commode in Colorado',
-      table: 'checkin',
-      formula: 'checkin.state = CO',
-    },
-    {
-      name: 'ohio',
-      nameDisplay: 'Checking Out the Outhouse in Ohio',
-      table: 'checkin',
-      formula: 'checkin.state = OH',
-    },
-  ]
+  const badgesInfo = seedData.badgesInfo
 
   const badges = await Promise.all(
     badgesInfo.map((badge) => {
-      const { name, nameDisplay, table, formula } = badge
-      return Badge.create({ name, nameDisplay, table, formula })
+      return Badge.create(badge)
     })
   )
   console.log(`seeded ${badges.length} badges sucessfully`)
 
-  const people = [
-    { nameFirst: 'Katt', nameLast: 'Baum', admin: true },
-    { nameFirst: 'Denis', nameLast: 'McPhillips', admin: true },
-    { nameFirst: 'Valmik', nameLast: 'Vyas', admin: true },
-    { nameFirst: 'Yeung', nameLast: 'Lo', admin: true },
-    { nameFirst: 'Eric', nameLast: 'Katz' },
-    { nameFirst: 'Manny', nameLast: 'Bugallo' },
-    { nameFirst: 'Peet', nameLast: 'Klecha' },
-    { nameFirst: 'Mark', nameLast: 'Bae' },
-  ]
-
   //USERS
   const users = await Promise.all(
-    people.map((person) => {
+    seedData.usersInfo.map((person) => {
       const { nameFirst, nameLast, admin } = person
       const username = nameFirst[0].toLowerCase() + nameLast.toLowerCase()
       const email = username + '@email.com'
@@ -139,6 +92,20 @@ async function seed() {
   const adminUsers = users.filter((user) => user.admin)
   const regUsers = users.filter((user) => !user.admin)
 
+  //utility function will create data in sequence. this is needed because postgres is multi-threaded
+  const runInSequence = async (data, model) => {
+    let results = []
+    let chain = Promise.resolve()
+    data.forEach((d) => {
+      chain = chain.then(async () => {
+        let result = await model.create(d)
+        results.push(result)
+      })
+    })
+    await chain
+    return results
+  }
+
   //CHECKINS
   const createAdminCheckins = () => {
     const checkinsPerUser = new Array(adminUsers.length)
@@ -151,47 +118,34 @@ async function seed() {
           bathrooms[Math.floor(Math.random() * bathrooms.length)]
         const today = new Date()
         checkinArr.push({
-            userId: user.id,
-            bathroomId: randBathoom.id,
-            checkinDate: today.setDate(
-              today.getDate() - Math.floor(Math.random() * 30)
-            ),
-          });
+          userId: user.id,
+          bathroomId: randBathoom.id,
+          checkinDate: today.setDate(
+            today.getDate() - Math.floor(Math.random() * 30)
+          ),
+        })
       }
     })
     return checkinArr
   }
 
-  //utility function will create data in sequence. this is needed because postgres is multi-threaded
-  const runInSequence = async (data, model)=> {
-    let results = [];
-    let chain = Promise.resolve();
-    data.forEach(d => {
-      chain = chain.then(async()=> {
-        let result = await model.create(d);
-        results.push(result);
-      });
-    });
-    await chain;
-    return results;
-  };
+  const adminCheckins = await runInSequence(createAdminCheckins(), Checkin)
 
-  const adminCheckins = await runInSequence(createAdminCheckins(), Checkin); 
-  
   console.log(`seeded ${adminCheckins.length} admin checkins sucessfully`)
 
-  const _checkins = bathrooms.map( bathroom => {
-      const randUser = regUsers[Math.floor(Math.random() * regUsers.length)]
-      const today = new Date()
-      return {
-        bathroomId: bathroom.id,
-        userId: randUser.id,
-        checkinDate: today.setDate(
-          today.getDate() - Math.floor(Math.random() * 30))
-      }
-  });
+  const _checkins = bathrooms.map((bathroom) => {
+    const randUser = regUsers[Math.floor(Math.random() * regUsers.length)]
+    const today = new Date()
+    return {
+      bathroomId: bathroom.id,
+      userId: randUser.id,
+      checkinDate: today.setDate(
+        today.getDate() - Math.floor(Math.random() * 30)
+      ),
+    }
+  })
 
-  const checkins = await runInSequence(_checkins, Checkin); 
+  const checkins = await runInSequence(_checkins, Checkin)
 
   console.log(`seeded ${checkins.length} regular checkins sucessfully`)
 
@@ -204,23 +158,21 @@ async function seed() {
     'Excellent! Clean and beautiful.',
   ]
 
-  const adminReviews = await Promise.all(
-    adminCheckins.reduce((acc, checkin, idx) => {
-      if (idx % 2 === 0) {
-        const rand = Math.floor(Math.random() * 5)
-        acc.push(
-          Review.create({
-            rating: rand + 1,
-            comments: randComments[rand],
-            userId: checkin.userId,
-            bathroomId: checkin.bathroomId,
-            checkinId: checkin.id,
-          })
-        )
-      }
-      return acc
-    }, [])
-  )
+  const _adminReviews = adminCheckins.reduce((acc, checkin, idx) => {
+    if (idx % 2 === 0) {
+      const rand = Math.floor(Math.random() * 5)
+      acc.push({
+        rating: rand + 1,
+        comments: randComments[rand],
+        userId: checkin.userId,
+        bathroomId: checkin.bathroomId,
+        checkinId: checkin.id,
+      })
+    }
+    return acc
+  }, [])
+
+  const adminReviews = await runInSequence(_adminReviews, Review)
 
   console.log(`seeded ${adminReviews.length} admin reviews sucessfully`)
 
@@ -232,18 +184,18 @@ async function seed() {
     'I want to live in this bathroom!',
   ]
 
-  const reviews = await Promise.all(
-    checkins.map((checkin) => {
-      const rand = Math.floor(Math.random() * 5)
-      return Review.create({
-        rating: rand + 1,
-        comments: moreRandComments[rand],
-        userId: checkin.userId,
-        bathroomId: checkin.bathroomId,
-        checkinId: checkin.id,
-      })
-    })
-  )
+  const _reviews = checkins.map((checkin) => {
+    const rand = Math.floor(Math.random() * 5)
+    return {
+      rating: rand + 1,
+      comments: moreRandComments[rand],
+      userId: checkin.userId,
+      bathroomId: checkin.bathroomId,
+      checkinId: checkin.id,
+    }
+  })
+
+  const reviews = await runInSequence(_reviews, Review)
 
   console.log(`seeded ${reviews.length} regular reviews sucessfully`)
 
