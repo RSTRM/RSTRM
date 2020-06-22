@@ -1,5 +1,5 @@
 const crypto = require('crypto')
-const { UUID, UUIDV4, STRING, BOOLEAN, INTEGER, Op } = require('sequelize')
+const { UUID, UUIDV4, STRING, BOOLEAN, INTEGER } = require('sequelize')
 const db = require('../db')
 
 const User = db.define('user', {
@@ -110,34 +110,6 @@ User.prototype.getCheckins = async function (daysWithin) {
   })
 }
 
-User.prototype.updateUserCheckinBadges = async function () {
-  try {
-    const userBadges = await db.models.userBadge.findAll({
-      where: { userId: this.id },
-    })
-    const userBadgeIds = userBadges.map((badge) => badge.badgeId)
-    const badges = await db.models.badge.findAll({
-      where: {
-        id: { [Op.notIn]: userBadgeIds },
-        table: 'user',
-        formula: { [Op.startsWith]: 'total' },
-      },
-    })
-
-    badges.forEach(async (badge) => {
-      const critera = 'this' + '.' + badge.formula
-      if (eval(critera)) {
-        await db.models.userBadge.create({
-          userId: this.id,
-          badgeId: badge.id,
-        })
-      }
-    })
-  } catch (ex) {
-    console.log(ex)
-  }
-}
-
 /**
  * classMethods
  */
@@ -174,8 +146,4 @@ User.afterCreate(async function (user) {
     userId: user.id,
     badgeId: badge.id,
   })
-})
-
-User.afterUpdate(async function (user) {
-  await user.updateUserCheckinBadges()
 })

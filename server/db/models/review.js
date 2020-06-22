@@ -27,21 +27,3 @@ const Review = db.define('review', {
 })
 
 module.exports = Review
-
-/**
- * instanceMethods
- */
-
-/**
- * classMethods
- */
-
-/**
- * hooks
- */
-
-Review.afterCreate(async function (review) {
-  const user = await db.models.user.findByPk(review.userId)
-  user.totalReviews++
-  const updatedUser = await user.save()
-})

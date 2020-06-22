@@ -15,10 +15,6 @@ function Home({ navigation, user, signOut }) {
             title="Account Settings"
             onPress={() => navigation.navigate("Setting")}
           />
-          <Button
-            title="User Profile"
-            onPress={() => navigation.navigate("UserProfile")}
-          />
         </View>
       ) : (
         <Button
