@@ -24,10 +24,16 @@ import { checkins } from "../store/checkins";
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
 
-const AddReview = ({ bathroom, backButton, checkin, user, postReview }) => {
+const AddReview = ({ bathroom, backButton, user, postReview, checkins }) => {
   const [comments, setComments] = useState("");
   const [starCount, setStarCount] = useState(0);
   //   const { postReview } = props;
+  const checkinArray = checkins.filter(
+    (checkin) =>
+      checkin.userId === user.id && checkin.bathroomId === bathroom.id
+  );
+  const checkin = checkinArray[checkinArray.length - 1];
+  console.log(checkin);
   return (
     <Block flex style={styles.profile}>
       <Block flex>
@@ -102,8 +108,9 @@ const AddReview = ({ bathroom, backButton, checkin, user, postReview }) => {
                 comments,
                 userId: user.id,
                 bathroomId: bathroom.id,
-                checkinId: "927cee89-68cc-45c0-946b-e1cbf2d80758",
+                checkinId: checkin.id,
               });
+              backButton();
             }}
           ></Button>
         </ScrollView>
@@ -183,8 +190,8 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = ({ user }) => {
-  return { user };
+const mapStateToProps = ({ user, checkins }) => {
+  return { user, checkins };
 };
 
 const mapDispatchToProps = (dispatch) => {

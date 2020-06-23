@@ -29,6 +29,7 @@ class BathroomView extends Component {
     this.state = {
       index: 0,
       modalVisible: false,
+      checkin: {},
     };
   }
   async componentDidMount() {
@@ -171,7 +172,7 @@ class BathroomView extends Component {
                 <Button
                   title="Check In"
                   onPress={async () => {
-                    const checkin = await postCheckin({
+                    await postCheckin({
                       userId: user.id,
                       bathroomId: bathroom.id,
                     });
