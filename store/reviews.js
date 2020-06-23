@@ -14,7 +14,6 @@ const DELETE_REVIEW = "DELETE_REVIEW";
 const initialState = [];
 const HOST = "http://localhost:8080";
 
-
 /**
  * ACTION CREATORS
  */
@@ -29,7 +28,7 @@ const _deleteReview = (id) => ({ type: DELETE_REVIEW, id });
 // UPDATE WITH OUR API
 
 const loadReviews = (bathroomId, daysWithin) => {
-  return async dispatch => {
+  return async (dispatch) => {
     let response;
     if (daysWithin !== undefined || null) {
       response = (
@@ -42,14 +41,13 @@ const loadReviews = (bathroomId, daysWithin) => {
         await axios.get(`${HOST}/api/bathrooms/${bathroomId}/reviews`)
       ).data;
     }
-    console.log('in thunk', response);
     dispatch(_loadReviews(response));
   };
 };
 
 const createReview = (review) => {
   return async (dispatch) => {
-    const response = (await axios.post("/api/reviews", review)).data;
+    const response = (await axios.post(`${HOST}/api/reviews`, review)).data;
     dispatch(_createReview(response));
   };
 };

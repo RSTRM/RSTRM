@@ -10,10 +10,15 @@ router.get("/reviews", async (req, res, next) => {
 
     console.log(reviews, "review in api");
     res.json(reviews);
-
   } catch (err) {
     next(err);
   }
+});
+
+router.post("/", (req, res, next) => {
+  Review.create(req.body)
+    .then((review) => res.send(review))
+    .catch(next);
 });
 
 module.exports = router;
