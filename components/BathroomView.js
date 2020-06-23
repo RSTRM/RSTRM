@@ -8,6 +8,7 @@ import {
   Platform,
   Button,
   Modal,
+  View,
 } from "react-native";
 import { Block, Text, theme } from "galio-framework";
 import { LinearGradient } from "expo-linear-gradient";
@@ -16,6 +17,7 @@ import { Images, materialTheme } from "../constants";
 import { HeaderHeight } from "../constants/utils";
 import { connect } from "react-redux";
 import AddReview from "./AddReview";
+import { createCheckin } from "../store/checkins";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -36,11 +38,13 @@ class BathroomView extends Component {
       this.setState({ index: this.props.index });
     }
   }
+
   backButton = () => {
     this.setState({ modalVisible: false });
   };
   render() {
-    const backButton = this.props.backButton;
+    const { user, backButton, postCheckin } = this.props;
+    // const backButton = this.props.backButton;
     const index = this.state.index || 0;
     const bathroom = this.props.bathrooms[index] || {};
     const bathroomReviews = this.props.reviews.filter((review) => {
@@ -48,6 +52,7 @@ class BathroomView extends Component {
     });
     // console.log(bathroomReviews, "reviews");
     // console.log(bathroom, 'bathroom vv');
+    console.log(bathroom);
     return (
       <Block flex style={styles.profile}>
         <Block flex>
@@ -155,21 +160,28 @@ class BathroomView extends Component {
                 <Text size={16}>"I might just move in here!"</Text>
               </Block>
             </Block>
-            <Button
-              title="Add Review"
-              onPress={() => this.setState({ modalVisible: true })}
-            ></Button>
-            <Modal
-              animationType="slide"
-              transparent={true}
-              visible={this.state.modalVisible}
-              on
-            >
-              <AddReview
-                backButton={this.backButton}
-                bathroom={this.props.bathrooms[index]}
-              />
-            </Modal>
+            {user.id ? (
+              <View>
+                <Button
+                  title="Check In"
+                  onPress={async () => {
+                    this.setState({ modalVisible: true });
+                    await postCheckin({
+                      userId: user.id,
+                      bathroomId: bathroom.id,
+                    });
+                  }}
+                ></Button>
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={this.state.modalVisible}
+                  on
+                >
+                  <AddReview backButton={this.backButton} bathroom={bathroom} />
+                </Modal>
+              </View>
+            ) : null}
           </ScrollView>
         </Block>
       </Block>
@@ -248,6 +260,18 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = ({ bathrooms, reviews }) => ({ bathrooms, reviews });
+const mapStateToProps = ({ bathrooms, reviews, user }) => ({
+  bathrooms,
+  reviews,
+  user,
+});
 
-export default connect(mapStateToProps, null)(BathroomView);
+const mapDispatchToProps = (dispatch) => {
+  return {
+    postCheckin(checkin) {
+      dispatch(createCheckin(checkin));
+    },
+  };
+};
+
+export default connect(mapStateToProps, mapDispatchToProps)(BathroomView);
