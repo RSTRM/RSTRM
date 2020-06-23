@@ -15,45 +15,32 @@ import { Images, materialTheme } from "../constants";
 import { HeaderHeight } from "../constants/utils";
 import { connect } from "react-redux";
 import { loadReviews } from "../store/reviews";
+import headerimg from "../assets/header-img.png";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
 
-class BathroomView extends Component {
+class AddBathroom extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      index: 0
-    };
   }
-  async componentDidMount() {
-    this.setState({ index: this.props.index });
-    const index = this.state.index;
-    // this.props.loadReviews();
-    if (this.props.bathrooms) {
-      this.props.loadReviews(this.props.bathrooms[index].id);
-    }
-  }
+  async componentDidMount() {}
 
   async componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      this.setState({ index: this.props.index });
-      const index = this.state.index;
-    }
+    // if (prevProps !== this.props) {
+    //   this.setState({ index: this.props.index });
+    //   const index = this.state.index;
+    // }
   }
 
   render() {
     const backButton = this.props.backButton;
-    const index = this.state.index || 0;
-    const bathroom = this.props.bathrooms[index] || {};
-    // const reviews = this.props.reviews.filter(review => review.bathroomId === bathroom.id );
-    const { reviews } = this.props;
+
     return (
       <Block flex style={styles.profile}>
         <Block flex>
           <ImageBackground
-            //will connect data-image to source field below here
-            source={{ uri: Images.Restroom }}
+            source={headerimg}
             style={styles.profileContainer}
             imageStyle={styles.profileImage}
           >
@@ -69,29 +56,6 @@ class BathroomView extends Component {
                     onPress={() => backButton()}
                   />
                 </Block>
-                <Text color="white" size={28} style={{ paddingBottom: 36 }}>
-                  {bathroom.establishment}{" "}
-                </Text>
-                <Block row space="between">
-                  <Block row>
-                    <Block middle style={styles.pro}>
-                      <Text size={16} color="black">
-                        Pro
-                      </Text>
-                    </Block>
-                    <Text color="white" size={16} muted style={styles.seller}>
-                      Establishment
-                    </Text>
-                    <Text size={16} color={materialTheme.COLORS.WARNING}>
-                      4.9{" "}
-                    </Text>
-                  </Block>
-                  <Block>
-                    <Text color={theme.COLORS.MUTED} size={16}>
-                      {` `} {bathroom.city}{" "}
-                    </Text>
-                  </Block>
-                </Block>
               </Block>
               <LinearGradient
                 colors={["rgba(0,0,0,0)", "rgba(0,0,0,1)"]}
@@ -104,29 +68,13 @@ class BathroomView extends Component {
           <ScrollView showsVerticalScrollIndicator={false}>
             <Block row space="between" style={{ padding: theme.SIZES.BASE }}>
               <Block middle>
-                <Text bold size={12} style={{ marginBottom: 8 }}>
-                  {reviews.length}
-                </Text>
-                <Text muted size={12}>
-                  Reviews
-                </Text>
-              </Block>
-              <Block middle>
-                <Text bold size={12} style={{ marginBottom: 8 }}>
-                  {bathroom.AvgRating || 0}
-                </Text>
-                <Text muted size={12}>
-                  Avg Rating
-                </Text>
-              </Block>
-              <Block middle>
                 <Icon
-                    name="emoticon-poop"
-                    type="material-community"
-                    color="brown"
-                    size = {24}
-                    // onPress={() => ()}
-                  />
+                  name="emoticon-poop"
+                  type="material-community"
+                  color="brown"
+                  size={24}
+                  // onPress={() => ()}
+                />
                 <Text muted size={12}>
                   Add Review
                 </Text>
@@ -150,7 +98,9 @@ class BathroomView extends Component {
             <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
               <Block row space="between" style={{ flexWrap: "wrap" }}>
                 {reviews.map(review => (
-                  <Text size={16} key={review.id} >{review.comments}</Text>
+                  <Text size={16} key={review.id}>
+                    {review.comments}
+                  </Text>
                 ))}
               </Block>
             </Block>
@@ -183,17 +133,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: theme.SIZES.BASE * 2,
     paddingVertical: theme.SIZES.BASE * 2,
     zIndex: 2
-  },
-  pro: {
-    backgroundColor: materialTheme.COLORS.ACTIVE,
-    paddingHorizontal: 6,
-    marginRight: theme.SIZES.BASE / 2,
-    borderRadius: 4,
-    height: 19,
-    width: 38
-  },
-  seller: {
-    marginRight: theme.SIZES.BASE / 2
   },
   options: {
     position: "relative",
@@ -232,16 +171,12 @@ const styles = StyleSheet.create({
   }
 });
 
-const mapStateToProps = ({ bathrooms, reviews }) => {
-  return { bathrooms, reviews };
-};
-
 const mapDispatchToProps = dispatch => {
   return {
-    loadReviews(id) {
-      dispatch(loadReviews(id));
+    createBathroom(bathroom) {
+      dispatch(createBathroom(bathroom));
     }
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(BathroomView);
+export default connect(null, mapDispatchToProps)(AddBathroom);
