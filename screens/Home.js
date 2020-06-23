@@ -4,23 +4,24 @@ import headerimg from "../assets/header-img.png";
 
 export default function Home({ navigation }) {
   return (
-    <ImageBackground source={headerimg} style={styles.bottomTab}>
-      <View style={styles.container}>
-        <Text>Welcome to RSTRM!</Text> 
-        <Text>{`  `}</Text>
-        <Text>For when you gotta go...</Text>
-        <Text>{`  `}</Text>
-        <Button
-          title="User Sign/Login"
-          onPress={() => navigation.navigate("User")}
-        />
-        <Button
-          title="Account Settings"
-          onPress={() => navigation.navigate("Setting")}
-        />
-      </View>
+      
+  <ImageBackground source={headerimg} style={styles.bottomTab}>
+    <View style={styles.container}>
+      <Text>Welcome to RSTRM!</Text>
+      <Text>For when you gotta go...</Text>
+      <Button
+        title="User Sign/Login"
+        onPress={() => navigation.navigate('User')}
+      />
+      <Button
+        title="User Profile"
+        onPress={() => navigation.navigate('UserProfile')}
+      />
+      <Button title="Settings" onPress={() => navigation.navigate('Setting')} />
+    </View>
     </ImageBackground>
-  );
+
+  )
 }
 
 const styles = StyleSheet.create({

@@ -8,6 +8,7 @@ import {
   Platform,
   Button
 } from "react-native";
+
 import { Block, Text, theme } from "galio-framework";
 import { LinearGradient } from "expo-linear-gradient";
 import { Icon } from "react-native-elements";
@@ -15,6 +16,7 @@ import { Images, materialTheme } from "../constants";
 import { HeaderHeight } from "../constants/utils";
 import { connect } from "react-redux";
 import { loadReviews } from "../store/reviews";
+import { createBathroom } from "../store/bathrooms";
 import headerimg from "../assets/header-img.png";
 
 const { width, height } = Dimensions.get("screen");
@@ -23,6 +25,23 @@ const thumbMeasure = (width - 48 - 32) / 3;
 class AddBathroom extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      refugeId: Math.random() * 100,
+      unisex: true,
+      accessible: true,
+      changingTable: true,
+      directions: " ",
+      AvgRating: 1,
+      checkinCount: 1,
+      establishment: " ",
+      street: "",
+      city: " ",
+      state: " ",
+      country: " ",
+      latitude: 0.0,
+      longitude: 0.0,
+      website: " "
+    };
   }
   async componentDidMount() {}
 
@@ -35,7 +54,23 @@ class AddBathroom extends Component {
 
   render() {
     const backButton = this.props.backButton;
-
+    const {
+      refugeId,
+      unisex,
+      accessible,
+      changingTable,
+      directions,
+      AvgRating,
+      checkinCount,
+      establishment,
+      street,
+      city,
+      state,
+      country,
+      latitude,
+      longitude,
+      website
+    } = this.state;
     return (
       <Block flex style={styles.profile}>
         <Block flex>

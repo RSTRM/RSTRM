@@ -25,6 +25,7 @@ import iconmarker from "../assets/tp-marker.png";
 import headerimg from "../assets/header-img.png";
 import AddBathroom from "./AddBathroom";
 import { Icon as IconB, Header as HeaderB } from "react-native-elements";
+import { mapStyles } from "../constants/mapStyles";
 
 class GoogleMapView extends Component {
   constructor() {
@@ -212,6 +213,7 @@ class GoogleMapView extends Component {
           </Header>
         </Container>
         <MapView
+          customMapStyle={mapStyles}
           provider={PROVIDER_GOOGLE}
           ref={map => (this._map = map)}
           style={styles.mapStyle}
