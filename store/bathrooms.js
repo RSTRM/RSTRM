@@ -56,7 +56,7 @@ const loadBathrooms = (region, radius, filter = "") => {
 
 const createBathroom = bathroom => {
   return async dispatch => {
-    const response = (await axios.post("/api/bathrooms", bathroom)).data;
+    const response = (await axios.post(`${HOST}/api/bathrooms/${bathroom.id}`, bathroom)).data;
     dispatch(_createBathroom(response));
   };
 };

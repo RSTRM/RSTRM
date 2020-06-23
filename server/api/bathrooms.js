@@ -63,8 +63,8 @@ router.get("/:latitude/:longitude/:radius", async (req, res, next) => {
 router.get("/:bathroomId/reviews", async (req, res, next) => {
   //To get recent, pass number of days to /:id/reviews?daysWithin=<numOfDays>
   try {
-    let bathroom = await Bathroom.findByPk(req.params.bathroomId)
-      
+    let bathroom = await Bathroom.findByPk(req.params.bathroomId);
+
     let reviews = {};
     if (req.query.daysWithin !== undefined) {
       reviews = await bathroom.getReviews(req.query.daysWithin);
@@ -98,6 +98,15 @@ router.get("/:id/checkins", async (req, res, next) => {
       checkins = await bathroom.getReviews();
     }
     res.json(checkins);
+  } catch (err) {
+    next(err);
+  }
+});
+
+router.post("/:id", async (req, res, next) => {
+  try {
+    const bathroom = await Bathroom.create(req.body);
+    res.json(bathroom);
   } catch (err) {
     next(err);
   }
