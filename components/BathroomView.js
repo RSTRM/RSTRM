@@ -171,11 +171,11 @@ class BathroomView extends Component {
                 <Button
                   title="Check In"
                   onPress={async () => {
-                    this.setState({ modalVisible: true });
-                    await postCheckin({
+                    const checkin = await postCheckin({
                       userId: user.id,
                       bathroomId: bathroom.id,
                     });
+                    this.setState({ modalVisible: true });
                   }}
                 ></Button>
                 <Modal

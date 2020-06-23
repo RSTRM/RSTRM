@@ -1,5 +1,5 @@
 import axios from "axios";
-
+const HOST = "http://localhost:8080";
 /**
  * ACTION TYPES ------------------------------------------------
  */
@@ -35,7 +35,7 @@ const loadCheckins = () => {
 
 const createCheckin = (checkin) => {
   return async (dispatch) => {
-    const response = (await axios.post("/api/checkins", checkin)).data;
+    const response = (await axios.post(`${HOST}/api/checkins`, checkin)).data;
     dispatch(_createCheckin(response));
   };
 };

@@ -19,11 +19,12 @@ import { TextInput } from "react-native-gesture-handler";
 import StarRating from "react-native-star-rating";
 import { createReview } from "../store/reviews";
 import user from "../store/user";
+import { checkins } from "../store/checkins";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
 
-const AddReview = ({ bathroom, backButton, user, postReview }) => {
+const AddReview = ({ bathroom, backButton, checkin, user, postReview }) => {
   const [comments, setComments] = useState("");
   const [starCount, setStarCount] = useState(0);
   //   const { postReview } = props;
@@ -95,12 +96,13 @@ const AddReview = ({ bathroom, backButton, user, postReview }) => {
           <Button
             disabled={!starCount || !comments}
             title="Post Review"
-            onPress={() => {
-              postReview({
+            onPress={async () => {
+              await postReview({
                 rating: starCount,
                 comments,
                 userId: user.id,
                 bathroomId: bathroom.id,
+                checkinId: "927cee89-68cc-45c0-946b-e1cbf2d80758",
               });
             }}
           ></Button>
