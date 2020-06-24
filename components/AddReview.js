@@ -33,7 +33,6 @@ const AddReview = ({ bathroom, backButton, user, postReview, checkins }) => {
       checkin.userId === user.id && checkin.bathroomId === bathroom.id
   );
   const checkin = checkinArray[checkinArray.length - 1];
-  console.log(checkin);
   return (
     <Block flex style={styles.profile}>
       <Block flex>
