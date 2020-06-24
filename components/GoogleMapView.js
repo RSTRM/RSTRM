@@ -145,6 +145,7 @@ class GoogleMapView extends Component {
 
   backButton = () => {
     this.setState({ modalVisible: false });
+    this.setState({ modal2Visible: false });
   };
 
   renderCarouselItem = ({ item }) => {
@@ -162,27 +163,14 @@ class GoogleMapView extends Component {
           visible={this.state.modalVisible}
           on
         >
+          
           <BathroomView backButton={this.backButton} index={this.state.idx} />
         </Modal>
       </View>
     );
   };
 
-  addButton = () => {
-    this.setState({ modal2Visible: true });
-    return (
-      <View>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.modal2Visible}
-          on
-        >
-          <AddBathroom backButton={this.backButton} />
-        </Modal>
-      </View>
-    );
-  };
+  
 
   async getRestrooms() {
     const newRadius = await event.target.value;
@@ -201,7 +189,7 @@ class GoogleMapView extends Component {
     return (
       <View style={styles.container}>
         <Container style={styles.header}>
-          <Header backgroundImage={headerimg}>
+          <Header>
             <Left>
               <Button transparent>
                 <Icon
@@ -231,7 +219,7 @@ class GoogleMapView extends Component {
           />
           {this.props.bathrooms.map((marker, index) => (
             <Marker
-              image={iconmarker}
+              // image={"https://d1nhio0ox7pgb.cloudfront.net/_img/g_collection_png/standard/128x128/toilet_paper.png"}
               key={index}
               ref={ref => (this.state.markers[index] = ref)}
               onPress={() => this.onMarkerPressed(marker, index)}
@@ -257,12 +245,27 @@ class GoogleMapView extends Component {
         </View>
         <View style={styles.add}>
           <IconB
-            size={36}
+            size={40}
             name="add-circle"
             type="FontAwesome"
             color="#0077F6"
-            onPress={() => this.addButton()}
+            underlayColor="purple"
+            onPress={ () => {
+              this.setState({ modal2Visible: true })
+              
+            }}
           />
+           <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modal2Visible}
+          on
+        >
+          <AddBathroom
+            backButton={this.backButton}
+            region={this.state.region}
+          />
+        </Modal>
         </View>
         <View style={styles.searchBar}>
           <GoogleSearchBar onSearchRegionChange={this.onSearchRegionChange} />
@@ -342,9 +345,10 @@ const styles = StyleSheet.create({
   },
   filter: {
     flex: 1,
+    color: "blue",
     position: "absolute",
     alignSelf: "flex-start",
-    marginTop: 80
+    marginTop: 100
   },
   add: {
     flex: 1,

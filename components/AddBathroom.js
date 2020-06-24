@@ -18,6 +18,7 @@ import { connect } from "react-redux";
 import { loadReviews } from "../store/reviews";
 import { createBathroom } from "../store/bathrooms";
 import headerimg from "../assets/header-img.png";
+import AddReview from "./AddReview"
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -40,7 +41,8 @@ class AddBathroom extends Component {
       country: " ",
       latitude: 0.0,
       longitude: 0.0,
-      website: " "
+      website: " ",
+      modal2Visible: false,
     };
   }
   async componentDidMount() {}
@@ -51,9 +53,14 @@ class AddBathroom extends Component {
     //   const index = this.state.index;
     // }
   }
+  backButton = () => {
+    this.setState({ modal2Visible: false });
+  };
+
 
   render() {
     const backButton = this.props.backButton;
+    // console.log(backButton);
     const {
       refugeId,
       unisex,
@@ -120,7 +127,7 @@ class AddBathroom extends Component {
               space="between"
               style={{ paddingVertical: 16, alignItems: "baseline" }}
             >
-              <Text size={16}>Recent Reviews</Text>
+              <Text size={40}>Add Bathroom</Text>
 
               <Text
                 size={12}
@@ -132,11 +139,12 @@ class AddBathroom extends Component {
             </Block>
             <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
               <Block row space="between" style={{ flexWrap: "wrap" }}>
-                {reviews.map(review => (
+                {/* {reviews.map(review => (
                   <Text size={16} key={review.id}>
                     {review.comments}
                   </Text>
-                ))}
+
+                ))} */}
               </Block>
             </Block>
           </ScrollView>
@@ -200,7 +208,7 @@ const styles = StyleSheet.create({
   },
   backButton: {
     alignSelf: "flex-end",
-    marginTop: 20,
+    marginTop: -20,
     position: "absolute",
     opacity: 0.7
   }

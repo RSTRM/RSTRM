@@ -2,7 +2,7 @@ import React from "react";
 import { connect } from "react-redux";
 import { logout } from "../store/user";
 import { StyleSheet, Text, View, Button, ImageBackground } from "react-native";
-import headerimg from "../assets/header-img.png";
+import headerimg from "../assets/splash.png";
 
 function Home({ navigation, user, signOut }) {
   return (
@@ -26,6 +26,7 @@ function Home({ navigation, user, signOut }) {
           </View>
         ) : (
           <Button
+            style={styles.container}
             title="User Sign/Login"
             onPress={() => navigation.navigate("User")}
           />
@@ -37,26 +38,25 @@ function Home({ navigation, user, signOut }) {
 
 const styles = StyleSheet.create({
   container: {
-    color: "white",
     flex: 1,
-    backgroundColor: "#fff",
+    color: "white",
     alignItems: "center",
-    justifyContent: "center",
+    justifyContent: "center"
   },
   bottomTab: {
     color: "white",
     flex: 1,
     resizeMode: "cover",
     alignItems: "center",
-    justifyContent: "center",
-  },
+    justifyContent: "center"
+  }
 });
 
 const mapStateToProps = ({ user }) => ({ user });
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
-    signOut: () => dispatch(logout()),
+    signOut: () => dispatch(logout())
   };
 };
 

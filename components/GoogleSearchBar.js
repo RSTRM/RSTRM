@@ -16,7 +16,7 @@ const GoogleSearchBar = ({ onSearchRegionChange }) => {
       renderDescription={(row) => row.description}
       styles={{
         textInputContainer: {
-          backgroundColor: "rgba(0,0,0,0)",
+          backgroundColor: "rgb0,0,0)",
           borderTopWidth: 0,
           borderBottomWidth: 0,
         },
@@ -30,6 +30,10 @@ const GoogleSearchBar = ({ onSearchRegionChange }) => {
         predefinedPlacesDescription: {
           color: "#1faadb",
         },
+        listView:{
+          backgroundColor:'#fff',
+          color: "5d5d5d",
+        }
       }}
       onPress={(data, details = null) => {
         let coordinates = details.geometry.location;

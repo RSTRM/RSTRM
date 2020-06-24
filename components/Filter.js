@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, Switch } from 'react-native'
+import { Text, View, Switch, StyleSheet, TouchableOpacity } from 'react-native'
 
 
 export default function Filter({filterFn}) {
@@ -8,7 +8,9 @@ export default function Filter({filterFn}) {
     const [isEnabled2, setIsEnabled2] = useState(false)
     const [isEnabled3, setIsEnabled3] = useState(false)
 
-    const toggleSwitch = () => setIsEnabled(!isEnabled); 
+    const toggleSwitch = () => {
+        setIsEnabled(!isEnabled); 
+    }
     const toggleSwitch2 = () => setIsEnabled2(!isEnabled2); 
     const toggleSwitch3 = () => setIsEnabled3(!isEnabled3); 
     
@@ -28,7 +30,8 @@ export default function Filter({filterFn}) {
     return (
         <View>
             <View>
-                <Text>Unisex Restrooms</Text>
+                <Text style={styles.filter}>Unisex Restrooms</Text>
+                <TouchableOpacity >
                 <Switch
                     trackColor={{ false: "#767577", true: "#81b0ff" }}
                     thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
@@ -36,9 +39,10 @@ export default function Filter({filterFn}) {
                     onChange={toggleSwitch}
                     value={isEnabled}
                 />
+                </TouchableOpacity>
             </View>
             <View>
-                <Text>Accessible Restrooms</Text>
+                <Text style={styles.filter}>Accessible Restrooms</Text>
                 <Switch
                     trackColor={{ false: "#767577", true: "#81b0ff" }}
                     thumbColor={isEnabled2 ? "#f5dd4b" : "#f4f3f4"}
@@ -48,7 +52,7 @@ export default function Filter({filterFn}) {
                 />
             </View>
             <View>
-                <Text>Changing Table Restrooms</Text>
+                <Text style={styles.filter}>Changing Table Restrooms</Text>
                 <Switch
                     trackColor={{ false: "#767577", true: "#81b0ff" }}
                     thumbColor={isEnabled3 ? "#f5dd4b" : "#f4f3f4"}
@@ -63,3 +67,15 @@ export default function Filter({filterFn}) {
 
 
 
+
+
+const styles = StyleSheet.create({
+    filter: {
+        color: "blue",
+        fontWeight: "400"
+    },
+    button: {
+        padding: 20,
+        borderRadius: 5,
+    }
+})
