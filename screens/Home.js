@@ -8,10 +8,10 @@ function Home({ navigation, user, signOut }) {
   return (
     <ImageBackground source={headerimg} style={styles.bottomTab}>
       <View style={styles.container}>
-        <Text>Welcome to RSTRM!</Text>
+        <Text style={{fontSize: 28, marginBottom: 10}}>Welcome to RSTRM!</Text>
         <Text>{`  `}</Text>
 
-        <Text>For when you gotta go...</Text>
+        <Text style={{fontSize: 18, marginBottom: 10}}>For when you gotta go...</Text>
         {user.id ? (
           <View>
             <Button title="Logout" onPress={signOut} />

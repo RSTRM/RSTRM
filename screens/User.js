@@ -1,29 +1,31 @@
-import React, { useState } from "react";
-import { StyleSheet, Text, View, Button } from "react-native";
-import * as Google from "expo-google-app-auth";
-import secrets from "../secrets.js";
+import React, {useState} from 'react'
+import { StyleSheet, Text, View, Button } from 'react-native'
+import * as Google from 'expo-google-app-auth';
+import {GOOGLE_CLIENT_ID} from '../secrets'
 
 export default function User({ navigation }) {
   const [signedIn, setSignedIn] = useState(false);
   const [name, setName] = useState("");
 
-  signIn = async () => {
-    try {
-      const result = await Google.logInAsync({
-        iosClientId: secrets,
-        scopes: ["profile", "email"],
-        redirectUrl: "host.exp.exponent:/oauth2redirect/google",
-      });
-      if (result.type === "success") {
-        //return result.accessToken;
-        setSignedIn(true), setName(result.user.name);
-      } else {
-        console.log("cancelled");
-      }
-    } catch (e) {
-      console.log("error", e);
+    signIn = async () => {
+        try {
+            const result = await Google.logInAsync({
+                iosClientId: GOOGLE_CLIENT_ID,
+                scopes: ["profile", "email"],
+                redirectUrl: 'host.exp.exponent:/oauth2redirect/google'
+            })
+            if (result.type === "success") {
+                //return result.accessToken;
+                setSignedIn(true),
+                setName(result.user.name)
+            } else {
+                console.log("cancelled")
+            }
+        } catch (e) {
+          console.log("error", e)
+        }
     }
-  };
+  
 
   return (
     <View style={styles.container}>
