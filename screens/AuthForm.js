@@ -13,14 +13,14 @@ const AuthForm = (props) => {
         value={email}
         onChange={(event) => setEmail(event.nativeEvent.text)}
         style={styles.textInput}
-        placeholder="email"
+        placeholder="Email"
         autoCapitalize="none"
       ></TextInput>
       <TextInput
         value={password}
         onChange={(event) => setPassword(event.nativeEvent.text)}
         style={styles.textInput}
-        placeholder="password"
+        placeholder="Password"
         autoCapitalize="none"
         secureTextEntry={true}
       ></TextInput>
@@ -57,7 +57,7 @@ const mapSignup = (state) => {
 const mapDispatch = (dispatch) => {
   return {
     handleSubmit(email, password, props) {
-      dispatch(auth(email, password, "login", props));
+      dispatch(auth("", "", "", email, password, "login", props));
     },
   };
 };
