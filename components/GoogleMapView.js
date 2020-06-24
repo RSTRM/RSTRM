@@ -15,16 +15,15 @@ import MapView, {
 } from "react-native-maps";
 import Carousel from "react-native-snap-carousel";
 import * as Location from "expo-location";
-import BathroomView from "./BathroomView";
-import { loadBathrooms } from "../store/bathrooms";
 import { connect } from "react-redux";
-import { Container, Header, Left, Button, Icon } from "native-base";
+import { loadBathrooms } from "../store/bathrooms";
+import BathroomView from "./BathroomView";
 import GoogleSearchBar from "./GoogleSearchBar";
 import Filter from "./Filter";
-import iconmarker from "../assets/tp-marker.png";
-import headerimg from "../assets/header-img.png";
 import AddBathroom from "./AddBathroom";
-import { Icon as IconB, Header as HeaderB } from "react-native-elements";
+import headerimg from "../assets/header-img.png";
+import { Icon as IconB, Icon as IconFilter, Header as HeaderB } from "react-native-elements";
+
 
 class GoogleMapView extends Component {
   constructor() {
@@ -37,6 +36,7 @@ class GoogleMapView extends Component {
       errorMsg: null,
       modalVisible: false,
       modal2Visible: false,
+      modalFilter: false,
       idx: 0,
       filter: ""
     };
@@ -109,7 +109,6 @@ class GoogleMapView extends Component {
         longitudeDelta: 0.0421
       }
     });
-
     this._map.animateToRegion({
       latitude: coordinates.lat,
       longitude: coordinates.lng,
@@ -127,7 +126,6 @@ class GoogleMapView extends Component {
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421
     });
-
     this.state.markers[index].showCallout();
   };
 
@@ -138,13 +136,10 @@ class GoogleMapView extends Component {
       latitudeDelta: 0.0922,
       longitudeDelta: 0.0421
     });
-
     this._carousel.snapToItem(index);
   };
 
-  backButton = () => {
-    this.setState({ modalVisible: false });
-  };
+  backButton = () => {this.setState({ modalVisible: false, modal2Visible: false, modalFilter: false})};
 
   renderCarouselItem = ({ item }) => {
     return (
@@ -188,29 +183,13 @@ class GoogleMapView extends Component {
     this.setState({ radius: newRadius });
   }
 
-  filterFn = (bool, filter) => {
-    if (bool) {
-      this.setState({ filter });
-    }
-  };
+  filterFn = (bool, filter) => {if(bool) this.setState({ filter })};
+
 
   render() {
     if (!this.state.region) return <Text>Loading...</Text>;
-
     return (
       <View style={styles.container}>
-        <Container style={styles.header}>
-          <Header backgroundImage={headerimg}>
-            <Left>
-              <Button transparent>
-                <Icon
-                  name="ios-menu"
-                  onPress={() => this.props.navigation.openDrawer()}
-                />
-              </Button>
-            </Left>
-          </Header>
-        </Container>
         <MapView
           provider={PROVIDER_GOOGLE}
           ref={map => (this._map = map)}
@@ -219,7 +198,7 @@ class GoogleMapView extends Component {
           showsUserLocation={true}
         >
           <Marker
-            pinColor="blue"
+            pinColor="orange"
             draggable
             onDragEnd={this.onRegionChangeComplete}
             coordinate={{
@@ -229,7 +208,7 @@ class GoogleMapView extends Component {
           />
           {this.props.bathrooms.map((marker, index) => (
             <Marker
-              image={iconmarker}
+              //image={iconmarker}
               key={index}
               ref={ref => (this.state.markers[index] = ref)}
               onPress={() => this.onMarkerPressed(marker, index)}
@@ -250,9 +229,27 @@ class GoogleMapView extends Component {
           <Circle center={this.state.region} radius={this.state.radius + 500} />
         </MapView>
         <HeaderB backgroundImage={headerimg}></HeaderB>
-        <View style={styles.filter}>
-          <Filter filterFn={this.filterFn} />
+        <View style={styles.addFilter}>
+          <IconFilter
+              size={36}
+              name="add-circle"
+              type="FontAwesome"
+              color="#0077F6"
+              onPress={() => this.setState({modalFilter: !this.state.modalFilter})}
+          />
         </View>
+        <Modal
+            animationType="fade"
+            transparent={true}
+            visible={this.state.modalFilter}
+            on
+          >
+            <View style={styles.centeredView}>
+              <View style={styles.modalFilter}>
+                <Filter backButton={this.backButton} filterFn={this.filterFn} />
+              </View>
+            </View>
+        </Modal>
         <View style={styles.add}>
           <IconB
             size={36}
@@ -338,18 +335,41 @@ const styles = StyleSheet.create({
     width: "85%",
     marginTop: 30
   },
-  filter: {
-    flex: 1,
-    position: "absolute",
-    alignSelf: "flex-start",
-    marginTop: 80
-  },
   add: {
     flex: 1,
     position: "absolute",
     alignSelf: "flex-end",
     marginTop: 80,
     padding: 10
+  },
+  addFilter: {
+    flex: 1,
+    position: "absolute",
+    alignSelf: "flex-end",
+    marginTop: 120,
+    padding: 10
+  },
+  centeredView: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    marginTop: 22
+  },
+  modalFilter: {
+    height: 250,
+    width: 300,
+    backgroundColor: "white",
+    borderRadius: 20,
+    padding: 35,
+    alignItems: "center",
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 15,
+      height: 15
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 10
   }
 });
 

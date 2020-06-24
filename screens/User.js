@@ -33,15 +33,11 @@ export default function User({ navigation }) {
         <LoggedIn name={name} />
       ) : (
         <View>
+          <Text style={{textAlign: "center"}}>If you don't have an account:</Text>
+          <Button title="Sign up" onPress={() => navigation.navigate("SignUp")}/>
+          <Text style={{textAlign: "center"}}>Log in if you already have an account:</Text>
+          <Button title="Log in" onPress={() => navigation.navigate("AuthForm")}/>
           <LoginWithGoogle signIn={signIn} />
-          <Button
-            title="Log in"
-            onPress={() => navigation.navigate("AuthForm")}
-          />
-          <Button
-            title="Sign up"
-            onPress={() => navigation.navigate("SignUp")}
-          />
         </View>
       )}
     </View>
@@ -59,8 +55,7 @@ const LoggedIn = ({ name }) => {
 const LoginWithGoogle = ({ signIn }) => {
   return (
     <View>
-      <Text style={styles.header}>Sign In With Google</Text>
-      <Button title="Sign In With Google" onPress={() => signIn()} />
+      <Button title="Or log in with your Google account" onPress={() => signIn()} />
     </View>
   );
 };

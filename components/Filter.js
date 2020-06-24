@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, Switch } from 'react-native'
+import { StyleSheet, Text, View, Switch, Button } from 'react-native'
 
 
-export default function Filter({filterFn}) {
+export default function Filter({filterFn, backButton}) {
 
     const [isEnabled, setIsEnabled] = useState(false)
     const [isEnabled2, setIsEnabled2] = useState(false)
@@ -26,8 +26,9 @@ export default function Filter({filterFn}) {
 
 
     return (
-        <View>
-            <View>
+        <View style={styles.container}>
+            <Button style={styles.closeButton} title="Close" onPress={()=> backButton()}/>
+            <View style={styles.switch}>
                 <Text>Unisex Restrooms</Text>
                 <Switch
                     trackColor={{ false: "#767577", true: "#81b0ff" }}
@@ -37,7 +38,7 @@ export default function Filter({filterFn}) {
                     value={isEnabled}
                 />
             </View>
-            <View>
+            <View style={styles.switch}>
                 <Text>Accessible Restrooms</Text>
                 <Switch
                     trackColor={{ false: "#767577", true: "#81b0ff" }}
@@ -47,7 +48,7 @@ export default function Filter({filterFn}) {
                     value={isEnabled2}
                 />
             </View>
-            <View>
+            <View style={styles.switch}>
                 <Text>Changing Table Restrooms</Text>
                 <Switch
                     trackColor={{ false: "#767577", true: "#81b0ff" }}
@@ -60,6 +61,17 @@ export default function Filter({filterFn}) {
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#fff",
+        justifyContent: "center"
+    },
+    switch: {
+        margin: 3
+    }
+})
 
 
 
