@@ -4,6 +4,7 @@ import Home from "./Home";
 import User from "./User";
 import Setting from "./Setting";
 import AuthForm, { Login } from "./AuthForm";
+import SignUp from "./SignUp";
 import UserProfile from "./UserProfile";
 
 export default function HomeStack() {
@@ -15,6 +16,7 @@ export default function HomeStack() {
       <HomeStack.Screen name="UserProfile" component={UserProfile} />
       <HomeStack.Screen name="Setting" component={Setting} />
       <HomeStack.Screen name="AuthForm" component={Login} />
+      <HomeStack.Screen name="SignUp" component={SignUp} />
     </HomeStack.Navigator>
   );
 }
