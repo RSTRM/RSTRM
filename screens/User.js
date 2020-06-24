@@ -1,7 +1,7 @@
 import React, {useState} from 'react'
 import { StyleSheet, Text, View, Button } from 'react-native'
 import * as Google from 'expo-google-app-auth';
-import secrets from '../secrets.js'
+import {GOOGLE_CLIENT_ID} from '../secrets'
 
 
 export default function User() {
@@ -12,7 +12,7 @@ export default function User() {
     signIn = async () => {
         try {
             const result = await Google.logInAsync({
-                iosClientId: secrets,
+                iosClientId: GOOGLE_CLIENT_ID,
                 scopes: ["profile", "email"],
                 redirectUrl: 'host.exp.exponent:/oauth2redirect/google'
             })

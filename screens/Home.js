@@ -1,11 +1,12 @@
 import React from 'react'
 import { StyleSheet, Text, View, Button } from 'react-native'
 
+
 export default function Home({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text>Welcome to RSTRM!</Text>
-      <Text>For when you gotta go...</Text>
+      <Text style={{fontSize: 28, marginBottom: 10}}>Welcome to RSTRM!</Text>
+      <Text style={{fontSize: 18, marginBottom: 10}}>For when you gotta go ...</Text>
       <Button
         title="User Sign/Login"
         onPress={() => navigation.navigate('User')}
@@ -14,7 +15,6 @@ export default function Home({ navigation }) {
         title="User Profile"
         onPress={() => navigation.navigate('UserProfile')}
       />
-      <Button title="Settings" onPress={() => navigation.navigate('Setting')} />
     </View>
   )
 }

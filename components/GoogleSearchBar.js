@@ -1,5 +1,7 @@
 import React from "react";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
+import {GOOGLE_API_KEY} from '../secrets'
+
 
 
 const GoogleSearchBar = ({ onSearchRegionChange }) => {
@@ -30,6 +32,9 @@ const GoogleSearchBar = ({ onSearchRegionChange }) => {
         predefinedPlacesDescription: {
           color: "#1faadb",
         },
+        listView: {
+          color: '#A52A2A'
+        }
       }}
       onPress={(data, details = null) => {
         let coordinates = details.geometry.location;
@@ -37,7 +42,7 @@ const GoogleSearchBar = ({ onSearchRegionChange }) => {
       }}
       getDefaultValue={() => ""}
       query={{
-        key: "AIzaSyAg3aikbYJ2TdSIyOE8ExZOmWx3xFeRHvU",
+        key: GOOGLE_API_KEY,
         language: "en",
         // components: "country:us",
       }}
