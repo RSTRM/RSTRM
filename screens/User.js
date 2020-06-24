@@ -36,7 +36,10 @@ export default function User({ navigation }) {
             title="Log in"
             onPress={() => navigation.navigate("AuthForm")}
           />
-          <Button title="Sign up" />
+          <Button
+            title="Sign up"
+            onPress={() => navigation.navigate("SignUp")}
+          />
         </View>
       )}
     </View>
