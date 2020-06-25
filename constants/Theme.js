@@ -9,7 +9,8 @@ export default {
     WARNING: '#FF9800',
     MUTED: '#979797',
     INPUT: '#DCDCDC',
-    ACTIVE: '#9C26B0',
+    INACTIVE: '#3b38f0',
+    ACTIVE: '#4c2cdb', //changed to match header-img
     BUTTON_COLOR: '#9C26B0',
     PLACEHOLDER: '#9FA5AA',
     SWITCH_ON: '#9C26B0',
@@ -23,5 +24,5 @@ export default {
   },
   SIZES: {
     BLOCK_SHADOW_RADIUS: 2,
-  }
-};
+  },
+}
