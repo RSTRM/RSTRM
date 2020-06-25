@@ -264,6 +264,7 @@ class GoogleMapView extends Component {
           <AddBathroom
             backButton={this.backButton}
             region={this.state.region}
+            
           />
         </Modal>
         </View>

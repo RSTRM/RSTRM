@@ -20,16 +20,16 @@ import AddReview from "./AddReview";
 import { createCheckin } from "../store/checkins";
 import { loadReviews } from "../store/reviews";
 import { SliderBox } from "react-native-image-slider-box";
+import headerimg from "../assets/header-img.png";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
 
 const imgs = [
-
   "https://assets3.thrillist.com/v1/image/1856875/792x527/crop;jpeg_quality=60.jpg",
   "https://assets3.thrillist.com/v1/image/1856877/792x527/crop;jpeg_quality=60.jpg",
   "https://assets3.thrillist.com/v1/image/1856881/792x1500/scale;jpeg_quality=60.jpg"
-]
+];
 
 class BathroomView extends Component {
   constructor(props) {
@@ -77,129 +77,140 @@ class BathroomView extends Component {
             dotColor="#FFEE58"
             inactiveDotColor="#90A4AE"
           />
-          
-            <Block flex style={styles.profileDetails}>
-              <Block style={styles.profileTexts}>
-                <Block style={styles.backButton}>
-                  <Icon
-                    raised
-                    reverse
-                    name="close"
-                    type="material"
-                    color="black"
-                    onPress={() => backButton()}
-                  />
+
+          <Block flex style={styles.profileDetails}>
+            <Block style={styles.profileTexts}>
+              <Block style={styles.backButton}>
+                <Icon
+                  raised
+                  reverse
+                  name="close"
+                  type="material"
+                  color="black"
+                  onPress={() => backButton()}
+                />
+              </Block>
+              <Text color="white" size={28} style={{ paddingBottom: 150 }}>
+                {bathroom.establishment}{" "}
+              </Text>
+              <Block row space="between">
+                <Block row>
+                  <Block middle style={styles.pro}>
+                    <Text size={16} color="black">
+                      Pro
+                    </Text>
+                  </Block>
+                  <Text color="white" size={16} muted style={styles.seller}>
+                    Establishment
+                  </Text>
+                  <Text size={16} color={materialTheme.COLORS.WARNING}>
+                    4.9{" "}
+                  </Text>
                 </Block>
-                <Text color="white" size={28} style={{ paddingBottom: 36 }}>
-                  {bathroom.establishment}{" "}
-                </Text>
-                <Block row space="between">
-                  <Block row>
-                    <Block middle style={styles.pro}>
-                      <Text size={16} color="black">
-                        Pro
-                      </Text>
-                    </Block>
-                    <Text color="white" size={16} muted style={styles.seller}>
-                      Establishment
-                    </Text>
-                    <Text size={16} color={materialTheme.COLORS.WARNING}>
-                      4.9{" "}
-                    </Text>
-                  </Block>
-                  <Block>
-                    <Text color={theme.COLORS.MUTED} size={16}>
-                      {` `} {bathroom.city}{" "}
-                    </Text>
-                  </Block>
+                <Block>
+                  <Text color={theme.COLORS.MUTED} size={16}>
+                    {` `} {bathroom.city}{" "}
+                  </Text>
                 </Block>
               </Block>
-              <LinearGradient
-                colors={["rgba(0,0,0,0)", "rgba(0,0,0,1)"]}
-                style={styles.gradient}
-              />
             </Block>
+            <LinearGradient
+              colors={["rgba(0,0,0,0)", "rgba(0,0,0,1)"]}
+              style={styles.gradient}
+            />
+          </Block>
           {/* </ImageBackground> */}
         </Block>
         <Block flex style={styles.options}>
-          <ScrollView showsVerticalScrollIndicator={false}>
-            <Block row space="between" style={{ padding: theme.SIZES.BASE }}>
-              <Block middle>
-                <Text bold size={12} style={{ marginBottom: 8 }}>
-                  {reviews.length}
-                </Text>
-                <Text muted size={12}>
-                  Reviews
-                </Text>
-              </Block>
-              <Block middle>
-                <Text bold size={12} style={{ marginBottom: 8 }}>
-                  {bathroom.AvgRating || 0}
-                </Text>
-                <Text muted size={12}>
-                  Avg Rating
-                </Text>
-              </Block>
-              <Block middle>
-                <Icon
-                  name="emoticon-poop"
-                  type="material-community"
-                  color="brown"
-                  size={24}
-                  // onPress={() => ()}
-                />
-                <Text muted size={12}>
-                  Add Review
-                </Text>
-              </Block>
-            </Block>
-            <Block
-              row
-              space="between"
-              style={{ paddingVertical: 16, alignItems: "baseline" }}
-            >
-              <Text size={16}>Recent Reviews</Text>
-
-              <Text
-                size={12}
-                color={theme.COLORS.GRADIENT_END}
-                // onPress={() => this.props.navigation.navigate("Home")}
-              >
-                Tweet
-              </Text>
-            </Block>
-            <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
-              <Block row space="between" style={{ flexWrap: "wrap" }}>
-                {reviews.map(review => (
-                  <Text size={16} key={review.id}>
-                    {review.comments}
+          <ImageBackground source={headerimg} style={styles.flex}>
+            <ScrollView showsVerticalScrollIndicator={false}>
+              <Block row space="between" style={{ padding: theme.SIZES.BASE }}>
+                <Block middle>
+                  <Text bold size={12} style={{ marginBottom: 8 }}>
+                    {reviews.length}
                   </Text>
-                ))}
+                  <Text muted size={12}>
+                    Reviews
+                  </Text>
+                </Block>
+                <Block middle>
+                  <Text bold size={12} style={{ marginBottom: 8 }}>
+                    {bathroom.AvgRating || 0}
+                  </Text>
+                  <Text muted size={12}>
+                    Avg Rating
+                  </Text>
+                </Block>
+                <Block middle>
+                  <Icon
+                    name="medal"
+                    type="material-community"
+                    color="yellow"
+                    size={24}
+                    // onPress={() => ()}
+                  />
+                  <Text muted size={12}>
+                    Add Review
+                  </Text>
+                </Block>
               </Block>
-            </Block>
-            {user.id ? (
-              <View>
-                <Button
-                  title="Check In"
-                  onPress={async () => {
-                    await postCheckin({
-                      userId: user.id,
-                      bathroomId: bathroom.id
-                    });
-                    this.setState({ modalVisible: true });
-                  }}
-                ></Button>
-                <Modal
-                  animationType="slide"
-                  transparent={true}
-                  visible={this.state.modalVisible}
-                  on
+              <Block
+                row
+                space="between"
+                style={{
+                  paddingVertical: 16,
+                  alignItems: "baseline",
+                  color: "white"
+                }}
+              >
+                <Text color={theme.COLORS.WHITE} size={16}>
+                  Recent Reviews
+                </Text>
+
+                <Text
+                  size={12}
+                  color={theme.COLORS.WHITE}
+                  // onPress={() => this.props.navigation.navigate("Home")}
                 >
-                  <AddReview backButton={this.backButton} bathroom={bathroom} />
-                </Modal>
-              </View>
-            ) : null}
-          </ScrollView>
+                  Tweet
+                </Text>
+              </Block>
+              <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
+                <Block row space="between" style={{ flex: 1, color: 'white' }}>
+                  {reviews.map(review => (
+                    <Text size={16} key={review.id} color={theme.COLORS.WHITE} > 
+                      {review.comments}{"\n"}{"\n"}
+                    </Text>
+                  ))}
+                </Block>
+              </Block>
+              {user.id ? (
+                <View>
+                  <Button
+                    title="Check In"
+                    onPress={async () => {
+                      await postCheckin({
+                        userId: user.id,
+                        bathroomId: bathroom.id
+                      });
+                      this.setState({ modalVisible: true });
+                    }}
+                  ></Button>
+                  <Modal
+                    animationType="slide"
+                    transparent={true}
+                    visible={this.state.modalVisible}
+                    on
+                  >
+                    <AddReview
+                      backButton={this.backButton}
+                      bathroom={bathroom}
+                    />
+                  </Modal>
+                </View>
+              ) : null}
+            </ScrollView>
+          </ImageBackground>
         </Block>
       </Block>
     );
@@ -247,12 +258,13 @@ const styles = StyleSheet.create({
     marginTop: -theme.SIZES.BASE * 7,
     borderTopLeftRadius: 13,
     borderTopRightRadius: 13,
-    backgroundColor: theme.COLORS.WHITE,
+    backgroundColor: "#005DFF",
     shadowColor: "black",
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 8,
     shadowOpacity: 0.2,
-    zIndex: 2
+    zIndex: 2,
+    color: "white"
   },
   thumb: {
     borderRadius: 4,
@@ -266,14 +278,30 @@ const styles = StyleSheet.create({
     left: 0,
     right: 0,
     bottom: 0,
-    height: "30%",
+    height: "0%",
     position: "absolute"
   },
   backButton: {
     alignSelf: "flex-end",
-    marginTop: -80,
+    marginTop: 40,
     position: "absolute",
     opacity: 0.7
+  },
+  flex: {
+    flex: 1,
+    position: "relative",
+    padding: theme.SIZES.BASE,
+    marginHorizontal: theme.SIZES.BASE * -.5,
+    marginTop: -theme.SIZES.BASE * 1,
+    borderTopLeftRadius:  13,
+    borderTopRightRadius: 13,
+    backgroundColor: "#1E8CF8",
+    shadowColor: "black",
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 8,
+    shadowOpacity: 0.2,
+    zIndex: 2,
+    color: "white"
   }
 });
 
