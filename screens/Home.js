@@ -1,62 +1,79 @@
-import React from "react";
-import { connect } from "react-redux";
-import { logout } from "../store/user";
-import { StyleSheet, Text, View, Button, ImageBackground } from "react-native";
-import headerimg from "../assets/header-img.png";
-
+import React from 'react'
+import { connect } from 'react-redux'
+import { logout } from '../store/user'
+import { StyleSheet, Text, View, Button, ImageBackground } from 'react-native'
+import headerimg from '../assets/header-img.png'
 
 function Home({ navigation, user, signOut }) {
   return (
     <ImageBackground source={headerimg} style={styles.bottomTab}>
       <View style={styles.container}>
         {user.id ? (
-          <View>
-            <Text style={{fontSize: 28, marginBottom: 10, textAlign: "center"}}>Welcome to RSTRM {user.nameFirst[0].toUpperCase()+user.nameFirst.slice(1)}</Text>
-            <Text style={{fontSize: 18, marginBottom: 10}}>Click the Map Icon to see your nearest restroom.</Text>
+          <View style={styles.textContainer}>
+            <Text style={styles.textTitle}>
+              Welcome to RSTRM{', '}
+              {user.nameFirst[0].toUpperCase() + user.nameFirst.slice(1)}
+            </Text>
+            <Text style={styles.textSubTitle}>
+              Click the Map Icon to see your nearest restroom.
+            </Text>
             <Button title="Logout" onPress={signOut} />
             <Button
               title="User Profile"
-              onPress={() => navigation.navigate("UserProfile")}
+              onPress={() => navigation.navigate('UserProfile')}
             />
           </View>
         ) : (
-          <View>
-            <Text style={{fontSize: 28, marginBottom: 10}}>Welcome to RSTRM!</Text>
-            <Text style={{fontSize: 18, marginBottom: 10}}>For when you gotta go...</Text>
+          <View style={styles.textContainer}>
+            <Text style={styles.textTitle}>Welcome to RSTRM!</Text>
+            <Text style={styles.textSubTitle}>For when you gotta go...</Text>
             <Button
               title="User Sign/Login"
-              onPress={() => navigation.navigate("User")}
+              onPress={() => navigation.navigate('User')}
             />
           </View>
         )}
       </View>
     </ImageBackground>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
-    color: "white",
+    color: 'white',
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: '#fff',
     //alignItems: "center",
-    justifyContent: "center",
+    justifyContent: 'center',
+  },
+  textContainer: {
+    padding: 15,
+  },
+  textTitle: {
+    fontSize: 28,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  textSubTitle: {
+    fontSize: 18,
+    marginBottom: 10,
+    textAlign: 'center',
   },
   bottomTab: {
-    color: "white",
+    color: 'white',
     flex: 1,
-    resizeMode: "cover",
-    alignItems: "center",
-    justifyContent: "center",
+    resizeMode: 'cover',
+    alignItems: 'center',
+    justifyContent: 'center',
   },
-});
+})
 
-const mapStateToProps = ({ user }) => ({ user });
+const mapStateToProps = ({ user }) => ({ user })
 
 const mapDispatchToProps = (dispatch) => {
   return {
     signOut: () => dispatch(logout()),
-  };
-};
+  }
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home)
