@@ -1,4 +1,5 @@
 import axios from "axios";
+const HOST = "https://server-rstrm.herokuapp.com";
 
 /**
  * ACTION TYPES ------------------------------------------------
@@ -12,7 +13,6 @@ const DELETE_REVIEW = "DELETE_REVIEW";
  * INITIAL STATE --------------------------------------------------
  */
 const initialState = [];
-const HOST = "http://localhost:8080";
 
 /**
  * ACTION CREATORS
