@@ -16,28 +16,60 @@ import { Icon, Avatar, Badge } from 'react-native-elements'
 import { Images, materialTheme } from '../constants'
 import { HeaderHeight } from '../constants/utils'
 import { connect } from 'react-redux'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
 const { width, height } = Dimensions.get('screen')
 const thumbMeasure = (width - 48 - 32) / 3
 
 class UserProfile extends Component {
-  constructor(props) {
-    super(props)
+  constructor() {
+    super()
     this.state = {
-      index: 0,
-      modalVisible: false,
-      checkin: {},
+      list: '',
+      badges: [],
+      reviews: [],
+      checkins: [],
     }
   }
   async componentDidMount() {}
 
   async componentDidUpdate(prevProps) {}
 
+  //choose from https://materialdesignicons.com/
+  iconBar = [
+    {
+      label: 'Badges',
+      name: 'badges',
+      icon: 'medal',
+    },
+    {
+      label: 'Reviews',
+      name: 'reviews',
+      icon: 'message-draw',
+    },
+    {
+      label: 'Checkins',
+      name: 'checkins',
+      icon: 'bookmark-check',
+    },
+  ]
+
   backButton = () => {
     this.setState({ modalVisible: false })
   }
 
+  iconMaker = (icon, name) => {
+    let color = materialTheme.COLORS.INACTIVE
+    if (this.list === name) {
+      color = materialTheme.COLORS.ACTIVE
+    }
+    return (
+      <Icon name={icon} type="material-community" color={color} size={24} />
+    )
+  }
+
   render() {
+    console.log('in render', this.list)
     return (
       <Block flex style={styles.profile}>
         <Block flex>
@@ -48,9 +80,6 @@ class UserProfile extends Component {
             imageStyle={styles.profileImage}>
             <Block flex style={styles.profileDetails}>
               <Block style={styles.profileTexts}>
-                {/* <Text color="white" size={24} style={{ paddingBottom: 30 }}>
-                  User Name
-                </Text> */}
                 <Block row space="between">
                   <Block row>
                     <Block middle style={styles.pro}>
@@ -58,12 +87,6 @@ class UserProfile extends Component {
                         Elite
                       </Text>
                     </Block>
-                    {/* <Text color="white" size={16} muted style={styles.seller}>
-                      Reviews
-                    </Text>
-                    <Text size={16} color={materialTheme.COLORS.WARNING}>
-                      4.9{' '}
-                    </Text> */}
                   </Block>
                   <Block>
                     <Text color="white" size={16}>
@@ -82,53 +105,21 @@ class UserProfile extends Component {
         <Block flex style={styles.options}>
           <ScrollView showsVerticalScrollIndicator={false}>
             <Block row space="between" style={{ padding: theme.SIZES.BASE }}>
-              <Block middle>
-                {/* <View>
-                  <Badge
-                    status="success"
-                    containerStyle={{
-                      position: 'absolute',
-                      top: -4,
-                      right: -4,
-                    }}
-                  />
-                </View> */}
-                <Icon
-                  name="medal"
-                  type="material-community"
-                  color="purple"
-                  size={24}
-                  onPress={() => 'pressed'}
-                />
-
-                <Text muted size={12}>
-                  Badges
-                </Text>
-              </Block>
-              <Block middle>
-                <Icon
-                  name="message-draw"
-                  type="material-community"
-                  color="purple"
-                  size={24}
-                  onPress={() => 'pressed'}
-                />
-                <Text muted size={12}>
-                  Reviews
-                </Text>
-              </Block>
-              <Block middle>
-                <Icon
-                  name="account-check"
-                  type="material-community"
-                  color="purple"
-                  size={24}
-                  onPress={() => 'pressed'}
-                />
-                <Text muted size={12}>
-                  Checkins
-                </Text>
-              </Block>
+              {this.iconBar.map((item) => (
+                <TouchableOpacity
+                  key={item.icon}
+                  onPress={() => {
+                    this.setState({ list: item.name })
+                    console.log(`touched ${item.name}`)
+                  }}>
+                  <Block middle>
+                    {this.iconMaker(item.icon, item.name)}
+                    <Text muted size={12}>
+                      {item.label}
+                    </Text>
+                  </Block>
+                </TouchableOpacity>
+              ))}
             </Block>
             <Block
               row
