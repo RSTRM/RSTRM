@@ -72,14 +72,7 @@ const styles = StyleSheet.create({
     },
     switch: {
         margin: 3
-    }
-})
-
-
-
-
-
-const styles = StyleSheet.create({
+    },
     filter: {
         color: "blue",
         fontWeight: "400"
@@ -89,3 +82,5 @@ const styles = StyleSheet.create({
         borderRadius: 5,
     }
 })
+
+
