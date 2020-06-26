@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { Text, View, Switch, StyleSheet, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, Switch, Button } from 'react-native'
 
 
-export default function Filter({filterFn}) {
+export default function Filter({filterFn, backButton}) {
 
     const [isEnabled, setIsEnabled] = useState(false)
     const [isEnabled2, setIsEnabled2] = useState(false)
@@ -28,10 +28,10 @@ export default function Filter({filterFn}) {
 
 
     return (
-        <View>
-            <View>
-                <Text style={styles.filter}>Unisex Restrooms</Text>
-                <TouchableOpacity >
+        <View style={styles.container}>
+            <Button style={styles.closeButton} title="Close" onPress={()=> backButton()}/>
+            <View style={styles.switch}>
+                <Text>Unisex Restrooms</Text>
                 <Switch
                     trackColor={{ false: "#767577", true: "#81b0ff" }}
                     thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
@@ -39,10 +39,9 @@ export default function Filter({filterFn}) {
                     onChange={toggleSwitch}
                     value={isEnabled}
                 />
-                </TouchableOpacity>
             </View>
-            <View>
-                <Text style={styles.filter}>Accessible Restrooms</Text>
+            <View style={styles.switch}>
+                <Text>Accessible Restrooms</Text>
                 <Switch
                     trackColor={{ false: "#767577", true: "#81b0ff" }}
                     thumbColor={isEnabled2 ? "#f5dd4b" : "#f4f3f4"}
@@ -51,8 +50,8 @@ export default function Filter({filterFn}) {
                     value={isEnabled2}
                 />
             </View>
-            <View>
-                <Text style={styles.filter}>Changing Table Restrooms</Text>
+            <View style={styles.switch}>
+                <Text>Changing Table Restrooms</Text>
                 <Switch
                     trackColor={{ false: "#767577", true: "#81b0ff" }}
                     thumbColor={isEnabled3 ? "#f5dd4b" : "#f4f3f4"}
@@ -64,6 +63,17 @@ export default function Filter({filterFn}) {
         </View>
     )
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: "#fff",
+        justifyContent: "center"
+    },
+    switch: {
+        margin: 3
+    }
+})
 
 
 

@@ -8,56 +8,74 @@ function Home({ navigation, user, signOut }) {
   return (
     <ImageBackground source={headerimg} style={styles.bottomTab}>
       <View style={styles.container}>
-        <Text>Welcome to RSTRM!</Text>
-        <Text>{`  `}</Text>
-
-        <Text>For when you gotta go...</Text>
         {user.id ? (
-          <View>
+          <View style={styles.textContainer}>
+            <Text style={styles.textTitle}>
+              Welcome to RSTRM{', '}
+              {user.nameFirst[0].toUpperCase() + user.nameFirst.slice(1)}
+            </Text>
+            <Text style={styles.textSubTitle}>
+              Click the Map Icon to see your nearest restroom.
+            </Text>
             <Button title="Logout" onPress={signOut} />
             <Button
-              title="Account Settings"
-              onPress={() => navigation.navigate("Setting")}
-            />
-            <Button
               title="User Profile"
-              onPress={() => navigation.navigate("UserProfile")}
+              onPress={() => navigation.navigate('UserProfile')}
             />
           </View>
         ) : (
-          <Button
-            style={styles.container}
-            title="User Sign/Login"
-            onPress={() => navigation.navigate("User")}
-          />
+          <View style={styles.textContainer}>
+            <Text style={styles.textTitle}>Welcome to RSTRM!</Text>
+            <Text style={styles.textSubTitle}>For when you gotta go...</Text>
+            <Button
+              title="User Sign/Login"
+              onPress={() => navigation.navigate('User')}
+            />
+          </View>
         )}
       </View>
     </ImageBackground>
-  );
+  )
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    color: "white",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
+    color: 'white',
+    flex: 1,
+    backgroundColor: '#fff',
+    justifyContent: 'center',
+  },
+  textContainer: {
+    padding: 15,
+  },
+  textTitle: {
+    fontSize: 28,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  textSubTitle: {
+    fontSize: 18,
+    marginBottom: 10,
+    textAlign: 'center',
   },
   bottomTab: {
-    color: "white",
+    color: 'white',
     flex: 1,
-    resizeMode: "cover",
-    alignItems: "center",
-    justifyContent: "center"
-  }
-});
+    resizeMode: 'cover',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+})
 
-const mapStateToProps = ({ user }) => ({ user });
+const mapStateToProps = ({ user }) => ({ user })
 
 const mapDispatchToProps = dispatch => {
   return {
-    signOut: () => dispatch(logout())
-  };
-};
+    signOut: () => dispatch(logout()),
+  }
+}
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home);
+export default connect(mapStateToProps, mapDispatchToProps)(Home)

@@ -67,6 +67,7 @@ class BathroomView extends Component {
     const bathroom = this.props.bathrooms[index] || {};
     // const reviews = this.props.reviews.filter(review => review.bathroomId === bathroom.id );
     const { reviews } = this.props;
+    console.log(bathroom);
     return (
       <Block flex style={styles.profile}>
         <Block flex>

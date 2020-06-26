@@ -1,6 +1,7 @@
 import React from "react";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-// const navigator.geolocation = require('@react-native-community/geolocation');
+import {GOOGLE_API_KEY} from '../secrets'
+
 
 const GoogleSearchBar = ({ onSearchRegionChange, getLocationData = {} }) => {
   return (
@@ -49,8 +50,8 @@ const GoogleSearchBar = ({ onSearchRegionChange, getLocationData = {} }) => {
       }}
       getDefaultValue={() => ""}
       query={{
-        key: "AIzaSyAg3aikbYJ2TdSIyOE8ExZOmWx3xFeRHvU",
-        language: "en"
+        key: GOOGLE_API_KEY,
+        language: "en",
         // components: "country:us",
       }}
       currentLocation={false}

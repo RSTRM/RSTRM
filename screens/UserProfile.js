@@ -1,280 +1,237 @@
-import React from 'react'
-import { StyleSheet, View, Text, Image } from 'react-native'
-import { Icon, Card, Button, Block } from 'galio-framework'
+import React, { Component } from 'react'
+import {
+  StyleSheet,
+  Dimensions,
+  ScrollView,
+  Image,
+  ImageBackground,
+  Platform,
+  Button,
+  Modal,
+  View,
+} from 'react-native'
+import { Block, Text, theme } from 'galio-framework'
 import { LinearGradient } from 'expo-linear-gradient'
-import { Badge } from 'react-native-elements'
-import { ScrollView } from 'react-native-gesture-handler'
+import { Icon, Avatar, Badge } from 'react-native-elements'
+import { Images, materialTheme } from '../constants'
+import { HeaderHeight } from '../constants/utils'
+import { connect } from 'react-redux'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 
-export default function UserProfile() {
-  return (
-    <View style={styles.container}>
-      <LinearGradient
-        style={styles.gradient}
-        colors={['#C0C0C0', '#808080']}
-        start={{ x: 1, y: 1 }}
-        end={{ x: 0, y: 0 }}>
-        <Text style={styles.profileText}>Profile</Text>
+const { width, height } = Dimensions.get('screen')
+const thumbMeasure = (width - 48 - 32) / 3
 
-        <LinearGradient
-          style={styles.gradientJob}
-          start={{ x: 1, y: 1 }}
-          end={{ x: 0, y: 0 }}
-          colors={['#808080', '#C0C0C0']}>
-          <View
-            style={{ flexDirection: 'row', marginLeft: '5%', marginTop: '5%' }}>
-            <Text>IMAGE</Text>
-            <View style={{ flexDirection: 'row' }}>
-              <View style={{ flexDirection: 'colum' }}>
-                <Text h5 style={styles.Mao}>
-                  Hippie Mao
-                </Text>
-                <Text h6 style={styles.Designer}>
-                  {'UI/UX Designer Job \nhunting'}
-                </Text>
-              </View>
-              <Icon
-                style={styles.maoIcon}
-                name="chevron-small-right"
-                family="Entypo"
-                color={'#fff'}
-                size={35}
+class UserProfile extends Component {
+  constructor() {
+    super()
+    this.state = {
+      list: '',
+      badges: [],
+      reviews: [],
+      checkins: [],
+    }
+  }
+  async componentDidMount() {}
+
+  async componentDidUpdate(prevProps) {}
+
+  //choose from https://materialdesignicons.com/
+  iconBar = [
+    {
+      label: 'Badges',
+      name: 'badges',
+      icon: 'medal',
+    },
+    {
+      label: 'Reviews',
+      name: 'reviews',
+      icon: 'message-draw',
+    },
+    {
+      label: 'Checkins',
+      name: 'checkins',
+      icon: 'bookmark-check',
+    },
+  ]
+
+  backButton = () => {
+    this.setState({ modalVisible: false })
+  }
+
+  iconMaker = (icon, name) => {
+    let color = materialTheme.COLORS.INACTIVE
+    if (this.list === name) {
+      color = materialTheme.COLORS.ACTIVE
+    }
+    return (
+      <Icon name={icon} type="material-community" color={color} size={24} />
+    )
+  }
+
+  render() {
+    console.log('in render', this.list)
+    return (
+      <Block flex style={styles.profile}>
+        <Block flex>
+          <ImageBackground
+            //will connect data-image to source field below here
+            source={{ uri: Images.Avatar }}
+            style={styles.profileContainer}
+            imageStyle={styles.profileImage}>
+            <Block flex style={styles.profileDetails}>
+              <Block style={styles.profileTexts}>
+                <Block row space="between">
+                  <Block row>
+                    <Block middle style={styles.pro}>
+                      <Text size={16} color="black">
+                        Elite
+                      </Text>
+                    </Block>
+                  </Block>
+                  <Block>
+                    <Text color="white" size={16}>
+                      User Name
+                    </Text>
+                  </Block>
+                </Block>
+              </Block>
+              <LinearGradient
+                colors={['rgba(0,0,0,0)', 'rgba(0,0,0,1)']}
+                style={styles.gradient}
               />
-            </View>
-          </View>
-        </LinearGradient>
+            </Block>
+          </ImageBackground>
+        </Block>
+        <Block flex style={styles.options}>
+          <ScrollView showsVerticalScrollIndicator={false}>
+            <Block row space="between" style={{ padding: theme.SIZES.BASE }}>
+              {this.iconBar.map((item) => (
+                <TouchableOpacity
+                  key={item.icon}
+                  onPress={() => {
+                    this.setState({ list: item.name })
+                    console.log(`touched ${item.name}`)
+                  }}>
+                  <Block middle>
+                    {this.iconMaker(item.icon, item.name)}
+                    <Text muted size={12}>
+                      {item.label}
+                    </Text>
+                  </Block>
+                </TouchableOpacity>
+              ))}
+            </Block>
+            <Block
+              row
+              space="between"
+              style={{ paddingVertical: 16, alignItems: 'baseline' }}>
+              <Text size={16}>Recent Reviews</Text>
 
-        {/* <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-          <Text h5 style={styles.horizontalText}>
-            You make know{' '}
-          </Text>
-          <Text h5 style={styles.textRow1}>
-            More
-          </Text>
-        </View> */}
-
-        {/* <View style={{ height: '4%' }}>
-          <View
-            style={{ flexDirection: 'row', justifyContent: 'space-around' }}>
-            <Button
-              size="small"
-              shadowless
-              style={styles.horizontalButton}
-              onPress={() => this.props.navigation.navigate('Screen2')}>
-              <Text>IMAGE</Text>
-            </Button>
-
-            <Button
-              size="small"
-              shadowless
-              style={styles.horizontalButton}
-              onPress={() => this.props.navigation.navigate('Screen2')}>
-              <Text>IMAGE</Text>
-            </Button>
-            <Button
-              size="small"
-              shadowless
-              style={styles.horizontalButton}
-              onPress={() => this.props.navigation.navigate('Screen2')}>
-              <Text>IMAGE</Text>
-            </Button>
-            <Button
-              size="small"
-              shadowless
-              style={styles.horizontalButton}
-              onPress={() => this.props.navigation.navigate('Screen2')}>
-              <Text>IMAGE</Text>
-            </Button>
-          </View>
-        </View> */}
-
-        <View style={{ marginTop: 60, flexDirection: 'row' }}>
-          <Text h5 style={styles.MessageText}>
-            Message{' '}
-          </Text>
-          <Badge style={styles.badge} value="99+" status="error" />
-        </View>
-        <View style={{ alignSelf: 'flex-end', marginTop: '-9%' }}>
-          <Text h5 style={styles.textRow2}>
-            More
-          </Text>
-        </View>
-
-        <ScrollView>
-          <View style={{ marginTop: '2%' }}>
-            <View
-              style={{
-                flexDirection: 'row',
-                backgroundColor: '#5a0e54',
-                marginLeft: '5%',
-                marginRight: '5%',
-                borderRadius: '10%',
-                marginBottom: '3%',
-              }}>
-              <Icon
-                style={styles.loginIcon}
-                name="user-circle"
-                family="FontAwesome"
-                color={'#fc408a'}
-                size={35}
-              />
-              <Text style={styles.textLogin}>
-                {'We detected an unusal\n Login attempt'}
+              <Text
+                size={12}
+                color={theme.COLORS.GRADIENT_END}
+                // onPress={() => this.props.navigation.navigate("Home")}
+              >
+                More
               </Text>
+            </Block>
+            <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
+              <Block row space="between" style={{ flexWrap: 'wrap' }}>
+                <Text size={16}>LIST</Text>
+              </Block>
+            </Block>
+            <View>
+              {/* <Button
+                title="Check In"
+                onPress={async () => {
+                  await postCheckin({
+                    userId: user.id,
+                    bathroomId: bathroom.id,
+                  })
+                  this.setState({ modalVisible: true })
+                }}></Button>
+              <Modal
+                animationType="slide"
+                transparent={true}
+                visible={this.state.modalVisible}
+                on></Modal> */}
             </View>
-
-            <View
-              style={{
-                flexDirection: 'row',
-                backgroundColor: '#5a0e54',
-                marginLeft: '5%',
-                marginRight: '5%',
-                borderRadius: '10%',
-                paddingBottom: '5%',
-              }}>
-              <Icon
-                style={styles.locationIcon}
-                name="location-pin"
-                family="Entypo"
-                color={'#4ec5f9'}
-                size={35}
-              />
-              <Text style={styles.locationText}>
-                {
-                  'Pleas turn on real-time position \nto ensure that your friends can \ninteract with you at any time '
-                }
-              </Text>
-            </View>
-          </View>
-        </ScrollView>
-      </LinearGradient>
-    </View>
-  )
+          </ScrollView>
+        </Block>
+      </Block>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  profile: {
+    marginTop: Platform.OS === 'android' ? -HeaderHeight : 0,
+    marginBottom: -HeaderHeight * 1,
+  },
+  profileImage: {
+    width: width * 1.1,
+    height: 'auto',
+  },
+  profileContainer: {
+    width: width,
+    height: height / 2.7,
+  },
+  profileDetails: {
+    paddingTop: theme.SIZES.BASE * 4,
+    justifyContent: 'flex-end',
+    position: 'relative',
+  },
+  profileTexts: {
+    paddingHorizontal: theme.SIZES.BASE * 2,
+    paddingVertical: theme.SIZES.BASE * 2,
+    zIndex: 2,
+  },
+  pro: {
+    backgroundColor: materialTheme.COLORS.ACTIVE,
+    paddingHorizontal: 6,
+    marginRight: theme.SIZES.BASE / 2,
+    borderRadius: 4,
+    height: 19,
+    width: 42,
+  },
+  seller: {
+    marginRight: theme.SIZES.BASE / 2,
+  },
+  options: {
+    position: 'relative',
+    padding: theme.SIZES.BASE,
+    marginHorizontal: theme.SIZES.BASE,
+    marginTop: -theme.SIZES.BASE * 7,
+    borderTopLeftRadius: 13,
+    borderTopRightRadius: 13,
+    backgroundColor: theme.COLORS.WHITE,
+    shadowColor: 'black',
+    shadowOffset: { width: 0, height: 0 },
+    shadowRadius: 8,
+    shadowOpacity: 0.2,
+    zIndex: 2,
+  },
+  thumb: {
+    borderRadius: 4,
+    marginVertical: 4,
+    alignSelf: 'center',
+    width: thumbMeasure,
+    height: thumbMeasure,
   },
   gradient: {
-    flex: 1,
+    zIndex: 1,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: '30%',
+    position: 'absolute',
   },
-  gradientJob: {
-    marginLeft: '5%',
-    marginRight: '5%',
-    height: '20%',
-    borderRadius: 15,
-  },
-  profileText: {
-    fontSize: 40,
-    fontWeight: 'bold',
-    color: '#fff',
-    marginTop: '13%',
-    marginLeft: '5%',
-    marginBottom: '2%',
-  },
-  jobCard: {
-    height: '100%',
-    borderColor: 'transparent',
-  },
-  horizontalText: {
-    fontWeight: '700',
-    color: '#fff',
-    marginLeft: '5%',
-    marginTop: '3%',
-    paddingBottom: '3%',
-  },
-  horizontalButton: {
-    borderRadius: 230,
-    width: '5%',
-    justifyContent: 'space-between',
-    marginTop: '1%',
-  },
-  img1S1: {
-    height: 75,
-    width: 75,
-    borderRadius: 35,
-  },
-  MessageText: {
-    alignSelf: 'flex-start',
-    fontWeight: '700',
-
-    color: '#fff',
-    marginLeft: '5%',
-    marginTop: '2%',
-  },
-  loginCard: {
-    marginLeft: '5%',
-    marginRight: '5%',
-    backgroundColor: '#680d64',
-    borderColor: 'transparent',
-  },
-  loginIcon: {
-    paddingLeft: '7%',
-    marginBottom: '5%',
-    marginTop: '5%',
-  },
-  textLogin: {
-    fontSize: 15,
-    fontWeight: '400',
-    color: 'grey',
-    alignSelf: 'center',
-    paddingLeft: '5%',
-    marginBottom: '3%',
-  },
-  locationCard: {
-    marginLeft: '5%',
-    marginRight: '5%',
-    backgroundColor: '#680d64',
-    borderColor: 'transparent',
-  },
-  locationIcon: {
-    paddingLeft: '7%',
-    marginTop: '6%',
-  },
-  locationText: {
-    fontSize: 15,
-    fontWeight: '400',
-    color: 'grey',
-    alignSelf: 'center',
-    marginTop: '2%',
-    paddingLeft: '5%',
-  },
-  textRow1: {
-    color: 'grey',
-    marginRight: '5%',
-    marginTop: '3%',
-    paddingBottom: '3%',
-    fontWeight: 'bold',
-  },
-  textRow2: {
-    color: 'grey',
-    marginRight: '5%',
-    marginTop: '3%',
-    paddingBottom: '3%',
-    fontWeight: 'bold',
-  },
-  firstCardImg: {
-    borderRadius: 25,
-    marginLeft: '5%',
-    width: 50,
-    height: 50,
-  },
-  Mao: {
-    color: '#fff',
-    fontWeight: 'bold',
-    marginLeft: '15%',
-    // paddingTop:'2%'
-  },
-  maoIcon: {
-    // paddingBottom:'40%',
-    // marginTop:'2%'
-  },
-  Designer: {
-    color: 'grey',
-    marginLeft: '15%',
-    marginBottom: '25%',
-  },
-  badge: {
-    // marginTop:'5%'
+  backButton: {
+    alignSelf: 'flex-end',
+    marginTop: 20,
+    position: 'absolute',
+    opacity: 0.7,
   },
 })
+
+export default connect(null)(UserProfile)
