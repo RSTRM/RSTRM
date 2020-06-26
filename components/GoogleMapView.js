@@ -156,27 +156,14 @@ class GoogleMapView extends Component {
           visible={this.state.modalVisible}
           on
         >
+          
           <BathroomView backButton={this.backButton} index={this.state.idx} />
         </Modal>
       </View>
     );
   };
 
-  addButton = () => {
-    this.setState({ modal2Visible: true });
-    return (
-      <View>
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.modal2Visible}
-          on
-        >
-          <AddBathroom backButton={this.backButton} />
-        </Modal>
-      </View>
-    );
-  };
+  
 
   async getRestrooms() {
     const newRadius = await event.target.value;
@@ -232,8 +219,8 @@ class GoogleMapView extends Component {
         <View style={styles.addFilter}>
           <IconFilter
               size={36}
-              name="add-circle"
-              type="FontAwesome"
+              name="sort"
+              type="material"
               color="#0077F6"
               onPress={() => this.setState({modalFilter: !this.state.modalFilter})}
           />
@@ -252,12 +239,28 @@ class GoogleMapView extends Component {
         </Modal>
         <View style={styles.add}>
           <IconB
-            size={36}
+            size={40}
             name="add-circle"
             type="FontAwesome"
             color="#0077F6"
-            onPress={() => this.addButton()}
+            underlayColor="purple"
+            onPress={ () => {
+              this.setState({ modal2Visible: true })
+              
+            }}
           />
+           <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modal2Visible}
+          on
+        >
+          <AddBathroom
+            backButton={this.backButton}
+            region={this.state.region}
+            
+          />
+        </Modal>
         </View>
         <View style={styles.searchBar}>
           <GoogleSearchBar onSearchRegionChange={this.onSearchRegionChange} />
@@ -337,16 +340,16 @@ const styles = StyleSheet.create({
   },
   add: {
     flex: 1,
+    color: "blue",
     position: "absolute",
     alignSelf: "flex-end",
-    marginTop: 80,
-    padding: 10
+    marginTop: 100
   },
   addFilter: {
     flex: 1,
     position: "absolute",
     alignSelf: "flex-end",
-    marginTop: 120,
+    marginTop: 130,
     padding: 10
   },
   centeredView: {

@@ -105,8 +105,10 @@ router.get("/:id/checkins", async (req, res, next) => {
 
 router.post("/:id", async (req, res, next) => {
   try {
-    const bathroom = await Bathroom.create(req.body);
-    res.json(bathroom);
+    if (req.body.refugeId) {
+      const bathroom = await Bathroom.create(req.body);
+      res.json(bathroom);
+    }
   } catch (err) {
     next(err);
   }

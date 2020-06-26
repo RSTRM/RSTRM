@@ -1,8 +1,8 @@
-import React from 'react'
-import { connect } from 'react-redux'
-import { logout } from '../store/user'
-import { StyleSheet, Text, View, Button, ImageBackground } from 'react-native'
-import headerimg from '../assets/header-img.png'
+import React from "react";
+import { connect } from "react-redux";
+import { logout } from "../store/user";
+import { StyleSheet, Text, View, Button, ImageBackground } from "react-native";
+import headerimg from "../assets/splash.png";
 
 function Home({ navigation, user, signOut }) {
   return (
@@ -40,10 +40,12 @@ function Home({ navigation, user, signOut }) {
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center",
     color: 'white',
     flex: 1,
     backgroundColor: '#fff',
-    //alignItems: "center",
     justifyContent: 'center',
   },
   textContainer: {
@@ -70,7 +72,7 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = ({ user }) => ({ user })
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     signOut: () => dispatch(logout()),
   }

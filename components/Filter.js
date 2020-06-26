@@ -8,7 +8,9 @@ export default function Filter({filterFn, backButton}) {
     const [isEnabled2, setIsEnabled2] = useState(false)
     const [isEnabled3, setIsEnabled3] = useState(false)
 
-    const toggleSwitch = () => setIsEnabled(!isEnabled); 
+    const toggleSwitch = () => {
+        setIsEnabled(!isEnabled); 
+    }
     const toggleSwitch2 = () => setIsEnabled2(!isEnabled2); 
     const toggleSwitch3 = () => setIsEnabled3(!isEnabled3); 
     
@@ -70,8 +72,15 @@ const styles = StyleSheet.create({
     },
     switch: {
         margin: 3
+    },
+    filter: {
+        color: "blue",
+        fontWeight: "400"
+    },
+    button: {
+        padding: 20,
+        borderRadius: 5,
     }
 })
-
 
 
