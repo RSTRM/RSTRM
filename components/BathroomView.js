@@ -144,14 +144,22 @@ class BathroomView extends Component {
                 </Block>
                 <Block middle>
                   <Icon
-                    name="medal"
+                    name="bookmark-check"
                     type="material-community"
-                    color="yellow"
+                    color="gold"
                     size={24}
-                    // onPress={() => ()}
+                    onPress={async () => {
+                      if (user.id) {
+                        await postCheckin({
+                          userId: user.id,
+                          bathroomId: bathroom.id
+                        });
+                        this.setState({ modalVisible: true });
+                      } else return;
+                    }}
                   />
                   <Text muted size={12}>
-                    Add Review
+                    Check In
                   </Text>
                 </Block>
               </Block>
@@ -177,39 +185,29 @@ class BathroomView extends Component {
                 </Text>
               </Block>
               <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
-                <Block row space="between" style={{ flex: 1, color: 'white' }}>
+                <Block row space="between" style={{ flex: 1, color: "white" }}>
                   {reviews.map(review => (
-                    <Text size={16} key={review.id} color={theme.COLORS.WHITE} > 
-                      {review.comments}{"\n"}{"\n"}
+                    <Text size={16} key={review.id} color={theme.COLORS.WHITE}>
+                      {review.comments}
+                      {"\n"}
+                      {"\n"}
                     </Text>
                   ))}
                 </Block>
               </Block>
-              {user.id ? (
-                <View>
-                  <Button
-                    title="Check In"
-                    onPress={async () => {
-                      await postCheckin({
-                        userId: user.id,
-                        bathroomId: bathroom.id
-                      });
-                      this.setState({ modalVisible: true });
-                    }}
-                  ></Button>
-                  <Modal
-                    animationType="slide"
-                    transparent={true}
-                    visible={this.state.modalVisible}
-                    on
-                  >
-                    <AddReview
-                      backButton={this.backButton}
-                      bathroom={bathroom}
-                    />
-                  </Modal>
-                </View>
-              ) : null}
+              {/* {user.id ? ( */}
+              <View>
+                
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={this.state.modalVisible}
+                  on
+                >
+                  <AddReview backButton={this.backButton} bathroom={bathroom} />
+                </Modal>
+              </View>
+              {/* // ) : null} */}
             </ScrollView>
           </ImageBackground>
         </Block>
@@ -292,9 +290,9 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "relative",
     padding: theme.SIZES.BASE,
-    marginHorizontal: theme.SIZES.BASE * -.5,
+    marginHorizontal: theme.SIZES.BASE * -0.5,
     marginTop: -theme.SIZES.BASE * 1,
-    borderTopLeftRadius:  13,
+    borderTopLeftRadius: 13,
     borderTopRightRadius: 13,
     backgroundColor: "#1E8CF8",
     shadowColor: "black",

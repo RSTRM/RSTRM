@@ -178,7 +178,6 @@ class GoogleMapView extends Component {
     return (
       <View style={styles.container}>
         <MapView
-          customMapStyle={mapStyles}
           provider={PROVIDER_GOOGLE}
           ref={map => (this._map = map)}
           style={styles.mapStyle}
@@ -220,8 +219,8 @@ class GoogleMapView extends Component {
         <View style={styles.addFilter}>
           <IconFilter
               size={36}
-              name="add-circle"
-              type="FontAwesome"
+              name="sort"
+              type="material"
               color="#0077F6"
               onPress={() => this.setState({modalFilter: !this.state.modalFilter})}
           />
@@ -343,14 +342,14 @@ const styles = StyleSheet.create({
     flex: 1,
     color: "blue",
     position: "absolute",
-    alignSelf: "flex-start",
+    alignSelf: "flex-end",
     marginTop: 100
   },
   addFilter: {
     flex: 1,
     position: "absolute",
     alignSelf: "flex-end",
-    marginTop: 120,
+    marginTop: 130,
     padding: 10
   },
   centeredView: {
