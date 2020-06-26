@@ -53,6 +53,7 @@ class BathroomView extends Component {
     if (prevProps !== this.props) {
       this.setState({ index: this.props.index });
       const index = this.state.index;
+      // this.props.loadReviews(this.props.bathrooms[index].id);
     }
   }
 
@@ -96,11 +97,6 @@ class BathroomView extends Component {
               </Text>
               <Block row space="between">
                 <Block row>
-                  <Block middle style={styles.pro}>
-                    <Text size={16} color="black">
-                      Pro
-                    </Text>
-                  </Block>
                   <Text color="white" size={16} muted style={styles.seller}>
                     Establishment
                   </Text>
@@ -187,17 +183,15 @@ class BathroomView extends Component {
               <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
                 <Block row space="between" style={{ flex: 1, color: "white" }}>
                   {reviews.map(review => (
-                    <Text size={16} key={review.id} color={theme.COLORS.WHITE}>
+                    <Text size={16} key={review.id} color={theme.COLORS.WHITE} style = {{flex: 1}}>
                       {review.comments}
-                      {"\n"}
-                      {"\n"}
+                      {"\n"}{"\n"}{"\n"}{"\n"}{"\n"}{"\n"}
                     </Text>
                   ))}
                 </Block>
               </Block>
               {/* {user.id ? ( */}
               <View>
-                
                 <Modal
                   animationType="slide"
                   transparent={true}

@@ -36,12 +36,12 @@ const AddReview = ({ bathroom, backButton, user, postReview, checkins }) => {
   return (
     <Block flex style={styles.profile}>
       <Block flex>
-        <ImageBackground
+        {/* <ImageBackground
           //will connect data-image to source field below here
           source={{ uri: Images.Restroom }}
           style={styles.profileContainer}
           imageStyle={styles.profileImage}
-        >
+        > */}
           <Block flex style={styles.profileDetails}>
             <Block style={styles.profileTexts}>
               <Block style={styles.backButton}>
@@ -83,7 +83,7 @@ const AddReview = ({ bathroom, backButton, user, postReview, checkins }) => {
               style={styles.gradient}
             />
           </Block>
-        </ImageBackground>
+        {/* </ImageBackground> */}
       </Block>
       <Block flex style={styles.options}>
         <ScrollView showsVerticalScrollIndicator={false}>
