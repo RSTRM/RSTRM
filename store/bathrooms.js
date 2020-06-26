@@ -1,5 +1,5 @@
 import axios from "axios";
-const HOST = "http://localhost:8080";
+const HOST = "https://server-rstrm.herokuapp.com";
 /**
  * ACTION TYPES ------------------------------------------------
  */
@@ -17,10 +17,10 @@ const initialState = [];
 /**
  * ACTION CREATORS
  */
-const _loadBathrooms = bathrooms => ({ type: LOAD_BATHROOMS, bathrooms });
-const _createBathroom = bathroom => ({ type: CREATE_BATHROOM, bathroom });
-const _updateBathroom = bathroom => ({ type: UPDATE_BATHROOM, bathroom });
-const _deleteBathroom = id => ({ type: DELETE_BATHROOM, id });
+const _loadBathrooms = (bathrooms) => ({ type: LOAD_BATHROOMS, bathrooms });
+const _createBathroom = (bathroom) => ({ type: CREATE_BATHROOM, bathroom });
+const _updateBathroom = (bathroom) => ({ type: UPDATE_BATHROOM, bathroom });
+const _deleteBathroom = (id) => ({ type: DELETE_BATHROOM, id });
 // const _loadReviews = reviews => ({ type: LOAD_REVIEWS, reviews });
 
 /**
@@ -32,7 +32,7 @@ const loadBathrooms = (region, radius, filter = "") => {
   const latitude = region.latitude;
   const longitude = region.longitude;
 
-  return async dispatch => {
+  return async (dispatch) => {
     let filterText = "";
     if (filter === "unisex") {
       filterText = "?filter=unisex";
@@ -53,16 +53,17 @@ const loadBathrooms = (region, radius, filter = "") => {
   };
 };
 
-
-const createBathroom = bathroom => {
-  return async dispatch => {
-    const response = (await axios.post(`${HOST}/api/bathrooms/${bathroom.id}`, bathroom)).data;
+const createBathroom = (bathroom) => {
+  return async (dispatch) => {
+    const response = (
+      await axios.post(`${HOST}/api/bathrooms/${bathroom.id}`, bathroom)
+    ).data;
     dispatch(_createBathroom(response));
   };
 };
 
-const updateBathroom = bathroom => {
-  return async dispatch => {
+const updateBathroom = (bathroom) => {
+  return async (dispatch) => {
     const { data: updatedBathroom } = await axios.put(
       `/api/bathrooms/${bathroom.id}`,
       bathroom
@@ -71,8 +72,8 @@ const updateBathroom = bathroom => {
   };
 };
 
-const deleteBathroom = id => {
-  return async dispatch => {
+const deleteBathroom = (id) => {
+  return async (dispatch) => {
     await axios.delete(`/api/bathrooms/${id}`);
     dispatch(_deleteBathroom(id));
   };
@@ -81,7 +82,7 @@ const deleteBathroom = id => {
 /**
  * REDUCER -------------------------------------------------------
  */
-const bathrooms = function(state = initialState, action) {
+const bathrooms = function (state = initialState, action) {
   switch (action.type) {
     case LOAD_BATHROOMS:
       return action.bathrooms;
@@ -90,12 +91,12 @@ const bathrooms = function(state = initialState, action) {
       return [...state, action.bathroom];
 
     case UPDATE_BATHROOM:
-      return state.map(bathroom =>
+      return state.map((bathroom) =>
         bathroom.id === action.bathroom.id ? action.bathroom : bathroom
       );
 
     case DELETE_BATHROOM:
-      return state.filter(bathroom => bathroom.id !== action.id);
+      return state.filter((bathroom) => bathroom.id !== action.id);
 
     default:
       return state;
@@ -107,5 +108,5 @@ export {
   loadBathrooms,
   createBathroom,
   updateBathroom,
-  deleteBathroom
+  deleteBathroom,
 };

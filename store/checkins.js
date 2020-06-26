@@ -1,5 +1,5 @@
 import axios from "axios";
-const HOST = "http://localhost:8080";
+const HOST = "https://server-rstrm.herokuapp.com";
 /**
  * ACTION TYPES ------------------------------------------------
  */

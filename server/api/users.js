@@ -16,6 +16,17 @@ router.get('/', async (req, res, next) => {
   }
 })
 
+router.get('/:id/badges', async (req, res, next) => {
+  console.log('in route', req.params.id)
+  try {
+    const user = await User.findByPk(req.params.id)
+    const badges = await user.getBadges()
+    res.json(badges)
+  } catch (err) {
+    next(err)
+  }
+})
+
 router.get('/:id/reviews', async (req, res, next) => {
   //To get recent, pass number of days to /:id/checkins?daysWithin=<numOfDays>
   try {

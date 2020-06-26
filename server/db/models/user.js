@@ -80,6 +80,15 @@ User.prototype.correctPassword = function (candidatePwd) {
   return User.encryptPassword(candidatePwd, this.salt()) === this.password()
 }
 
+User.prototype.getBadges = async function () {
+  console.log('in method', this.id)
+  return db.models.userBadge.findAll({
+    where: { userId: this.id },
+    order: [['createdAt', 'DESC']],
+    include: [{ model: db.models.badge }],
+  })
+}
+
 User.prototype.getReviews = async function (daysWithin) {
   if (daysWithin) {
     const date = new Date()
