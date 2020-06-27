@@ -23,6 +23,7 @@ import headerimg from "../assets/header-img.png";
 import AddReview from "./AddReview";
 import GoogleSearchBar from "./GoogleSearchBar";
 import { white } from "color-name";
+import Cam from "./Cam";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -42,7 +43,7 @@ class AddBathroom extends Component {
       street: "",
       city: " ",
       state: " ",
-      country: " ",
+      country: "USA",
       latitude: this.props.region.latitude || 0.0,
       longitude: this.props.region.longitude || 0.0,
       website: " ",
@@ -72,7 +73,7 @@ class AddBathroom extends Component {
     // // const dataArr = data.description.split(" ")
     // console.log(data.structured_formatting.main_text)
     // console.log(data.terms[1].value, 'termssss')
-    const firstWord = data.structured_formatting.main_text.split(" ") 
+    const firstWord = data.structured_formatting.main_text.split(" ");
     this.setState({
       unisex: true,
       accessible: true,
@@ -80,10 +81,9 @@ class AddBathroom extends Component {
       AvgRating: 1,
       checkinCount: 1,
       establishment: data.structured_formatting.main_text,
-      street: data.terms[1].value || " ",
-      city: data.terms[2].value || " ",
-      state: data.terms[3].value || " ",
-      country: data.terms[4].value || " ",
+      street: data.terms[1].value || "_",
+      city: data.terms[2].value || "_",
+      // state: data.terms[3].value || "_",
       website: `www.${firstWord[0]}.com` || " "
     });
     console.log(this.state, "updated state");
@@ -138,6 +138,18 @@ class AddBathroom extends Component {
                     type="material"
                     color="black"
                     onPress={() => backButton()}
+                  />
+                </Block>
+                <Block style={styles.cameraIcon}>
+                  <Icon
+                    raised
+                    reverse
+                    name="camera"
+                    type="material-community"
+                    color="blue"
+                    onPress={() => {
+                      return <Cam />;
+                    }}
                   />
                 </Block>
               </Block>
@@ -248,7 +260,7 @@ class AddBathroom extends Component {
 const styles = StyleSheet.create({
   profile: {
     marginTop: Platform.OS === "android" ? -HeaderHeight : 0,
-    marginBottom: -HeaderHeight * 2.5
+    marginBottom: -HeaderHeight * 4
   },
   profileImage: {
     width: width * 1.1,
@@ -341,6 +353,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     zIndex: 2,
     color: "white"
+  },
+  cameraIcon: {
+    flex: 1,
+    position: "absolute",
+    marginTop: -700,
+    alignSelf: "flex-start"
   }
 });
 

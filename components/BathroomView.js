@@ -8,7 +8,8 @@ import {
   Platform,
   Button,
   Modal,
-  View
+  View,
+  TouchableOpacity
 } from "react-native";
 import { Block, Text, theme } from "galio-framework";
 import { LinearGradient } from "expo-linear-gradient";
@@ -21,6 +22,7 @@ import { createCheckin } from "../store/checkins";
 import { loadReviews } from "../store/reviews";
 import { SliderBox } from "react-native-image-slider-box";
 import headerimg from "../assets/header-img.png";
+import { RNCamera } from "react-native-camera";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -39,6 +41,7 @@ class BathroomView extends Component {
       modalVisible: false,
       checkin: {}
     };
+    this.takePicture = this.takePicture.bind(this);
   }
   async componentDidMount() {
     this.setState({ index: this.props.index });
@@ -59,6 +62,14 @@ class BathroomView extends Component {
 
   backButton = () => {
     this.setState({ modalVisible: false });
+  };
+
+  takePicture = async () => {
+    if (this.camera) {
+      const options = { quality: 0.5, base64: true };
+      const data = await this.camera.takePictureAsync(options);
+      console.log(data.uri);
+    }
   };
 
   render() {
@@ -154,6 +165,7 @@ class BathroomView extends Component {
                       } else return;
                     }}
                   />
+
                   <Text muted size={12}>
                     Check In
                   </Text>
@@ -183,10 +195,23 @@ class BathroomView extends Component {
               <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
                 <Block row space="between" style={{ flex: 1, color: "white" }}>
                   {reviews.map(review => (
-                    <Text size={16} key={review.id} color={theme.COLORS.WHITE} style = {{flex: 1}}>
-                      {review.comments}
-                      {"\n"}{"\n"}{"\n"}{"\n"}{"\n"}{"\n"}
-                    </Text>
+                    <View>
+                      <Text
+                        size={16}
+                        key={review.id}
+                        color={theme.COLORS.WHITE}
+                        style={{ flex: 1 }}
+                      >
+                        {review.comments}
+                        {"\n"}
+                        {"\n"}
+                        {"\n"}
+                        {"\n"}
+                        {"\n"}
+                        {"\n"}
+                      </Text>
+                      <Text>{"\n"}{"\n"}{"\n"}{"\n"}{"\n"}</Text>
+                    </View>
                   ))}
                 </Block>
               </Block>
