@@ -17,6 +17,8 @@ import { Images, materialTheme } from '../constants'
 import { HeaderHeight } from '../constants/utils'
 import { connect } from 'react-redux'
 import { TouchableOpacity } from 'react-native-gesture-handler'
+import { loadItemsAll } from '../store/userItems'
+import user from '../store/user'
 
 const { width, height } = Dimensions.get('screen')
 const thumbMeasure = (width - 48 - 32) / 3
@@ -31,9 +33,16 @@ class UserProfile extends Component {
       checkins: [],
     }
   }
-  async componentDidMount() {}
+  async componentDidMount() {
+    const { user, loadUserItems } = this.props
+    await loadUserItems(user.id)
+  }
 
-  async componentDidUpdate(prevProps) {}
+  async componentDidUpdate(prevProps) {
+    if (prevProps.user.id !== this.props.user.id) {
+      await loadUserItems(this.props.user.id)
+    }
+  }
 
   //choose from https://materialdesignicons.com/
   iconBar = [
@@ -130,7 +139,7 @@ class UserProfile extends Component {
               <Text
                 size={12}
                 color={theme.COLORS.GRADIENT_END}
-                // onPress={() => this.props.navigation.navigate("Home")}
+              // onPress={() => this.props.navigation.navigate("Home")}
               >
                 More
               </Text>
@@ -234,4 +243,14 @@ const styles = StyleSheet.create({
   },
 })
 
-export default connect(null)(UserProfile)
+const mapState = ({ user }) => ({ user })
+
+const mapDispatch = (dispatch) => {
+  return {
+    loadUserItems: (id) => {
+      dispatch(loadItemsAll(id))
+    },
+  }
+}
+
+export default connect(mapState, mapDispatch)(UserProfile)

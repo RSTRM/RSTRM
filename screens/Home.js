@@ -24,15 +24,15 @@ function Home({ navigation, user, signOut }) {
             />
           </View>
         ) : (
-          <View style={styles.textContainer}>
-            <Text style={styles.textTitle}>Welcome to RSTRM!</Text>
-            <Text style={styles.textSubTitle}>For when you gotta go...</Text>
-            <Button
-              title="User Sign/Login"
-              onPress={() => navigation.navigate('User')}
-            />
-          </View>
-        )}
+            <View style={styles.textContainer}>
+              <Text style={styles.textTitle}>Welcome to RSTRM!</Text>
+              <Text style={styles.textSubTitle}>For when you gotta go...</Text>
+              <Button
+                title="User Sign/Login"
+                onPress={() => navigation.navigate('User')}
+              />
+            </View>
+          )}
       </View>
     </ImageBackground>
   )
@@ -45,7 +45,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     color: 'white',
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'rgba(255, 255, 255, 0.96)',
     justifyContent: 'center',
   },
   textContainer: {
