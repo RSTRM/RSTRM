@@ -1,86 +1,84 @@
-import React, { useState, useEffect } from 'react'
-import { StyleSheet, Text, View, Switch, Button } from 'react-native'
+import React, { useState, useEffect } from "react";
+import { StyleSheet, Text, View, Switch, Button } from "react-native";
+import { acc } from "react-native-reanimated";
 
+export default function Filter({
+  unisexFn,
+  accessibleFn,
+  changingFn,
+  unisexFilter,
+  accessibleFilter,
+  changingFilter,
+  backButton,
+}) {
+  const [unisexEnabled, setUnisexEnabled] = useState(unisexFilter);
+  const [accessibleEnabled, setAccessibleEnabled] = useState(accessibleFilter);
+  const [changingEnabled, setChangingEnabled] = useState(changingFilter);
 
-export default function Filter({filterFn, backButton}) {
+  const toggleUnisex = () => setUnisexEnabled(!unisexEnabled);
+  const toggleAccessible = () => setAccessibleEnabled(!accessibleEnabled);
+  const toggleChanging = () => setChangingEnabled(!changingEnabled);
 
-    const [isEnabled, setIsEnabled] = useState(false)
-    const [isEnabled2, setIsEnabled2] = useState(false)
-    const [isEnabled3, setIsEnabled3] = useState(false)
+  useEffect(() => unisexFn(unisexEnabled), [unisexEnabled]);
+  useEffect(() => accessibleFn(accessibleEnabled), [accessibleEnabled]);
+  useEffect(() => changingFn(changingEnabled), [changingEnabled]);
 
-    const toggleSwitch = () => {
-        setIsEnabled(!isEnabled); 
-    }
-    const toggleSwitch2 = () => setIsEnabled2(!isEnabled2); 
-    const toggleSwitch3 = () => setIsEnabled3(!isEnabled3); 
-    
-    useEffect(() => {
-        isEnabled ? filterFn(isEnabled, 'unisex') : filterFn(!isEnabled, '')
-    }, [isEnabled])
-
-    useEffect(() => {
-        isEnabled2 ? filterFn(isEnabled2, 'accessible') : filterFn(!isEnabled2, '')
-    }, [isEnabled2])
-
-    useEffect(() => {
-        isEnabled3 ? filterFn(isEnabled3, 'changingTable') : filterFn(!isEnabled3, '')
-    }, [isEnabled3])
-
-
-    return (
-        <View style={styles.container}>
-            <Button style={styles.closeButton} title="Close" onPress={()=> backButton()}/>
-            <View style={styles.switch}>
-                <Text>Unisex Restrooms</Text>
-                <Switch
-                    trackColor={{ false: "#767577", true: "#81b0ff" }}
-                    thumbColor={isEnabled ? "#f5dd4b" : "#f4f3f4"}
-                    ios_backgroundColor="#3e3e3e"
-                    onChange={toggleSwitch}
-                    value={isEnabled}
-                />
-            </View>
-            <View style={styles.switch}>
-                <Text>Accessible Restrooms</Text>
-                <Switch
-                    trackColor={{ false: "#767577", true: "#81b0ff" }}
-                    thumbColor={isEnabled2 ? "#f5dd4b" : "#f4f3f4"}
-                    ios_backgroundColor="#3e3e3e"
-                    onChange={toggleSwitch2}
-                    value={isEnabled2}
-                />
-            </View>
-            <View style={styles.switch}>
-                <Text>Changing Table Restrooms</Text>
-                <Switch
-                    trackColor={{ false: "#767577", true: "#81b0ff" }}
-                    thumbColor={isEnabled3 ? "#f5dd4b" : "#f4f3f4"}
-                    ios_backgroundColor="#3e3e3e"
-                    onChange={toggleSwitch3}
-                    value={isEnabled3}
-                />
-            </View>
-        </View>
-    )
+  return (
+    <View style={styles.container}>
+      <Button
+        style={styles.closeButton}
+        title="Close"
+        onPress={() => backButton()}
+      />
+      <View style={styles.switch}>
+        <Text>Unisex Restrooms</Text>
+        <Switch
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={unisexEnabled ? "#f5dd4b" : "#f4f3f4"}
+          ios_backgroundColor="#3e3e3e"
+          onChange={toggleUnisex}
+          value={unisexEnabled}
+        />
+      </View>
+      <View style={styles.switch}>
+        <Text>Accessible Restrooms</Text>
+        <Switch
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={accessibleEnabled ? "#f5dd4b" : "#f4f3f4"}
+          ios_backgroundColor="#3e3e3e"
+          onChange={toggleAccessible}
+          value={accessibleEnabled}
+        />
+      </View>
+      <View style={styles.switch}>
+        <Text>Changing Table Restrooms</Text>
+        <Switch
+          trackColor={{ false: "#767577", true: "#81b0ff" }}
+          thumbColor={changingEnabled ? "#f5dd4b" : "#f4f3f4"}
+          ios_backgroundColor="#3e3e3e"
+          onChange={toggleChanging}
+          value={changingEnabled}
+        />
+      </View>
+    </View>
+  );
 }
 
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        backgroundColor: "#fff",
-        justifyContent: "center"
-    },
-    switch: {
-        margin: 3
-    },
-    filter: {
-        color: "blue",
-        fontWeight: "400"
-    },
-    button: {
-        padding: 20,
-        borderRadius: 5,
-    }
-})
-
-
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+    justifyContent: "center",
+  },
+  switch: {
+    margin: 3,
+  },
+  filter: {
+    color: "blue",
+    fontWeight: "400",
+  },
+  button: {
+    padding: 20,
+    borderRadius: 5,
+  },
+});

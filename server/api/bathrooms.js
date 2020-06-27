@@ -8,51 +8,65 @@ router.get("/:latitude/:longitude/:radius", async (req, res, next) => {
     const radius = req.params.radius;
     const point = {
       latitude: req.params.latitude,
-      longitude: req.params.longitude
+      longitude: req.params.longitude,
     };
     const result = geolib.getBoundsOfDistance(point, radius);
 
-    let bathrooms;
-    if (req.query.filter === "unisex") {
-      bathrooms = await Bathroom.findAll({
-        where: {
-          latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
-          longitude: {
-            [Op.between]: [result[0].longitude, result[1].longitude]
-          },
-          unisex: true
-        }
-      });
-    } else if (req.query.filter === "accessible") {
-      bathrooms = await Bathroom.findAll({
-        where: {
-          latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
-          longitude: {
-            [Op.between]: [result[0].longitude, result[1].longitude]
-          },
-          accessible: true
-        }
-      });
-    } else if (req.query.filter === "changingTable") {
-      bathrooms = await Bathroom.findAll({
-        where: {
-          latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
-          longitude: {
-            [Op.between]: [result[0].longitude, result[1].longitude]
-          },
-          changingTable: true
-        }
-      });
-    } else {
-      bathrooms = await Bathroom.findAll({
-        where: {
-          latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
-          longitude: {
-            [Op.between]: [result[0].longitude, result[1].longitude]
-          }
-        }
-      });
-    }
+    // let bathrooms;
+    // if (req.query.unisexFilter === "on") {
+    //   bathrooms = await Bathroom.findAll({
+    //     where: {
+    //       latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
+    //       longitude: {
+    //         [Op.between]: [result[0].longitude, result[1].longitude],
+    //       },
+    //       unisex: true,
+    //     },
+    //   });
+    // }
+
+    let bathrooms = await Bathroom.findAll({
+      where: {
+        latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
+        longitude: {
+          [Op.between]: [result[0].longitude, result[1].longitude],
+        },
+        // {req.query.unisexFilter === "on" ? unisex: true, : ""}
+        // {req.query.accessibleFilter === "on" ? accessible: true, : ""}
+        // {req.query.changingFilter === "on" ? changingTable: true, : ""}
+        // unisex: true,
+      },
+    });
+    // else if (req.query.filter === "accessible") {
+    //   bathrooms = await Bathroom.findAll({
+    //     where: {
+    //       latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
+    //       longitude: {
+    //         [Op.between]: [result[0].longitude, result[1].longitude],
+    //       },
+    //       accessible: true,
+    //     },
+    //   });
+    // } else if (req.query.filter === "changingTable") {
+    //   bathrooms = await Bathroom.findAll({
+    //     where: {
+    //       latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
+    //       longitude: {
+    //         [Op.between]: [result[0].longitude, result[1].longitude],
+    //       },
+    //       changingTable: true,
+    //     },
+    //   });
+    // } else {
+    //   bathrooms = await Bathroom.findAll({
+    //     where: {
+    //       latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
+    //       longitude: {
+    //         [Op.between]: [result[0].longitude, result[1].longitude],
+    //       },
+    //     },
+    //   });
+    // }
 
     res.json(bathrooms);
   } catch (err) {
@@ -105,10 +119,8 @@ router.get("/:id/checkins", async (req, res, next) => {
 
 router.post("/:id", async (req, res, next) => {
   try {
-    if (req.body.refugeId) {
-      const bathroom = await Bathroom.create(req.body);
-      res.json(bathroom);
-    }
+    const bathroom = await Bathroom.create(req.body);
+    res.json(bathroom);
   } catch (err) {
     next(err);
   }
