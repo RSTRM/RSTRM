@@ -12,21 +12,22 @@ import MapView, {
   Marker,
   Circle,
   Callout,
+  Polyline
 } from "react-native-maps";
 import Carousel from "react-native-snap-carousel";
 import * as Location from "expo-location";
 import { connect } from "react-redux";
-import { loadBathrooms } from "../store/bathrooms";
+import { loadBathrooms, bathrooms } from "../store/bathrooms";
 import BathroomView from "./BathroomView";
 import GoogleSearchBar from "./GoogleSearchBar";
 import Filter from "./Filter";
 import AddBathroom from "./AddBathroom";
 import headerimg from "../assets/header-img.png";
-import {
-  Icon as IconB,
-  Icon as IconFilter,
-  Header as HeaderB,
-} from "react-native-elements";
+import { Icon as IconB, Icon as IconFilter, Header as HeaderB } from "react-native-elements";
+import { GOOGLE_API_KEY } from "../secrets";
+import polyline from '@mapbox/polyline';
+
+
 
 class GoogleMapView extends Component {
   constructor() {
@@ -34,8 +35,10 @@ class GoogleMapView extends Component {
     this.state = {
       region: null,
       location: null,
+      directionCoords: [],
       markers: [],
       radius: 1000,
+      error: null,
       errorMsg: null,
       modalVisible: false,
       modal2Visible: false,
@@ -44,10 +47,13 @@ class GoogleMapView extends Component {
       unisexFilter: false,
       accessibleFilter: false,
       changingFilter: false,
+      gotDirections: false,
+      bathroom: null
     };
     this.onSearchRegionChange = this.onSearchRegionChange.bind(this);
     this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
   }
+
 
   async componentDidMount() {
     let { status } = await Location.requestPermissionsAsync();
@@ -80,8 +86,8 @@ class GoogleMapView extends Component {
       this.state.accessibleFilter,
       this.state.changingFilter
     );
+    this.getDirections()
   }
-
   async componentDidUpdate(prevProps, prevState) {
     if (
       (prevState.region !== this.state.region && prevState.region !== null) ||
@@ -99,6 +105,7 @@ class GoogleMapView extends Component {
       );
     }
   }
+
 
   onRegionChangeComplete(event) {
     this.setState({
@@ -173,7 +180,7 @@ class GoogleMapView extends Component {
           visible={this.state.modalVisible}
           on
         >
-          <BathroomView backButton={this.backButton} index={this.state.idx} />
+          <BathroomView backButton={this.backButton} index={this.state.idx} getDirections={this.getDirections}/>
         </Modal>
       </View>
     );
@@ -188,8 +195,60 @@ class GoogleMapView extends Component {
   accessibleFn = (accessibleFilter) => this.setState({ accessibleFilter });
   changingFn = (changingFilter) => this.setState({ changingFilter });
 
+  getDirections = async(desLocation, bathroom) => {
+    const startLoc = `${this.state.region.latitude},${this.state.region.longitude}`
+    if(desLocation){
+      try {
+          let resp = await fetch(`https://maps.googleapis.com/maps/api/directions/json?origin=${ startLoc }&destination=${ desLocation }&mode=walking&key=${ GOOGLE_API_KEY}`)
+          let respJson = await resp.json();
+          let points = polyline.decode(respJson.routes[0].overview_polyline.points);
+          let directionCoords = points.map(point => {
+              return  {
+                  latitude : point[0],
+                  longitude : point[1]
+              }
+          })
+          this.setState({bathroom})
+          this.setState({directionCoords})
+          this.setState({gotDirections: "true"})
+      } catch(error) {
+          this.setState({gotDirections: "error"})
+          return error
+      }
+    }
+    return null
+  }
+
+  mapMarkers = () => {
+    return this.props.bathrooms && this.props.bathrooms.map((marker, index) => 
+      <View key={index}>
+        <Marker
+          ref={ref => (this.state.markers[index] = ref)}
+          onPress={() => this.onMarkerPressed(marker, index)}
+          coordinate={{
+            latitude: marker.latitude,
+            longitude: marker.longitude
+          }}
+        >
+          <Callout style={styles.callout} onPress={() => this.setState({ modalVisible: true })}>
+            <View>
+              <Text style={{fontWeight: "bold"}}>{marker.establishment}</Text>
+              <Text>{`Go: ${marker.directions}`}</Text>
+            </View>
+          </Callout>
+        </Marker>
+        <Circle center={this.state.region} radius={this.state.radius + 500} />
+      </View>
+    )
+  }
+
+  
   render() {
+    
+    const {directionCoords, region, bathroom, gotDirections} = this.state
+    const {mapMarkers} = this
     if (!this.state.region) return <Text>Loading...</Text>;
+
     return (
       <View style={styles.container}>
         <MapView
@@ -208,40 +267,37 @@ class GoogleMapView extends Component {
               longitude: this.state.region.longitude,
             }}
           />
-          {this.props.bathrooms.map((marker, index) => (
-            <Marker
-              //image={iconmarker}
-              key={index}
-              ref={(ref) => (this.state.markers[index] = ref)}
-              onPress={() => this.onMarkerPressed(marker, index)}
-              coordinate={{
-                latitude: marker.latitude,
-                longitude: marker.longitude,
-              }}
-            >
-              <Callout
-                style={styles.callout}
-                onPress={() => this.setState({ modalVisible: true })}
-              >
-                <Text>{marker.establishment}</Text>
-                <Text>{`Go: ${marker.directions}`}</Text>
-              </Callout>
-            </Marker>
-          ))}
-          <Circle center={this.state.region} radius={this.state.radius + 500} />
+          {gotDirections == "true" ?
+            <View>
+              <Marker coordinate={{latitude: region.latitude, longitude: region.longitude}} title={"Your Location"}/>
+              <Marker coordinate={{latitude: bathroom.latitude, longitude: bathroom.longitude}} title={"Your Destination"}/>
+              <Polyline coordinates={directionCoords} strokeWidth={2} strokeColor="red"/>
+            </View>
+          : 
+              mapMarkers()
+          }
         </MapView>
         <HeaderB backgroundImage={headerimg}></HeaderB>
+        {gotDirections === false ? 
+          <View style={styles.addFilter}>
+            <IconFilter
+                size={36}
+                name="sort"
+                type="FontAwesome"
+                color="#0077F6"
+                onPress={() => this.setState({modalFilter: !this.state.modalFilter})}
+            />
+          </View> 
+        : 
         <View style={styles.addFilter}>
           <IconFilter
             size={36}
-            name="sort"
-            type="material"
+            name="sort"  //THIS NEEDS TO BE CHANGED TO A BACK ICON
+            type="FontAwesome"
             color="#0077F6"
-            onPress={() =>
-              this.setState({ modalFilter: !this.state.modalFilter })
-            }
+            onPress={() => this.setState({gotDirections: false})}
           />
-        </View>
+        </View>}
         <Modal
           animationType="fade"
           transparent={true}
@@ -289,8 +345,8 @@ class GoogleMapView extends Component {
         <View style={styles.searchBar}>
           <GoogleSearchBar onSearchRegionChange={this.onSearchRegionChange} />
         </View>
-        <Carousel
-          ref={(c) => {
+        {gotDirections === false && <Carousel
+          ref={c => {
             this._carousel = c;
           }}
           data={this.props.bathrooms}
@@ -299,9 +355,9 @@ class GoogleMapView extends Component {
           sliderWidth={Dimensions.get("window").width}
           itemWidth={300}
           removeClippedSubviews={false}
-          onSnapToItem={(index) => this.onCarouselItemChange(index)}
-        />
-        <Slider
+          onSnapToItem={index => this.onCarouselItemChange(index)}
+        />}
+        {gotDirections === false && <Slider
           style={styles.slider}
           value={this.state.radius}
           maximumValue={2000}
@@ -310,7 +366,7 @@ class GoogleMapView extends Component {
           onValueChange={(value) => this.setState({ radius: value })}
         >
           <Text>{this.state.radius} meters</Text>
-        </Slider>
+        </Slider>}
       </View>
     );
   }
@@ -354,6 +410,9 @@ const styles = StyleSheet.create({
     alignSelf: "center",
     bottom: 15,
     width: "85%",
+  },
+  callout: {
+    width: 200,
   },
   searchBar: {
     flex: 1,

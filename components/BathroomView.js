@@ -21,6 +21,7 @@ import { createCheckin } from "../store/checkins";
 import { loadReviews } from "../store/reviews";
 import { SliderBox } from "react-native-image-slider-box";
 import headerimg from "../assets/header-img.png";
+import { bathrooms } from "../store/bathrooms";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -61,13 +62,14 @@ class BathroomView extends Component {
   };
 
   render() {
-    const { user, backButton, postCheckin } = this.props;
-    // const backButton = this.props.backButton;
+    const { user, backButton, postCheckin, getDirections, reviews} = this.props;
     const index = this.state.index || 0;
     const bathroom = this.props.bathrooms[index] || {};
+    const desCoord = `${bathroom.latitude},${bathroom.longitude}`
+
     // const reviews = this.props.reviews.filter(review => review.bathroomId === bathroom.id );
     const { reviews } = this.props;
-    console.log(bathroom);
+    //console.log(bathroom);
     return (
       <Block flex style={styles.profile}>
         <Block flex>
@@ -91,6 +93,25 @@ class BathroomView extends Component {
                   onPress={() => backButton()}
                 />
               </Block>
+
+
+
+
+              {/* NEEDS CSS ON BUTTON FOR DIRECTIONS */}
+              <Block style={styles.getDirections}>
+                <Icon
+                  raised
+                  reverse
+                  name="close"
+                  type="material"
+                  color="black"
+                  onPress={() => getDirections(desCoord, bathroom)}
+                />
+              </Block>
+
+
+
+              
               <Text color="white" size={28} style={{ paddingBottom: 150 }}>
                 {bathroom.establishment}{" "}
               </Text>
@@ -99,6 +120,17 @@ class BathroomView extends Component {
                   <Block middle style={styles.pro}>
                     <Text size={16} color="black">
                       Pro
+                    </Text>
+                    <Text color="white" size={16} muted style={styles.seller}>
+                      Establishment
+                    </Text>
+                    <Text size={16} color={materialTheme.COLORS.WARNING}>
+                      4.9{" "}
+                    </Text>
+                  </Block>
+                  <Block>
+                    <Text color={theme.COLORS.MUTED} size={16}>
+                      {` `} {bathroom.city}{" "}
                     </Text>
                   </Block>
                   <Text color="white" size={16} muted style={styles.seller}>
@@ -175,7 +207,6 @@ class BathroomView extends Component {
                 <Text color={theme.COLORS.WHITE} size={16}>
                   Recent Reviews
                 </Text>
-
                 <Text
                   size={12}
                   color={theme.COLORS.WHITE}
@@ -197,7 +228,6 @@ class BathroomView extends Component {
               </Block>
               {/* {user.id ? ( */}
               <View>
-                
                 <Modal
                   animationType="slide"
                   transparent={true}
@@ -286,6 +316,12 @@ const styles = StyleSheet.create({
     position: "absolute",
     opacity: 0.7
   },
+  getDirections: {
+    alignSelf: "flex-end",
+    marginTop: 1,
+    position: "absolute",
+    opacity: 0.7,
+  },
   flex: {
     flex: 1,
     position: "relative",
@@ -302,7 +338,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
     color: "white"
   }
-});
+})
 
 const mapStateToProps = ({ bathrooms, reviews, user }) => ({
   bathrooms,
