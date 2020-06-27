@@ -1,6 +1,5 @@
 import axios from "axios";
-// const HOST = "https://server-rstrm.herokuapp.com";
-const HOST = "http://localhost:8080";
+const HOST = "https://server-rstrm.herokuapp.com";
 /**
  * ACTION TYPES ------------------------------------------------
  */
@@ -8,7 +7,6 @@ const LOAD_BATHROOMS = "LOAD_BATHROOMS";
 const CREATE_BATHROOM = "CREATE_BATHROOM";
 const UPDATE_BATHROOM = "UPDATE_BATHROOM";
 const DELETE_BATHROOM = "DELETE_BATHROOM";
-// const LOAD_REVIEWS = "LOAD_REVIEWS";
 
 /**
  * INITIAL STATE --------------------------------------------------
@@ -44,12 +42,6 @@ const loadBathrooms = (
     if (unisexFilter) filterText += "unisexFilter=on&";
     if (accessibleFilter) filterText += "accessibleFilter=on&";
     if (changingFilter) filterText += "changingFilter=on&";
-    // if (filter === "accessible") {
-    //   filterText = "?filter=accessible";
-    // }
-    // if (filter === "changingTable") {
-    //   filterText = "?filter=changingTable";
-    // }
 
     const response = (
       await axios.get(

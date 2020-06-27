@@ -12,62 +12,25 @@ router.get("/:latitude/:longitude/:radius", async (req, res, next) => {
     };
     const result = geolib.getBoundsOfDistance(point, radius);
 
-    // let bathrooms;
-    // if (req.query.unisexFilter === "on") {
-    //   bathrooms = await Bathroom.findAll({
-    //     where: {
-    //       latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
-    //       longitude: {
-    //         [Op.between]: [result[0].longitude, result[1].longitude],
-    //       },
-    //       unisex: true,
-    //     },
-    //   });
-    // }
+    let whereStatement = {
+      latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
+      longitude: {
+        [Op.between]: [result[0].longitude, result[1].longitude],
+      },
+    };
+    if (req.query.unisexFilter === "on") {
+      whereStatement.unisex = true;
+    }
+    if (req.query.accessibleFilter === "on") {
+      whereStatement.accessible = true;
+    }
+    if (req.query.changingFilter === "on") {
+      whereStatement.changingTable = true;
+    }
 
     let bathrooms = await Bathroom.findAll({
-      where: {
-        latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
-        longitude: {
-          [Op.between]: [result[0].longitude, result[1].longitude],
-        },
-        // {req.query.unisexFilter === "on" ? unisex: true, : ""}
-        // {req.query.accessibleFilter === "on" ? accessible: true, : ""}
-        // {req.query.changingFilter === "on" ? changingTable: true, : ""}
-        // unisex: true,
-      },
+      where: whereStatement,
     });
-    // else if (req.query.filter === "accessible") {
-    //   bathrooms = await Bathroom.findAll({
-    //     where: {
-    //       latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
-    //       longitude: {
-    //         [Op.between]: [result[0].longitude, result[1].longitude],
-    //       },
-    //       accessible: true,
-    //     },
-    //   });
-    // } else if (req.query.filter === "changingTable") {
-    //   bathrooms = await Bathroom.findAll({
-    //     where: {
-    //       latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
-    //       longitude: {
-    //         [Op.between]: [result[0].longitude, result[1].longitude],
-    //       },
-    //       changingTable: true,
-    //     },
-    //   });
-    // } else {
-    //   bathrooms = await Bathroom.findAll({
-    //     where: {
-    //       latitude: { [Op.between]: [result[0].latitude, result[1].latitude] },
-    //       longitude: {
-    //         [Op.between]: [result[0].longitude, result[1].longitude],
-    //       },
-    //     },
-    //   });
-    // }
-
     res.json(bathrooms);
   } catch (err) {
     next(err);

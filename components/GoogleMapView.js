@@ -41,7 +41,6 @@ class GoogleMapView extends Component {
       modal2Visible: false,
       modalFilter: false,
       idx: 0,
-      // filter: "",
       unisexFilter: false,
       accessibleFilter: false,
       changingFilter: false,
