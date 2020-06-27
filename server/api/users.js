@@ -49,9 +49,9 @@ router.get('/:id/checkins', async (req, res, next) => {
     const user = await User.findByPk(req.params.id)
     let checkins
     if (req.query.daysWithin) {
-      checkins = await user.getReviews(req.query.daysWithin)
+      checkins = await user.getCheckins(req.query.daysWithin)
     } else {
-      checkins = await user.getReviews()
+      checkins = await user.getCheckins()
     }
     res.json(checkins)
   } catch (err) {
