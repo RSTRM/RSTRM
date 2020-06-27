@@ -5,13 +5,13 @@ import {
   View,
   Text,
   Slider,
-  Modal
+  Modal,
 } from "react-native";
 import MapView, {
   PROVIDER_GOOGLE,
   Marker,
   Circle,
-  Callout
+  Callout,
 } from "react-native-maps";
 import Carousel from "react-native-snap-carousel";
 import * as Location from "expo-location";
@@ -22,8 +22,11 @@ import GoogleSearchBar from "./GoogleSearchBar";
 import Filter from "./Filter";
 import AddBathroom from "./AddBathroom";
 import headerimg from "../assets/header-img.png";
-import { Icon as IconB, Icon as IconFilter, Header as HeaderB } from "react-native-elements";
-
+import {
+  Icon as IconB,
+  Icon as IconFilter,
+  Header as HeaderB,
+} from "react-native-elements";
 
 class GoogleMapView extends Component {
   constructor() {
@@ -38,7 +41,9 @@ class GoogleMapView extends Component {
       modal2Visible: false,
       modalFilter: false,
       idx: 0,
-      filter: ""
+      unisexFilter: false,
+      accessibleFilter: false,
+      changingFilter: false,
     };
     this.onSearchRegionChange = this.onSearchRegionChange.bind(this);
     this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
@@ -53,8 +58,8 @@ class GoogleMapView extends Component {
           latitude: 40.7061,
           longitude: -73.9969,
           latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421
-        }
+          longitudeDelta: 0.0421,
+        },
       });
     } else {
       let location = await Location.getCurrentPositionAsync({});
@@ -64,14 +69,16 @@ class GoogleMapView extends Component {
           latitude: this.state.location.coords.latitude,
           longitude: this.state.location.coords.longitude,
           latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421
-        }
+          longitudeDelta: 0.0421,
+        },
       });
     }
     await this.props.load(
       this.state.region,
       this.state.radius,
-      this.state.filter
+      this.state.unisexFilter,
+      this.state.accessibleFilter,
+      this.state.changingFilter
     );
   }
 
@@ -79,12 +86,16 @@ class GoogleMapView extends Component {
     if (
       (prevState.region !== this.state.region && prevState.region !== null) ||
       prevState.radius !== this.state.radius ||
-      prevState.filter !== this.state.filter
+      prevState.unisexFilter !== this.state.unisexFilter ||
+      prevState.accessibleFilter !== this.state.accessibleFilter ||
+      prevState.changingFilter !== this.state.changingFilter
     ) {
       await this.props.load(
         this.state.region,
         this.state.radius,
-        this.state.filter
+        this.state.unisexFilter,
+        this.state.accessibleFilter,
+        this.state.changingFilter
       );
     }
   }
@@ -95,8 +106,8 @@ class GoogleMapView extends Component {
         latitude: event.nativeEvent.coordinate.latitude,
         longitude: event.nativeEvent.coordinate.longitude,
         latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      }
+        longitudeDelta: 0.0421,
+      },
     });
   }
 
@@ -106,25 +117,25 @@ class GoogleMapView extends Component {
         latitude: coordinates.lat,
         longitude: coordinates.lng,
         latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421
-      }
+        longitudeDelta: 0.0421,
+      },
     });
     this._map.animateToRegion({
       latitude: coordinates.lat,
       longitude: coordinates.lng,
       latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421
+      longitudeDelta: 0.0421,
     });
   }
 
-  onCarouselItemChange = index => {
+  onCarouselItemChange = (index) => {
     let location = this.props.bathrooms[index];
     this.setState({ idx: index });
     this._map.animateToRegion({
       latitude: location.latitude,
       longitude: location.longitude,
       latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421
+      longitudeDelta: 0.0421,
     });
     this.state.markers[index].showCallout();
   };
@@ -134,12 +145,18 @@ class GoogleMapView extends Component {
       latitude: location.latitude,
       longitude: location.longitude,
       latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421
+      longitudeDelta: 0.0421,
     });
     this._carousel.snapToItem(index);
   };
 
-  backButton = () => {this.setState({ modalVisible: false, modal2Visible: false, modalFilter: false})};
+  backButton = () => {
+    this.setState({
+      modalVisible: false,
+      modal2Visible: false,
+      modalFilter: false,
+    });
+  };
 
   renderCarouselItem = ({ item }) => {
     return (
@@ -156,22 +173,20 @@ class GoogleMapView extends Component {
           visible={this.state.modalVisible}
           on
         >
-          
           <BathroomView backButton={this.backButton} index={this.state.idx} />
         </Modal>
       </View>
     );
   };
 
-  
-
   async getRestrooms() {
     const newRadius = await event.target.value;
     this.setState({ radius: newRadius });
   }
 
-  filterFn = (bool, filter) => {if(bool) this.setState({ filter })};
-
+  unisexFn = (unisexFilter) => this.setState({ unisexFilter });
+  accessibleFn = (accessibleFilter) => this.setState({ accessibleFilter });
+  changingFn = (changingFilter) => this.setState({ changingFilter });
 
   render() {
     if (!this.state.region) return <Text>Loading...</Text>;
@@ -179,7 +194,7 @@ class GoogleMapView extends Component {
       <View style={styles.container}>
         <MapView
           provider={PROVIDER_GOOGLE}
-          ref={map => (this._map = map)}
+          ref={(map) => (this._map = map)}
           style={styles.mapStyle}
           initialRegion={this.state.region}
           showsUserLocation={true}
@@ -190,18 +205,18 @@ class GoogleMapView extends Component {
             onDragEnd={this.onRegionChangeComplete}
             coordinate={{
               latitude: this.state.region.latitude,
-              longitude: this.state.region.longitude
+              longitude: this.state.region.longitude,
             }}
           />
           {this.props.bathrooms.map((marker, index) => (
             <Marker
               //image={iconmarker}
               key={index}
-              ref={ref => (this.state.markers[index] = ref)}
+              ref={(ref) => (this.state.markers[index] = ref)}
               onPress={() => this.onMarkerPressed(marker, index)}
               coordinate={{
                 latitude: marker.latitude,
-                longitude: marker.longitude
+                longitude: marker.longitude,
               }}
             >
               <Callout
@@ -218,24 +233,35 @@ class GoogleMapView extends Component {
         <HeaderB backgroundImage={headerimg}></HeaderB>
         <View style={styles.addFilter}>
           <IconFilter
-              size={36}
-              name="sort"
-              type="material"
-              color="#0077F6"
-              onPress={() => this.setState({modalFilter: !this.state.modalFilter})}
+            size={36}
+            name="sort"
+            type="material"
+            color="#0077F6"
+            onPress={() =>
+              this.setState({ modalFilter: !this.state.modalFilter })
+            }
           />
         </View>
         <Modal
-            animationType="fade"
-            transparent={true}
-            visible={this.state.modalFilter}
-            on
-          >
-            <View style={styles.centeredView}>
-              <View style={styles.modalFilter}>
-                <Filter backButton={this.backButton} filterFn={this.filterFn} />
-              </View>
+          animationType="fade"
+          transparent={true}
+          visible={this.state.modalFilter}
+          on
+        >
+          <View style={styles.centeredView}>
+            <View style={styles.modalFilter}>
+              <Filter
+                backButton={this.backButton}
+                // filterFn={this.filterFn}
+                unisexFn={this.unisexFn}
+                accessibleFn={this.accessibleFn}
+                changingFn={this.changingFn}
+                unisexFilter={this.state.unisexFilter}
+                accessibleFilter={this.state.accessibleFilter}
+                changingFilter={this.state.changingFilter}
+              />
             </View>
+          </View>
         </Modal>
         <View style={styles.add}>
           <IconB
@@ -244,29 +270,27 @@ class GoogleMapView extends Component {
             type="FontAwesome"
             color="#0077F6"
             underlayColor="purple"
-            onPress={ () => {
-              this.setState({ modal2Visible: true })
-              
+            onPress={() => {
+              this.setState({ modal2Visible: true });
             }}
           />
-           <Modal
-          animationType="slide"
-          transparent={true}
-          visible={this.state.modal2Visible}
-          on
-        >
-          <AddBathroom
-            backButton={this.backButton}
-            region={this.state.region}
-            
-          />
-        </Modal>
+          <Modal
+            animationType="slide"
+            transparent={true}
+            visible={this.state.modal2Visible}
+            on
+          >
+            <AddBathroom
+              backButton={this.backButton}
+              region={this.state.region}
+            />
+          </Modal>
         </View>
         <View style={styles.searchBar}>
           <GoogleSearchBar onSearchRegionChange={this.onSearchRegionChange} />
         </View>
         <Carousel
-          ref={c => {
+          ref={(c) => {
             this._carousel = c;
           }}
           data={this.props.bathrooms}
@@ -275,7 +299,7 @@ class GoogleMapView extends Component {
           sliderWidth={Dimensions.get("window").width}
           itemWidth={300}
           removeClippedSubviews={false}
-          onSnapToItem={index => this.onCarouselItemChange(index)}
+          onSnapToItem={(index) => this.onCarouselItemChange(index)}
         />
         <Slider
           style={styles.slider}
@@ -283,7 +307,7 @@ class GoogleMapView extends Component {
           maximumValue={2000}
           minimumValue={200}
           step={100}
-          onValueChange={value => this.setState({ radius: value })}
+          onValueChange={(value) => this.setState({ radius: value })}
         >
           <Text>{this.state.radius} meters</Text>
         </Slider>
@@ -294,69 +318,69 @@ class GoogleMapView extends Component {
 
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject
+    ...StyleSheet.absoluteFillObject,
   },
   mapStyle: {
-    ...StyleSheet.absoluteFillObject
+    ...StyleSheet.absoluteFillObject,
   },
   header: {
     position: "absolute",
-    top: 10
+    top: 10,
   },
   carousel: {
     position: "absolute",
     bottom: 0,
-    marginBottom: 70
+    marginBottom: 70,
   },
   cardContainer: {
     backgroundColor: "#0077F6",
     height: 50,
     width: 300,
     padding: 10,
-    borderRadius: 10
+    borderRadius: 10,
   },
   cardTitle: {
     color: "white",
     fontSize: 20,
-    alignSelf: "center"
+    alignSelf: "center",
   },
   permissions: {
     marginTop: 10,
-    color: "red"
+    color: "red",
   },
   slider: {
     flex: 1,
     position: "absolute",
     alignSelf: "center",
     bottom: 15,
-    width: "85%"
+    width: "85%",
   },
   searchBar: {
     flex: 1,
     position: "absolute",
     alignSelf: "center",
     width: "85%",
-    marginTop: 30
+    marginTop: 30,
   },
   add: {
     flex: 1,
     color: "blue",
     position: "absolute",
     alignSelf: "flex-end",
-    marginTop: 100
+    marginTop: 100,
   },
   addFilter: {
     flex: 1,
     position: "absolute",
     alignSelf: "flex-end",
     marginTop: 130,
-    padding: 10
+    padding: 10,
   },
   centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22
+    marginTop: 22,
   },
   modalFilter: {
     height: 250,
@@ -368,21 +392,29 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: {
       width: 15,
-      height: 15
+      height: 15,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 10
-  }
+    elevation: 10,
+  },
 });
 
 const mapStateToProps = ({ bathrooms }) => ({ bathrooms });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    load(region, radius, filter) {
-      dispatch(loadBathrooms(region, radius, filter));
-    }
+    load(region, radius, unisexFilter, accessibleFilter, changingFilter) {
+      dispatch(
+        loadBathrooms(
+          region,
+          radius,
+          unisexFilter,
+          accessibleFilter,
+          changingFilter
+        )
+      );
+    },
   };
 };
 
