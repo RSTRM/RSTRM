@@ -31,6 +31,20 @@ router.get("/:latitude/:longitude/:radius", async (req, res, next) => {
     let bathrooms = await Bathroom.findAll({
       where: whereStatement,
     });
+
+    bathrooms.sort(function (a, b) {
+      return (
+        geolib.getDistance(
+          { latitude: a.latitude, longitude: a.longitude },
+          point
+        ) -
+        geolib.getDistance(
+          { latitude: b.latitude, longitude: b.longitude },
+          point
+        )
+      );
+    });
+
     res.json(bathrooms);
   } catch (err) {
     next(err);
