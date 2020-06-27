@@ -60,6 +60,9 @@ Checkin.prototype.updateUserStateBadges = async function () {
 Checkin.afterCreate(async function (checkin) {
   const user = await db.models.user.findByPk(checkin.userId);
   user.totalCheckins++;
-  const updatedUser = await user.save();
-  await checkin.updateUserStateBadges();
+  await user.save()
+  const bathroom = await db.models.bathroom.findByPk(checkin.bathroomId)
+  bathroom.checkinCount++
+  await bathroom.save()
+  await checkin.updateUserStateBadges()
 });

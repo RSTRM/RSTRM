@@ -7,7 +7,6 @@ const LOAD_BATHROOMS = "LOAD_BATHROOMS";
 const CREATE_BATHROOM = "CREATE_BATHROOM";
 const UPDATE_BATHROOM = "UPDATE_BATHROOM";
 const DELETE_BATHROOM = "DELETE_BATHROOM";
-// const LOAD_REVIEWS = "LOAD_REVIEWS";
 
 /**
  * INITIAL STATE --------------------------------------------------
@@ -28,35 +27,39 @@ const _deleteBathroom = (id) => ({ type: DELETE_BATHROOM, id });
  */
 // UPDATE WITH OUR API
 
-const loadBathrooms = (region, radius, filter = "") => {
+const loadBathrooms = (
+  region,
+  radius,
+  unisexFilter,
+  accessibleFilter,
+  changingFilter
+) => {
   const latitude = region.latitude;
   const longitude = region.longitude;
 
   return async (dispatch) => {
     let filterText = "";
-    if (filter === "unisex") {
-      filterText = "?filter=unisex";
-    }
-    if (filter === "accessible") {
-      filterText = "?filter=accessible";
-    }
-    if (filter === "changingTable") {
-      filterText = "?filter=changingTable";
-    }
+    if (unisexFilter) filterText += "unisexFilter=on&";
+    if (accessibleFilter) filterText += "accessibleFilter=on&";
+    if (changingFilter) filterText += "changingFilter=on&";
 
     const response = (
       await axios.get(
-        `${HOST}/api/bathrooms/${latitude}/${longitude}/${radius}${filterText}`
+        `${HOST}/api/bathrooms/${latitude}/${longitude}/${radius}?${filterText.slice(
+          0,
+          -1
+        )}`
       )
     ).data;
     dispatch(_loadBathrooms(response));
   };
 };
 
-
-const createBathroom = bathroom => {
-  return async dispatch => {
-    const response = (await axios.post(`${HOST}/api/bathrooms/${bathroom.refugeId}`, bathroom)).data;
+const createBathroom = (bathroom) => {
+  return async (dispatch) => {
+    const response = (
+      await axios.post(`${HOST}/api/bathrooms/${bathroom.refugeId}`, bathroom)
+    ).data;
     dispatch(_createBathroom(response));
   };
 };

@@ -43,5 +43,7 @@ module.exports = Review
 Review.afterCreate(async function (review) {
   const user = await db.models.user.findByPk(review.userId)
   user.totalReviews++
-  const updatedUser = await user.save()
+  await user.save()
+  const bathroom = await db.models.bathroom.findByPk(review.bathroomId)
+  await bathroom.getAvgRating()
 })

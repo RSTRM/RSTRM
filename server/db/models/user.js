@@ -96,11 +96,13 @@ User.prototype.getReviews = async function (daysWithin) {
     return db.models.review.findAll({
       where: { userId: this.id, createdAt: { [Op.gte]: date } },
       order: [['createdAt', 'DESC']],
+      include: [{ model: db.models.bathroom }],
     })
   }
   return db.models.review.findAll({
     where: { userId: this.id },
     order: [['createdAt', 'DESC']],
+    include: [{ model: db.models.bathroom }],
   })
 }
 
@@ -111,11 +113,13 @@ User.prototype.getCheckins = async function (daysWithin) {
     return db.models.checkin.findAll({
       where: { userId: this.id, createdAt: { [Op.gte]: date } },
       order: [['createdAt', 'DESC']],
+      include: [{ model: db.models.bathroom }],
     })
   }
   return db.models.checkin.findAll({
     where: { userId: this.id },
     order: [['createdAt', 'DESC']],
+    include: [{ model: db.models.bathroom }],
   })
 }
 
@@ -179,7 +183,7 @@ User.beforeBulkCreate((users) => {
 })
 User.afterCreate(async function (user) {
   const badge = await db.models.badge.findOne({ where: { name: 'welcome' } })
-  return await db.models.userBadge.create({
+  await db.models.userBadge.create({
     userId: user.id,
     badgeId: badge.id,
   })
