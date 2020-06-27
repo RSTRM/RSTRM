@@ -66,9 +66,7 @@ class BathroomView extends Component {
     const index = this.state.index || 0;
     const bathroom = this.props.bathrooms[index] || {};
     const desCoord = `${bathroom.latitude},${bathroom.longitude}`
-
     // const reviews = this.props.reviews.filter(review => review.bathroomId === bathroom.id );
-    const { reviews } = this.props;
     //console.log(bathroom);
     return (
       <Block flex style={styles.profile}>
