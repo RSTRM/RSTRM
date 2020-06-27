@@ -19,6 +19,7 @@ import { connect } from "react-redux";
 import AddReview from "./AddReview";
 import { createCheckin } from "../store/checkins";
 import { loadReviews } from "../store/reviews";
+import { bathrooms } from "../store/bathrooms";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -53,12 +54,12 @@ class BathroomView extends Component {
   };
 
   render() {
-    const { user, backButton, postCheckin } = this.props;
-    // const backButton = this.props.backButton;
+    const { user, backButton, postCheckin, getDirections, reviews} = this.props;
     const index = this.state.index || 0;
     const bathroom = this.props.bathrooms[index] || {};
+    const desCoord = `${bathroom.latitude},${bathroom.longitude}`
+
     // const reviews = this.props.reviews.filter(review => review.bathroomId === bathroom.id );
-    const { reviews } = this.props;
     return (
       <Block flex style={styles.profile}>
         <Block flex>
@@ -80,6 +81,25 @@ class BathroomView extends Component {
                     onPress={() => backButton()}
                   />
                 </Block>
+
+
+
+
+                <Block style={styles.getDirections}>
+                  <Icon
+                    raised
+                    reverse
+                    name="close"
+                    type="material"
+                    color="black"
+                    onPress={() => getDirections(desCoord, bathroom)}
+                  />
+                </Block>
+
+
+
+
+
                 <Text color="white" size={28} style={{ paddingBottom: 36 }}>
                   {bathroom.establishment}{" "}
                 </Text>
@@ -261,10 +281,16 @@ const styles = StyleSheet.create({
   },
   backButton: {
     alignSelf: "flex-end",
-    marginTop: 20,
+    marginTop: 50,
     position: "absolute",
     opacity: 0.7,
   },
+  getDirections: {
+    alignSelf: "flex-end",
+    marginTop: 1,
+    position: "absolute",
+    opacity: 0.7,
+  }
 });
 
 const mapStateToProps = ({ bathrooms, reviews, user }) => ({
