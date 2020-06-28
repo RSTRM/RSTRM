@@ -4,19 +4,16 @@ import { Block, Text, theme } from 'galio-framework'
 import { Icon, Image } from 'react-native-elements'
 import moment from 'moment'
 import { materialTheme } from '../../constants'
-import { TouchableOpacity } from 'react-native-gesture-handler'
 import { StyleSheet } from 'react-native'
 import { View } from 'native-base'
 import { HeaderHeight } from '../../constants/utils'
-import { color } from 'react-native-reanimated'
-import Theme from '../../constants/Theme'
 import tpMarker from '../../assets/tp-marker.png'
 
 const ListItems = ({ name = 'userBadges', association, userItems }) => {
     const listToDisplay = userItems[name] || []
     const defaultImage = tpMarker
 
-    const imageMaker = (path) => {
+    const imageMaker = (path = null) => {
         if (path) {
             return { uri: path }
         } else return defaultImage
@@ -34,7 +31,7 @@ const ListItems = ({ name = 'userBadges', association, userItems }) => {
                         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                             <Image
                                 style={{ width: 50, height: 50 }}
-                                source={imageMaker(item.imageURL)}
+                                source={imageMaker(table.imageURL)}
                                 resizeMode="cover"
                             />
                         </View >
