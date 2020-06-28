@@ -27,10 +27,29 @@ router.get("/:latitude/:longitude/:radius", async (req, res, next) => {
     if (req.query.changingFilter === "on") {
       whereStatement.changingTable = true;
     }
+    if (parseInt(req.query.minimumRating) > 1) {
+      whereStatement.avgRating = {
+        [Op.gte]: parseInt(req.query.minimumRating),
+      };
+    }
 
     let bathrooms = await Bathroom.findAll({
       where: whereStatement,
     });
+
+    bathrooms.sort(function (a, b) {
+      return (
+        geolib.getDistance(
+          { latitude: a.latitude, longitude: a.longitude },
+          point
+        ) -
+        geolib.getDistance(
+          { latitude: b.latitude, longitude: b.longitude },
+          point
+        )
+      );
+    });
+
     res.json(bathrooms);
   } catch (err) {
     next(err);
@@ -54,9 +73,9 @@ router.get("/:bathroomId/reviews", async (req, res, next) => {
   }
 });
 
-router.get("/:id/rating", async (req, res, next) => {
+router.get("/:bathroomId/rating", async (req, res, next) => {
   try {
-    const bathroom = await Bathroom.findByPk(req.params.id);
+    const bathroom = await Bathroom.findByPk(req.params.bathroomId);
     const rating = await bathroom.getAvgRating();
     res.json(rating);
   } catch (err) {
