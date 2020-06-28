@@ -9,6 +9,7 @@ import {
   Button,
   Modal,
   View,
+  TouchableOpacity
 } from "react-native";
 import { Block, Text, theme } from "galio-framework";
 import { LinearGradient } from "expo-linear-gradient";
@@ -19,18 +20,26 @@ import { connect } from "react-redux";
 import AddReview from "./AddReview";
 import { createCheckin } from "../store/checkins";
 import { loadReviews } from "../store/reviews";
+import { loadImages } from "../store/images";
 import { SliderBox } from "react-native-image-slider-box";
 import headerimg from "../assets/header-img.png";
+import { RNCamera } from "react-native-camera";
 import { bathrooms } from "../store/bathrooms";
+import Restroom from "../constants/Images";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
 
-const imgs = [
-  "https://assets3.thrillist.com/v1/image/1856875/792x527/crop;jpeg_quality=60.jpg",
-  "https://assets3.thrillist.com/v1/image/1856877/792x527/crop;jpeg_quality=60.jpg",
-  "https://assets3.thrillist.com/v1/image/1856881/792x1500/scale;jpeg_quality=60.jpg",
-];
+const images = Restroom.Restroom;
+
+const randomizer = images => {
+  let arr = [];
+  for (let i = 0; i < 3; i++) {
+    const randomImages = images[Math.floor(Math.random() * images.length)];
+    arr.push(randomImages);
+  }
+  return arr;
+};
 
 class BathroomView extends Component {
   constructor(props) {
@@ -39,15 +48,18 @@ class BathroomView extends Component {
       index: 0,
       modalVisible: false,
       checkin: {},
+      randomImgs: []
     };
   }
   async componentDidMount() {
     this.setState({ index: this.props.index });
     const index = this.state.index;
-    // this.props.loadReviews();
+
     if (this.props.bathrooms) {
       this.props.loadReviews(this.props.bathrooms[index].id);
     }
+    const imgs = randomizer(images);
+    this.setState({ randomImgs: imgs });
   }
 
   async componentDidUpdate(prevProps) {
@@ -67,18 +79,17 @@ class BathroomView extends Component {
       backButton,
       postCheckin,
       getDirections,
-      reviews,
+      reviews
     } = this.props;
     const index = this.state.index || 0;
     const bathroom = this.props.bathrooms[index] || {};
     const desCoord = `${bathroom.latitude},${bathroom.longitude}`;
-    // const reviews = this.props.reviews.filter(review => review.bathroomId === bathroom.id );
-    // console.log(bathroom);
+
     return (
       <Block flex style={styles.profile}>
         <Block flex>
           <SliderBox
-            images={imgs}
+            images={this.state.randomImgs}
             style={styles.profileContainer}
             sliderBoxHeight={100}
             dotColor="#FFEE58"
@@ -87,7 +98,7 @@ class BathroomView extends Component {
 
           <Block flex style={styles.profileDetails}>
             <Block style={styles.profileTexts}>
-              <Block style={styles.backButton}>
+              <Block style={styles.getDirections}>
                 <Icon
                   raised
                   reverse
@@ -97,40 +108,15 @@ class BathroomView extends Component {
                   onPress={() => backButton()}
                 />
               </Block>
-
-              {/* NEEDS CSS ON BUTTON FOR DIRECTIONS */}
-              <Block style={styles.getDirections}>
-                <Icon
-                  raised
-                  reverse
-                  name="close"
-                  type="material"
-                  color="black"
-                  onPress={() => getDirections(desCoord, bathroom)}
-                />
-              </Block>
-
-              <Text color="white" size={28} style={{ paddingBottom: 150 }}>
+              <Text
+                color="white"
+                size={23}
+                style={styles.title}
+              >
                 {bathroom.establishment}{" "}
               </Text>
               <Block row space="between">
                 <Block row>
-                  <Block middle style={styles.pro}>
-                    <Text size={16} color="black">
-                      Pro
-                    </Text>
-                    <Text color="white" size={16} muted style={styles.seller}>
-                      Establishment
-                    </Text>
-                    <Text size={16} color={materialTheme.COLORS.WARNING}>
-                      4.9{" "}
-                    </Text>
-                  </Block>
-                  <Block>
-                    <Text color={theme.COLORS.MUTED} size={16}>
-                      {` `} {bathroom.city}{" "}
-                    </Text>
-                  </Block>
                   <Text color="white" size={16} muted style={styles.seller}>
                     Establishment
                   </Text>
@@ -150,7 +136,6 @@ class BathroomView extends Component {
               style={styles.gradient}
             />
           </Block>
-          {/* </ImageBackground> */}
         </Block>
         <Block flex style={styles.options}>
           <ImageBackground source={headerimg} style={styles.flex}>
@@ -166,14 +151,28 @@ class BathroomView extends Component {
                 </Block>
                 <Block middle>
                   <Text bold size={12} style={{ marginBottom: 8 }}>
-                    {bathroom.avgRating || 0}
+                    {bathroom.avgRating || 1}
                   </Text>
                   <Text muted size={12}>
-                    Avg Rating
+                    Avg Rtg
                   </Text>
                 </Block>
                 <Block middle>
                   <Icon
+                    size={24}
+                    name="walk"
+                    type="material-community"
+                    color="white"
+                    onPress={() => getDirections(desCoord, bathroom)}
+                  />
+                  <Text muted size={12}>
+                    Directions
+                  </Text>
+                </Block>
+                <Block middle>
+                  <Icon
+                    disabled={!user.id}
+                    disabledStyle={{ backgroundColor: "none", color: "blue" }}
                     name="bookmark-check"
                     type="material-community"
                     color="gold"
@@ -182,12 +181,13 @@ class BathroomView extends Component {
                       if (user.id) {
                         await postCheckin({
                           userId: user.id,
-                          bathroomId: bathroom.id,
+                          bathroomId: bathroom.id
                         });
                         this.setState({ modalVisible: true });
                       } else return;
                     }}
                   />
+
                   <Text muted size={12}>
                     Check In
                   </Text>
@@ -199,32 +199,37 @@ class BathroomView extends Component {
                 style={{
                   paddingVertical: 16,
                   alignItems: "baseline",
-                  color: "white",
+                  color: "white"
                 }}
               >
-                <Text color={theme.COLORS.WHITE} size={16}>
-                  Recent Reviews
-                </Text>
                 <Text
-                  size={12}
-                  color={theme.COLORS.WHITE}
-                  // onPress={() => this.props.navigation.navigate("Home")}
+                  style={{
+                    fontWeight: "bold"
+                  }}
+                  color={"white"}
+                  size={18}
                 >
-                  Tweet
+                  Recent Reviews
                 </Text>
               </Block>
               <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
-                <Block row space="between" style={{ flex: 1, color: "white" }}>
-                  {reviews.map((review) => (
-                    <Text size={16} key={review.id} color={theme.COLORS.WHITE}>
-                      {review.comments}
-                      {"\n"}
-                      {"\n"}
-                    </Text>
+                <Block style={{ flex: 1, color: "white" }}>
+                  {reviews.map(review => (
+                    <View key={review.id}>
+                      <Text
+                        size={16}
+                        key={review.id}
+                        color={theme.COLORS.WHITE}
+                        style={{ flex: 1 }}
+                      >
+                        {"\n"}
+                        {review.comments}
+                        {"\n"}
+                      </Text>
+                    </View>
                   ))}
                 </Block>
               </Block>
-              {/* {user.id ? ( */}
               <View>
                 <Modal
                   animationType="slide"
@@ -235,7 +240,6 @@ class BathroomView extends Component {
                   <AddReview backButton={this.backButton} bathroom={bathroom} />
                 </Modal>
               </View>
-              {/* // ) : null} */}
             </ScrollView>
           </ImageBackground>
         </Block>
@@ -247,36 +251,29 @@ class BathroomView extends Component {
 const styles = StyleSheet.create({
   profile: {
     marginTop: Platform.OS === "android" ? -HeaderHeight : 0,
-    marginBottom: -HeaderHeight * 2,
+    marginBottom: -HeaderHeight * 2
   },
   profileImage: {
     width: width * 1.1,
-    height: "auto",
+    height: "auto"
   },
   profileContainer: {
     width: width,
-    height: height / 2,
+    height: height / 2
   },
   profileDetails: {
     paddingTop: theme.SIZES.BASE * 4,
     justifyContent: "flex-end",
-    position: "relative",
+    position: "relative"
   },
   profileTexts: {
     paddingHorizontal: theme.SIZES.BASE * 2,
     paddingVertical: theme.SIZES.BASE * 2,
-    zIndex: 2,
-  },
-  pro: {
-    backgroundColor: materialTheme.COLORS.ACTIVE,
-    paddingHorizontal: 6,
-    marginRight: theme.SIZES.BASE / 2,
-    borderRadius: 4,
-    height: 19,
-    width: 38,
+    zIndex: 1,
+    fontWeight: "bold"
   },
   seller: {
-    marginRight: theme.SIZES.BASE / 2,
+    marginRight: theme.SIZES.BASE / 2
   },
   options: {
     position: "relative",
@@ -291,14 +288,14 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOpacity: 0.2,
     zIndex: 2,
-    color: "white",
+    color: "white"
   },
   thumb: {
     borderRadius: 4,
     marginVertical: 4,
     alignSelf: "center",
     width: thumbMeasure,
-    height: thumbMeasure,
+    height: thumbMeasure
   },
   gradient: {
     zIndex: 1,
@@ -306,19 +303,19 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: "0%",
-    position: "absolute",
+    position: "absolute"
   },
   backButton: {
     alignSelf: "flex-end",
     marginTop: 40,
     position: "absolute",
-    opacity: 0.7,
+    opacity: 0.7
   },
   getDirections: {
     alignSelf: "flex-end",
     marginTop: 1,
     position: "absolute",
-    opacity: 0.7,
+    opacity: 0.7
   },
   flex: {
     flex: 1,
@@ -334,24 +331,40 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOpacity: 0.2,
     zIndex: 2,
-    color: "white",
+    color: "white"
   },
+  directions: {
+    flex: 1,
+    position: "absolute",
+    alignSelf: "flex-end",
+    marginTop: 70,
+    paddingHorizontal: 25
+  },
+  title:{
+    textShadowRadius: 10,
+    textShadowColor: "black",
+    paddingBottom: 150, 
+    fontWeight: "bold" 
+  }
 });
 
 const mapStateToProps = ({ bathrooms, reviews, user }) => ({
   bathrooms,
   reviews,
-  user,
+  user
 });
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     loadReviews(id) {
       dispatch(loadReviews(id));
     },
+    loadImages(id) {
+      dispatch(loadReviews(id));
+    },
     postCheckin(checkin) {
       dispatch(createCheckin(checkin));
-    },
+    }
   };
 };
 

@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, PureComponent } from "react";
 import {
   StyleSheet,
   Dimensions,
@@ -8,7 +8,8 @@ import {
   Platform,
   Button,
   View,
-  TextInput
+  TextInput,
+  Modal
 } from "react-native";
 
 import { Block, Text, theme } from "galio-framework";
@@ -23,6 +24,9 @@ import headerimg from "../assets/header-img.png";
 import AddReview from "./AddReview";
 import GoogleSearchBar from "./GoogleSearchBar";
 import { white } from "color-name";
+import Cam from "./Cam";
+import { SliderBox } from "react-native-image-slider-box";
+import * as MediaLibrary from "expo-media-library";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -42,11 +46,12 @@ class AddBathroom extends Component {
       street: "",
       city: " ",
       state: " ",
-      country: " ",
+      country: "USA",
       latitude: this.props.region.latitude || 0.0,
       longitude: this.props.region.longitude || 0.0,
       website: " ",
-      modal2Visible: false
+      modal2Visible: false,
+      imgURI: "_"
     };
     this.getLocationData = this.getLocationData.bind(this);
     this.onSearchRegionChange = this.onSearchRegionChange.bind(this);
@@ -56,8 +61,6 @@ class AddBathroom extends Component {
       latitude: this.props.region.latitude,
       longitude: this.props.region.longitude
     });
-
-    console.log(this.props.region, "region", this.state);
   }
 
   async componentDidUpdate(prevProps) {
@@ -67,12 +70,11 @@ class AddBathroom extends Component {
   backButton = () => {
     this.setState({ modal2Visible: false });
   };
+  bathroomImage = pic => {
+    this.setState({ imgURI: pic });
+  };
   getLocationData(data) {
-    console.log(data, "data in addbathrooms");
-    // // const dataArr = data.description.split(" ")
-    // console.log(data.structured_formatting.main_text)
-    // console.log(data.terms[1].value, 'termssss')
-    const firstWord = data.structured_formatting.main_text.split(" ") 
+    const firstWord = data.structured_formatting.main_text.split(" ");
     this.setState({
       unisex: true,
       accessible: true,
@@ -80,16 +82,13 @@ class AddBathroom extends Component {
       AvgRating: 1,
       checkinCount: 1,
       establishment: data.structured_formatting.main_text,
-      street: data.terms[1].value || " ",
-      city: data.terms[2].value || " ",
-      state: data.terms[3].value || " ",
-      country: data.terms[4].value || " ",
+      street: data.terms[1].value || "_",
+      city: data.terms[2].value || "_",
       website: `www.${firstWord[0]}.com` || " "
     });
     console.log(this.state, "updated state");
   }
   onSearchRegionChange(coordinates) {
-    console.log(coordinates, "coordinates in add");
     this.setState({
       latitude: coordinates.lat,
       longitude: coordinates.lng
@@ -120,37 +119,60 @@ class AddBathroom extends Component {
     return (
       <Block flex style={styles.profile}>
         <Block flex>
-          <ImageBackground
-            source={headerimg}
+          <SliderBox
+            images={[this.state.imgURI]}
             style={styles.profileContainer}
-            imageStyle={styles.profileImage}
-          >
-            <Text size={24} color="white" style={styles.profileTexts}>
-              Add Bathroom
-            </Text>
+            sliderBoxHeight={100}
+            dotColor="#FFEE58"
+            inactiveDotColor="#90A4AE"
+          />
+          <Text size={24} color="white" style={styles.title}>
+            Add Bathroom
+          </Text>
 
-            <Block flex style={styles.profileDetails}>
-              <Block style={styles.profileTexts}>
-                <Block style={styles.backButton}>
-                  <Icon
-                    reverse
-                    name="close"
-                    type="material"
-                    color="black"
-                    onPress={() => backButton()}
-                  />
-                </Block>
+          <Block flex style={styles.profileDetails}>
+            <Block style={styles.profileTexts}>
+              <Block style={styles.backButton}>
+                <Icon
+                  reverse
+                  name="close"
+                  type="material"
+                  color="black"
+                  onPress={() => backButton()}
+                />
               </Block>
-              <LinearGradient
-                colors={["rgba(0,0,0,0)", "rgba(0,0,0,1)"]}
-                style={styles.gradient}
-              />
+              <Block style={styles.cameraIcon}>
+                <Icon
+                  reverse
+                  name="camera"
+                  type="material-community"
+                  color="#0077F6"
+                  underlayColor="purple"
+                  onPress={() => {
+                    this.setState({ modal2Visible: true });
+                  }}
+                />
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={this.state.modal2Visible}
+                  on
+                >
+                  <Cam
+                    backButton={this.backButton}
+                    bathroomImage={this.bathroomImage}
+                  />
+                </Modal>
+              </Block>
             </Block>
-          </ImageBackground>
+            <LinearGradient
+              colors={["rgba(0,0,0,0)", "rgba(0,0,0,1)"]}
+              style={styles.gradient}
+            />
+          </Block>
         </Block>
 
         <Block flex style={styles.options}>
-          {/* <ImageBackground source={headerimg} style={styles.flex}> */}
           <ScrollView showsVerticalScrollIndicator={false}>
             <Block
               row
@@ -230,10 +252,9 @@ class AddBathroom extends Component {
               ></Button>
             </LinearGradient>
           </ScrollView>
-          {/* </ImageBackground> */}
 
           <View style={styles.searchBar}>
-            <Text>GOOGLE SEARCH</Text>
+            <Text style={styles.text}>Google Search for Bathroom</Text>
             <GoogleSearchBar
               getLocationData={this.getLocationData}
               onSearchRegionChange={this.onSearchRegionChange}
@@ -248,7 +269,7 @@ class AddBathroom extends Component {
 const styles = StyleSheet.create({
   profile: {
     marginTop: Platform.OS === "android" ? -HeaderHeight : 0,
-    marginBottom: -HeaderHeight * 2.5
+    marginBottom: -HeaderHeight * 13
   },
   profileImage: {
     width: width * 1.1,
@@ -256,7 +277,7 @@ const styles = StyleSheet.create({
   },
   profileContainer: {
     width: width,
-    height: height / 1
+    height: height / 1.8
   },
   profileDetails: {
     paddingTop: theme.SIZES.BASE * 4,
@@ -275,7 +296,7 @@ const styles = StyleSheet.create({
     marginTop: -theme.SIZES.BASE * 43,
     borderTopLeftRadius: 13,
     borderTopRightRadius: 13,
-    backgroundColor: "#A4D4FF",
+    backgroundColor: "#0077F6",
     shadowColor: "black",
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 8,
@@ -341,6 +362,24 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     zIndex: 2,
     color: "white"
+  },
+  cameraIcon: {
+    flex: 1,
+    position: "absolute",
+    marginTop: -700,
+    alignSelf: "flex-start"
+  },
+  title: {
+    flex: 1,
+    position: "absolute",
+    alignSelf: "center",
+    marginTop: 100,
+    fontSize: 26,
+    padding: 6,
+    textShadowRadius: 10,
+    textShadowColor: "black",
+    color: "white",
+    fontWeight: "bold"
   }
 });
 
