@@ -61,8 +61,6 @@ class AddBathroom extends Component {
       latitude: this.props.region.latitude,
       longitude: this.props.region.longitude
     });
-
-    console.log(this.props.region, "region", this.state);
   }
 
   async componentDidUpdate(prevProps) {
@@ -76,10 +74,6 @@ class AddBathroom extends Component {
     this.setState({ imgURI: pic });
   };
   getLocationData(data) {
-    console.log(data, "data in addbathrooms");
-    // // const dataArr = data.description.split(" ")
-    // console.log(data.structured_formatting.main_text)
-    // console.log(data.terms[1].value, 'termssss')
     const firstWord = data.structured_formatting.main_text.split(" ");
     this.setState({
       unisex: true,
@@ -95,7 +89,6 @@ class AddBathroom extends Component {
     console.log(this.state, "updated state");
   }
   onSearchRegionChange(coordinates) {
-    console.log(coordinates, "coordinates in add");
     this.setState({
       latitude: coordinates.lat,
       longitude: coordinates.lng
@@ -177,11 +170,9 @@ class AddBathroom extends Component {
               style={styles.gradient}
             />
           </Block>
-          {/* </ImageBackground> */}
         </Block>
 
         <Block flex style={styles.options}>
-          {/* <ImageBackground source={headerimg} style={styles.flex}> */}
           <ScrollView showsVerticalScrollIndicator={false}>
             <Block
               row
@@ -263,7 +254,7 @@ class AddBathroom extends Component {
           </ScrollView>
 
           <View style={styles.searchBar}>
-            <Text>GOOGLE SEARCH</Text>
+            <Text style={styles.text}>Google Search for Bathroom</Text>
             <GoogleSearchBar
               getLocationData={this.getLocationData}
               onSearchRegionChange={this.onSearchRegionChange}
@@ -381,9 +372,14 @@ const styles = StyleSheet.create({
   title: {
     flex: 1,
     position: "absolute",
-    alignSelf: "flex-start",
+    alignSelf: "center",
     marginTop: 100,
-    color: "#005DFF"
+    fontSize: 26,
+    padding: 6,
+    textShadowRadius: 10,
+    textShadowColor: "black",
+    color: "white",
+    fontWeight: "bold"
   }
 });
 

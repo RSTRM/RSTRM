@@ -16,8 +16,6 @@ import {
 import * as ImagePicker from "expo-image-picker";
 import { Icon } from "react-native-elements";
 import * as MediaLibrary from "expo-media-library";
-// const { uri } = await Camera.takePictureAsync();
-// const asset = await MediaLibrary.createAssetAsync(uri);
 
 let picture;
 
@@ -67,11 +65,12 @@ export default class App extends React.Component {
 
   takePicture = async () => {
     if (this.camera) {
+      const backButton = this.props.backButton;
       const { uri } = await this.camera.takePictureAsync();
       const asset = await MediaLibrary.createAssetAsync(uri);
-      console.log(asset, "assett");
       this.setState({ imgURI: asset });
       this.props.bathroomImage(this.state.imgURI);
+      backButton();
     }
   };
 
@@ -79,15 +78,16 @@ export default class App extends React.Component {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images
     });
-    console.log(result, "restul");
     this.setState({ imgURI: result.uri });
     this.props.bathroomImage(this.state.imgURI);
+    const backButton = this.props.backButton;
+    backButton();
   };
 
   render() {
     const { hasPermission, pictures } = this.state;
     const backButton = this.props.backButton;
-    console.log(this.state);
+
     if (hasPermission === null) {
       return <View />;
     } else if (hasPermission === false) {
@@ -130,6 +130,7 @@ export default class App extends React.Component {
                   backgroundColor: "transparent"
                 }}
                 onPress={() => this.takePicture()}
+                // onPressOut={async() => await backButton()}
               >
                 <FontAwesome
                   name="camera"

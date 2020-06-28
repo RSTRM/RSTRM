@@ -88,6 +88,7 @@ const AddReview = ({ bathroom, backButton, user, postReview, checkins }) => {
             selectedStar={rating => setStarCount(rating)}
           />
           <TextInput
+            style={styles.text}
             value={comments}
             onChange={event => setComments(event.nativeEvent.text)}
             placeholder="comments"
@@ -177,9 +178,14 @@ const styles = StyleSheet.create({
   },
   backButton: {
     alignSelf: "flex-end",
-    marginTop: 20,
+    marginTop: -60,
     position: "absolute",
     opacity: 0.7
+  },
+  text:{
+    flex: 1,
+    padding: 20,
+    color: "black"
   }
 });
 
