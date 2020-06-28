@@ -50,6 +50,7 @@ class GoogleMapView extends Component {
       unisexFilter: false,
       accessibleFilter: false,
       changingFilter: false,
+      minimumRating: 1,
       gotDirections: false,
       bathroom: null,
     };
@@ -86,7 +87,8 @@ class GoogleMapView extends Component {
       this.state.radius,
       this.state.unisexFilter,
       this.state.accessibleFilter,
-      this.state.changingFilter
+      this.state.changingFilter,
+      this.state.minimumRating
     );
     this.getDirections();
   }
@@ -96,14 +98,16 @@ class GoogleMapView extends Component {
       prevState.radius !== this.state.radius ||
       prevState.unisexFilter !== this.state.unisexFilter ||
       prevState.accessibleFilter !== this.state.accessibleFilter ||
-      prevState.changingFilter !== this.state.changingFilter
+      prevState.changingFilter !== this.state.changingFilter ||
+      prevState.minimumRating !== this.state.minimumRating
     ) {
       await this.props.load(
         this.state.region,
         this.state.radius,
         this.state.unisexFilter,
         this.state.accessibleFilter,
-        this.state.changingFilter
+        this.state.changingFilter,
+        this.state.minimumRating
       );
     }
   }
@@ -210,6 +214,7 @@ class GoogleMapView extends Component {
   unisexFn = (unisexFilter) => this.setState({ unisexFilter });
   accessibleFn = (accessibleFilter) => this.setState({ accessibleFilter });
   changingFn = (changingFilter) => this.setState({ changingFilter });
+  minimumRatingFn = (minimumRating) => this.setState({ minimumRating });
 
   getDirections = async (desLocation, bathroom) => {
     const startLoc = `${this.state.region.latitude},${this.state.region.longitude}`;
@@ -353,13 +358,14 @@ class GoogleMapView extends Component {
             <View style={styles.modalFilter}>
               <Filter
                 backButton={this.backButton}
-                // filterFn={this.filterFn}
                 unisexFn={this.unisexFn}
                 accessibleFn={this.accessibleFn}
                 changingFn={this.changingFn}
+                minimumRatingFn={this.minimumRatingFn}
                 unisexFilter={this.state.unisexFilter}
                 accessibleFilter={this.state.accessibleFilter}
                 changingFilter={this.state.changingFilter}
+                minimumRating={this.state.minimumRating}
               />
             </View>
           </View>
@@ -512,14 +518,22 @@ const mapStateToProps = ({ bathrooms }) => ({ bathrooms });
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    load(region, radius, unisexFilter, accessibleFilter, changingFilter) {
+    load(
+      region,
+      radius,
+      unisexFilter,
+      accessibleFilter,
+      changingFilter,
+      minimumRating
+    ) {
       dispatch(
         loadBathrooms(
           region,
           radius,
           unisexFilter,
           accessibleFilter,
-          changingFilter
+          changingFilter,
+          minimumRating
         )
       );
     },

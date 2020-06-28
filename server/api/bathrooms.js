@@ -27,6 +27,11 @@ router.get("/:latitude/:longitude/:radius", async (req, res, next) => {
     if (req.query.changingFilter === "on") {
       whereStatement.changingTable = true;
     }
+    if (parseInt(req.query.minimumRating) > 1) {
+      whereStatement.avgRating = {
+        [Op.gte]: parseInt(req.query.minimumRating),
+      };
+    }
 
     let bathrooms = await Bathroom.findAll({
       where: whereStatement,
@@ -68,9 +73,9 @@ router.get("/:bathroomId/reviews", async (req, res, next) => {
   }
 });
 
-router.get("/:id/rating", async (req, res, next) => {
+router.get("/:bathroomId/rating", async (req, res, next) => {
   try {
-    const bathroom = await Bathroom.findByPk(req.params.id);
+    const bathroom = await Bathroom.findByPk(req.params.bathroomId);
     const rating = await bathroom.getAvgRating();
     res.json(rating);
   } catch (err) {

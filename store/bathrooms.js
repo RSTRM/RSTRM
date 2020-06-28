@@ -32,7 +32,8 @@ const loadBathrooms = (
   radius,
   unisexFilter,
   accessibleFilter,
-  changingFilter
+  changingFilter,
+  minimumRating
 ) => {
   const latitude = region.latitude;
   const longitude = region.longitude;
@@ -42,6 +43,7 @@ const loadBathrooms = (
     if (unisexFilter) filterText += "unisexFilter=on&";
     if (accessibleFilter) filterText += "accessibleFilter=on&";
     if (changingFilter) filterText += "changingFilter=on&";
+    if (minimumRating > 1) filterText += `minimumRating=${minimumRating}&`;
 
     const response = (
       await axios.get(
