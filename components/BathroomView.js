@@ -20,19 +20,26 @@ import { connect } from "react-redux";
 import AddReview from "./AddReview";
 import { createCheckin } from "../store/checkins";
 import { loadReviews } from "../store/reviews";
+import { loadImages } from "../store/images";
 import { SliderBox } from "react-native-image-slider-box";
 import headerimg from "../assets/header-img.png";
 import { RNCamera } from "react-native-camera";
 import { bathrooms } from "../store/bathrooms";
+import Restroom from "../constants/Images";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
 
-const imgs = [
-  "https://assets3.thrillist.com/v1/image/1856875/792x527/crop;jpeg_quality=60.jpg",
-  "https://assets3.thrillist.com/v1/image/1856877/792x527/crop;jpeg_quality=60.jpg",
-  "https://assets3.thrillist.com/v1/image/1856881/792x1500/scale;jpeg_quality=60.jpg"
-];
+const images = Restroom.Restroom;
+
+const randomizer = images => {
+  let arr = []
+  for (let i = 0; i < 3; i++) {
+    const randomImages = images[Math.floor(Math.random() * images.length)];
+    arr.push(randomImages)
+  }
+  return arr;
+};
 
 class BathroomView extends Component {
   constructor(props) {
@@ -40,51 +47,50 @@ class BathroomView extends Component {
     this.state = {
       index: 0,
       modalVisible: false,
-      checkin: {}
+      checkin: {},
+      randomImgs: []
     };
-    this.takePicture = this.takePicture.bind(this);
   }
   async componentDidMount() {
     this.setState({ index: this.props.index });
     const index = this.state.index;
-    // this.props.loadReviews();
+
     if (this.props.bathrooms) {
       this.props.loadReviews(this.props.bathrooms[index].id);
     }
+    const imgs = randomizer(images)
+    this.setState({ randomImgs: imgs });
   }
 
   async componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
       this.setState({ index: this.props.index });
       const index = this.state.index;
-      // this.props.loadReviews(this.props.bathrooms[index].id);
     }
+
   }
 
   backButton = () => {
     this.setState({ modalVisible: false });
   };
 
-  takePicture = async () => {
-    if (this.camera) {
-      const options = { quality: 0.5, base64: true };
-      const data = await this.camera.takePictureAsync(options);
-      console.log(data.uri);
-    }
-  };
-
   render() {
-    const { user, backButton, postCheckin, getDirections, reviews} = this.props;
+    const {
+      user,
+      backButton,
+      postCheckin,
+      getDirections,
+      reviews
+    } = this.props;
     const index = this.state.index || 0;
     const bathroom = this.props.bathrooms[index] || {};
-    const desCoord = `${bathroom.latitude},${bathroom.longitude}`
-    // const reviews = this.props.reviews.filter(review => review.bathroomId === bathroom.id );
-    //console.log(bathroom);
+    const desCoord = `${bathroom.latitude},${bathroom.longitude}`;
+   
     return (
       <Block flex style={styles.profile}>
         <Block flex>
           <SliderBox
-            images={imgs}
+            images={this.state.randomImgs}
             style={styles.profileContainer}
             sliderBoxHeight={100}
             dotColor="#FFEE58"
@@ -104,9 +110,6 @@ class BathroomView extends Component {
                 />
               </Block>
 
-
-
-
               {/* NEEDS CSS ON BUTTON FOR DIRECTIONS */}
               <Block style={styles.getDirections}>
                 <Icon
@@ -119,9 +122,6 @@ class BathroomView extends Component {
                 />
               </Block>
 
-
-
-              
               <Text color="white" size={28} style={{ paddingBottom: 150 }}>
                 {bathroom.establishment}{" "}
               </Text>
@@ -213,7 +213,7 @@ class BathroomView extends Component {
               <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
                 <Block row space="between" style={{ flex: 1, color: "white" }}>
                   {reviews.map(review => (
-                    <View>
+                    <View key={review.id}>
                       <Text
                         size={16}
                         key={review.id}
@@ -228,7 +228,13 @@ class BathroomView extends Component {
                         {"\n"}
                         {"\n"}
                       </Text>
-                      <Text>{"\n"}{"\n"}{"\n"}{"\n"}{"\n"}</Text>
+                      <Text>
+                        {"\n"}
+                        {"\n"}
+                        {"\n"}
+                        {"\n"}
+                        {"\n"}
+                      </Text>
                     </View>
                   ))}
                 </Block>
@@ -327,7 +333,7 @@ const styles = StyleSheet.create({
     alignSelf: "flex-end",
     marginTop: 1,
     position: "absolute",
-    opacity: 0.7,
+    opacity: 0.7
   },
   flex: {
     flex: 1,
@@ -345,7 +351,7 @@ const styles = StyleSheet.create({
     zIndex: 2,
     color: "white"
   }
-})
+});
 
 const mapStateToProps = ({ bathrooms, reviews, user }) => ({
   bathrooms,
@@ -356,6 +362,9 @@ const mapStateToProps = ({ bathrooms, reviews, user }) => ({
 const mapDispatchToProps = dispatch => {
   return {
     loadReviews(id) {
+      dispatch(loadReviews(id));
+    },
+    loadImages(id) {
       dispatch(loadReviews(id));
     },
     postCheckin(checkin) {

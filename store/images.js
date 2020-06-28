@@ -24,9 +24,9 @@ const _deleteImage = (id) => ({ type: DELETE_IMAGE, id });
  */
 // UPDATE WITH OUR API
 
-const loadImages = () => {
+const loadImages = (id) => {
   return async (dispatch) => {
-    const response = (await axios.get("/api/images")).data;
+    const response = (await axios.get(`/api/images/${id}`)).data;
     dispatch(_loadImages(response));
   };
 };

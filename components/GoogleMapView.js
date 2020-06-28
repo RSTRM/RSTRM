@@ -26,7 +26,7 @@ import headerimg from "../assets/header-img.png";
 import { Icon as IconB, Icon as IconFilter, Header as HeaderB } from "react-native-elements";
 import { GOOGLE_API_KEY } from "../secrets";
 import polyline from '@mapbox/polyline';
-
+import MapStyle from '../constants/mapStyle.json'
 
 
 class GoogleMapView extends Component {
@@ -253,6 +253,7 @@ class GoogleMapView extends Component {
       <View style={styles.container}>
         <MapView
           provider={PROVIDER_GOOGLE}
+          customMapStyle={MapStyle}
           ref={(map) => (this._map = map)}
           style={styles.mapStyle}
           initialRegion={this.state.region}

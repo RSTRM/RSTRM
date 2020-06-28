@@ -1,4 +1,4 @@
-import React, { Component } from "react";
+import React, { Component, PureComponent } from "react";
 import {
   StyleSheet,
   Dimensions,
@@ -8,7 +8,8 @@ import {
   Platform,
   Button,
   View,
-  TextInput
+  TextInput,
+  Modal
 } from "react-native";
 
 import { Block, Text, theme } from "galio-framework";
@@ -24,6 +25,8 @@ import AddReview from "./AddReview";
 import GoogleSearchBar from "./GoogleSearchBar";
 import { white } from "color-name";
 import Cam from "./Cam";
+import { SliderBox } from "react-native-image-slider-box";
+import * as MediaLibrary from "expo-media-library";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -47,7 +50,8 @@ class AddBathroom extends Component {
       latitude: this.props.region.latitude || 0.0,
       longitude: this.props.region.longitude || 0.0,
       website: " ",
-      modal2Visible: false
+      modal2Visible: false,
+      imgURI: "_"
     };
     this.getLocationData = this.getLocationData.bind(this);
     this.onSearchRegionChange = this.onSearchRegionChange.bind(this);
@@ -68,6 +72,9 @@ class AddBathroom extends Component {
   backButton = () => {
     this.setState({ modal2Visible: false });
   };
+  bathroomImage = pic => {
+    this.setState({ imgURI: pic });
+  };
   getLocationData(data) {
     console.log(data, "data in addbathrooms");
     // // const dataArr = data.description.split(" ")
@@ -83,7 +90,6 @@ class AddBathroom extends Component {
       establishment: data.structured_formatting.main_text,
       street: data.terms[1].value || "_",
       city: data.terms[2].value || "_",
-      // state: data.terms[3].value || "_",
       website: `www.${firstWord[0]}.com` || " "
     });
     console.log(this.state, "updated state");
@@ -120,45 +126,58 @@ class AddBathroom extends Component {
     return (
       <Block flex style={styles.profile}>
         <Block flex>
-          <ImageBackground
-            source={headerimg}
+          <SliderBox
+            images={[this.state.imgURI]}
             style={styles.profileContainer}
-            imageStyle={styles.profileImage}
-          >
-            <Text size={24} color="white" style={styles.profileTexts}>
-              Add Bathroom
-            </Text>
+            sliderBoxHeight={100}
+            dotColor="#FFEE58"
+            inactiveDotColor="#90A4AE"
+          />
+          <Text size={24} color="white" style={styles.title}>
+            Add Bathroom
+          </Text>
 
-            <Block flex style={styles.profileDetails}>
-              <Block style={styles.profileTexts}>
-                <Block style={styles.backButton}>
-                  <Icon
-                    reverse
-                    name="close"
-                    type="material"
-                    color="black"
-                    onPress={() => backButton()}
-                  />
-                </Block>
-                <Block style={styles.cameraIcon}>
-                  <Icon
-                    raised
-                    reverse
-                    name="camera"
-                    type="material-community"
-                    color="blue"
-                    onPress={() => {
-                      return <Cam />;
-                    }}
-                  />
-                </Block>
+          <Block flex style={styles.profileDetails}>
+            <Block style={styles.profileTexts}>
+              <Block style={styles.backButton}>
+                <Icon
+                  reverse
+                  name="close"
+                  type="material"
+                  color="black"
+                  onPress={() => backButton()}
+                />
               </Block>
-              <LinearGradient
-                colors={["rgba(0,0,0,0)", "rgba(0,0,0,1)"]}
-                style={styles.gradient}
-              />
+              <Block style={styles.cameraIcon}>
+                <Icon
+                  reverse
+                  name="camera"
+                  type="material-community"
+                  color="#0077F6"
+                  underlayColor="purple"
+                  onPress={() => {
+                    this.setState({ modal2Visible: true });
+                  }}
+                />
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={this.state.modal2Visible}
+                  on
+                >
+                  <Cam
+                    backButton={this.backButton}
+                    bathroomImage={this.bathroomImage}
+                  />
+                </Modal>
+              </Block>
             </Block>
-          </ImageBackground>
+            <LinearGradient
+              colors={["rgba(0,0,0,0)", "rgba(0,0,0,1)"]}
+              style={styles.gradient}
+            />
+          </Block>
+          {/* </ImageBackground> */}
         </Block>
 
         <Block flex style={styles.options}>
@@ -242,7 +261,6 @@ class AddBathroom extends Component {
               ></Button>
             </LinearGradient>
           </ScrollView>
-          {/* </ImageBackground> */}
 
           <View style={styles.searchBar}>
             <Text>GOOGLE SEARCH</Text>
@@ -260,7 +278,7 @@ class AddBathroom extends Component {
 const styles = StyleSheet.create({
   profile: {
     marginTop: Platform.OS === "android" ? -HeaderHeight : 0,
-    marginBottom: -HeaderHeight * 4
+    marginBottom: -HeaderHeight * 13
   },
   profileImage: {
     width: width * 1.1,
@@ -268,7 +286,7 @@ const styles = StyleSheet.create({
   },
   profileContainer: {
     width: width,
-    height: height / 1
+    height: height / 1.8
   },
   profileDetails: {
     paddingTop: theme.SIZES.BASE * 4,
@@ -287,7 +305,7 @@ const styles = StyleSheet.create({
     marginTop: -theme.SIZES.BASE * 43,
     borderTopLeftRadius: 13,
     borderTopRightRadius: 13,
-    backgroundColor: "#A4D4FF",
+    backgroundColor: "#0077F6",
     shadowColor: "black",
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 8,
@@ -359,6 +377,13 @@ const styles = StyleSheet.create({
     position: "absolute",
     marginTop: -700,
     alignSelf: "flex-start"
+  },
+  title: {
+    flex: 1,
+    position: "absolute",
+    alignSelf: "flex-start",
+    marginTop: 100,
+    color: "#005DFF"
   }
 });
 

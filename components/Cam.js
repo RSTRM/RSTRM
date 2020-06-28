@@ -1,72 +1,176 @@
-import React, { PureComponent } from 'react';
-import { AppRegistry, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { RNCamera } from 'react-native-camera';
+import React from "react";
+import {
+  StyleSheet,
+  Text,
+  View,
+  TouchableOpacity,
+  Platform
+} from "react-native";
+import { Camera } from "expo-camera";
+import * as Permissions from "expo-permissions";
+import {
+  FontAwesome,
+  Ionicons,
+  MaterialCommunityIcons
+} from "@expo/vector-icons";
+import * as ImagePicker from "expo-image-picker";
+import { Icon } from "react-native-elements";
+import * as MediaLibrary from "expo-media-library";
+// const { uri } = await Camera.takePictureAsync();
+// const asset = await MediaLibrary.createAssetAsync(uri);
 
-export default class Cam extends PureComponent {
-  render() {
-    return (
-      <View style={styles.container}>
-        <RNCamera
-          ref={(ref) => {
-            this.camera = ref;
-          }}
-          style={styles.preview}
-          type={RNCamera.Constants.Type.back}
-          flashMode={RNCamera.Constants.FlashMode.on}
-          androidCameraPermissionOptions={{
-            title: 'Permission to use camera',
-            message: 'We need your permission to use your camera',
-            buttonPositive: 'Ok',
-            buttonNegative: 'Cancel',
-          }}
-          androidRecordAudioPermissionOptions={{
-            title: 'Permission to use audio recording',
-            message: 'We need your permission to use your audio',
-            buttonPositive: 'Ok',
-            buttonNegative: 'Cancel',
-          }}
-          onGoogleVisionBarcodesDetected={({ barcodes }) => {
-            console.log(barcodes);
-          }}
-        />
-        <View style={{ flex: 0, flexDirection: 'row', justifyContent: 'center' }}>
-          <TouchableOpacity onPress={this.takePicture.bind(this)} style={styles.capture}>
-            <Text style={{ fontSize: 14 }}> SNAP </Text>
-          </TouchableOpacity>
-        </View>
-      </View>
-    );
+let picture;
+
+export default class App extends React.Component {
+  constructor(props) {
+    super(props);
+    this.backButton = this.backButton.bind(this);
   }
+  state = {
+    hasPermission: null,
+    cameraType: Camera.Constants.Type.back,
+    imgURI:
+      "assets-library://asset/asset.JPG?id=46F60C34-0D97-4691-928D-ABDE79C44782&ext=JPG",
+    modal2Visible: false
+  };
+
+  async componentDidMount() {
+    this.getPermissionAsync();
+  }
+
+  getPermissionAsync = async () => {
+    // Camera roll Permission
+    if (Platform.OS === "ios") {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+      }
+    }
+    // Camera Permission
+    const { status } = await Permissions.askAsync(Permissions.CAMERA);
+    this.setState({ hasPermission: status === "granted" });
+  };
+  backButton = () => {
+    this.setState({ modal2Visible: false });
+  };
+
+  handleCameraType = () => {
+    const { cameraType } = this.state;
+
+    this.setState({
+      cameraType:
+        cameraType === Camera.Constants.Type.back
+          ? Camera.Constants.Type.front
+          : Camera.Constants.Type.back
+    });
+  };
 
   takePicture = async () => {
     if (this.camera) {
-      const options = { quality: 0.5, base64: true };
-      const data = await this.camera.takePictureAsync(options);
-      console.log(data.uri);
+      const { uri } = await this.camera.takePictureAsync();
+      const asset = await MediaLibrary.createAssetAsync(uri);
+      console.log(asset, "assett");
+      this.setState({ imgURI: asset });
+      this.props.bathroomImage(this.state.imgURI);
     }
   };
+
+  pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images
+    });
+    console.log(result, "restul");
+    this.setState({ imgURI: result.uri });
+    this.props.bathroomImage(this.state.imgURI);
+  };
+
+  render() {
+    const { hasPermission, pictures } = this.state;
+    const backButton = this.props.backButton;
+    console.log(this.state);
+    if (hasPermission === null) {
+      return <View />;
+    } else if (hasPermission === false) {
+      return <Text>No access to camera</Text>;
+    } else {
+      return (
+        <View style={{ flex: 1 }}>
+          <Camera
+            style={{ flex: 1 }}
+            type={this.state.cameraType}
+            ref={ref => {
+              this.camera = ref;
+            }}
+          >
+            <View
+              style={{
+                flex: 1,
+                flexDirection: "row",
+                justifyContent: "space-between",
+                margin: 30
+              }}
+            >
+              <TouchableOpacity
+                style={{
+                  alignSelf: "flex-end",
+                  alignItems: "center",
+                  backgroundColor: "transparent"
+                }}
+                onPress={() => this.pickImage()}
+              >
+                <Ionicons
+                  name="ios-photos"
+                  style={{ color: "#fff", fontSize: 40 }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  alignSelf: "flex-end",
+                  alignItems: "center",
+                  backgroundColor: "transparent"
+                }}
+                onPress={() => this.takePicture()}
+              >
+                <FontAwesome
+                  name="camera"
+                  style={{ color: "#fff", fontSize: 40 }}
+                />
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={{
+                  alignSelf: "flex-end",
+                  alignItems: "center",
+                  backgroundColor: "transparent"
+                }}
+                onPress={() => this.handleCameraType()}
+              >
+                <MaterialCommunityIcons
+                  name="camera-switch"
+                  style={{ color: "#fff", fontSize: 40 }}
+                />
+              </TouchableOpacity>
+            </View>
+          </Camera>
+          <View style={styles.backButton}>
+            <Icon
+              reverse
+              name="close"
+              type="material"
+              color="black"
+              onPress={() => backButton()}
+            />
+          </View>
+        </View>
+      );
+    }
+  }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    flexDirection: 'column',
-    backgroundColor: 'black',
-  },
-  preview: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    alignItems: 'center',
-  },
-  capture: {
-    flex: 0,
-    backgroundColor: '#fff',
-    borderRadius: 5,
-    padding: 15,
-    paddingHorizontal: 20,
-    alignSelf: 'center',
-    margin: 20,
-  },
+  backButton: {
+    alignSelf: "flex-end",
+    marginTop: 40,
+    position: "absolute",
+    opacity: 0.7
+  }
 });
-
-AppRegistry.registerComponent('Cam', () => Cam);

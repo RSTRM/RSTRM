@@ -2,11 +2,11 @@ import React from "react";
 import { connect } from "react-redux";
 import { logout } from "../store/user";
 import { StyleSheet, Text, View, Button, ImageBackground } from "react-native";
-import headerimg from "../assets/splash.png";
+import splash3 from "../assets/splash3.png";
 
 function Home({ navigation, user, signOut }) {
   return (
-    <ImageBackground source={headerimg} style={styles.bottomTab}>
+    <ImageBackground source={splash3} style={styles.bottomTab}>
       <View style={styles.container}>
         {user.id ? (
           <View style={styles.textContainer}>
@@ -24,12 +24,13 @@ function Home({ navigation, user, signOut }) {
             />
           </View>
         ) : (
-          <View style={styles.textContainer}>
-            <Text style={styles.textTitle}>Welcome to RSTRM!</Text>
-            <Text style={styles.textSubTitle}>For when you gotta go...</Text>
-            <Button
+          <View style={styles.login}>
+            {/* <Text style={styles.textTitle}>Welcome to RSTRM!</Text>
+            <Text style={styles.textSubTitle}>For when you gotta go...</Text> */}
+            <Button 
               title="User Sign/Login"
               onPress={() => navigation.navigate('User')}
+              color={'blue'}
             />
           </View>
         )}
@@ -45,11 +46,12 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     color: 'white',
     flex: 1,
-    backgroundColor: '#fff',
     justifyContent: 'center',
+    
   },
   textContainer: {
     padding: 15,
+    
   },
   textTitle: {
     fontSize: 28,
@@ -68,6 +70,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  login: {
+    flex: 1,
+    position: "absolute",
+    alignSelf:"flex-start",
+    marginStart: -35,
+    paddingVertical: 100,
+  }
 })
 
 const mapStateToProps = ({ user }) => ({ user })
