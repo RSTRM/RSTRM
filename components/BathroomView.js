@@ -80,7 +80,7 @@ class BathroomView extends Component {
       backButton,
       postCheckin,
       getDirections,
-      reviews
+      reviews,
     } = this.props;
     const index = this.state.index || 0;
     const bathroom = this.props.bathrooms[index] || {};
@@ -162,7 +162,7 @@ class BathroomView extends Component {
                 </Block>
                 <Block middle>
                   <Text bold size={12} style={{ marginBottom: 8 }}>
-                    {bathroom.AvgRating || 0}
+                    {bathroom.avgRating || 0}
                   </Text>
                   <Text muted size={12}>
                     Avg Rating
@@ -178,7 +178,7 @@ class BathroomView extends Component {
                       if (user.id) {
                         await postCheckin({
                           userId: user.id,
-                          bathroomId: bathroom.id
+                          bathroomId: bathroom.id,
                         });
                         this.setState({ modalVisible: true });
                       } else return;
@@ -196,7 +196,7 @@ class BathroomView extends Component {
                 style={{
                   paddingVertical: 16,
                   alignItems: "baseline",
-                  color: "white"
+                  color: "white",
                 }}
               >
                 <Text color={theme.COLORS.WHITE} size={16}>
@@ -262,25 +262,25 @@ class BathroomView extends Component {
 const styles = StyleSheet.create({
   profile: {
     marginTop: Platform.OS === "android" ? -HeaderHeight : 0,
-    marginBottom: -HeaderHeight * 2
+    marginBottom: -HeaderHeight * 2,
   },
   profileImage: {
     width: width * 1.1,
-    height: "auto"
+    height: "auto",
   },
   profileContainer: {
     width: width,
-    height: height / 2
+    height: height / 2,
   },
   profileDetails: {
     paddingTop: theme.SIZES.BASE * 4,
     justifyContent: "flex-end",
-    position: "relative"
+    position: "relative",
   },
   profileTexts: {
     paddingHorizontal: theme.SIZES.BASE * 2,
     paddingVertical: theme.SIZES.BASE * 2,
-    zIndex: 2
+    zIndex: 2,
   },
   pro: {
     backgroundColor: materialTheme.COLORS.ACTIVE,
@@ -288,10 +288,10 @@ const styles = StyleSheet.create({
     marginRight: theme.SIZES.BASE / 2,
     borderRadius: 4,
     height: 19,
-    width: 38
+    width: 38,
   },
   seller: {
-    marginRight: theme.SIZES.BASE / 2
+    marginRight: theme.SIZES.BASE / 2,
   },
   options: {
     position: "relative",
@@ -306,14 +306,14 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOpacity: 0.2,
     zIndex: 2,
-    color: "white"
+    color: "white",
   },
   thumb: {
     borderRadius: 4,
     marginVertical: 4,
     alignSelf: "center",
     width: thumbMeasure,
-    height: thumbMeasure
+    height: thumbMeasure,
   },
   gradient: {
     zIndex: 1,
@@ -321,13 +321,13 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: "0%",
-    position: "absolute"
+    position: "absolute",
   },
   backButton: {
     alignSelf: "flex-end",
     marginTop: 40,
     position: "absolute",
-    opacity: 0.7
+    opacity: 0.7,
   },
   getDirections: {
     alignSelf: "flex-end",
@@ -356,10 +356,10 @@ const styles = StyleSheet.create({
 const mapStateToProps = ({ bathrooms, reviews, user }) => ({
   bathrooms,
   reviews,
-  user
+  user,
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     loadReviews(id) {
       dispatch(loadReviews(id));
@@ -369,7 +369,7 @@ const mapDispatchToProps = dispatch => {
     },
     postCheckin(checkin) {
       dispatch(createCheckin(checkin));
-    }
+    },
   };
 };
 

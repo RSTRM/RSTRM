@@ -7,6 +7,7 @@ import { checkins } from "./checkins";
 import { images } from "./images";
 import { reviews } from "./reviews";
 import user from "./user";
+import { userItems } from "./userItems"
 
 const reducer = combineReducers({
   bathrooms,
@@ -14,6 +15,7 @@ const reducer = combineReducers({
   images,
   reviews,
   user,
+  userItems
 });
 
 const middleware = composeWithDevTools(applyMiddleware(thunkMiddleware));

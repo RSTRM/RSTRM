@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Switch, Button } from "react-native";
 import { acc } from "react-native-reanimated";
+import StarRating from "react-native-star-rating";
 
 export default function Filter({
   unisexFn,
   accessibleFn,
   changingFn,
+  minimumRatingFn,
   unisexFilter,
   accessibleFilter,
   changingFilter,
+  minimumRating,
   backButton,
 }) {
   const [unisexEnabled, setUnisexEnabled] = useState(unisexFilter);
   const [accessibleEnabled, setAccessibleEnabled] = useState(accessibleFilter);
   const [changingEnabled, setChangingEnabled] = useState(changingFilter);
+  const [minimumStars, setMinimumStars] = useState(minimumRating);
 
   const toggleUnisex = () => setUnisexEnabled(!unisexEnabled);
   const toggleAccessible = () => setAccessibleEnabled(!accessibleEnabled);
@@ -22,6 +26,7 @@ export default function Filter({
   useEffect(() => unisexFn(unisexEnabled), [unisexEnabled]);
   useEffect(() => accessibleFn(accessibleEnabled), [accessibleEnabled]);
   useEffect(() => changingFn(changingEnabled), [changingEnabled]);
+  useEffect(() => minimumRatingFn(minimumStars), [minimumStars]);
 
   return (
     <View style={styles.container}>
@@ -58,6 +63,15 @@ export default function Filter({
           ios_backgroundColor="#3e3e3e"
           onChange={toggleChanging}
           value={changingEnabled}
+        />
+      </View>
+      <View>
+        <Text>Minimum Average Rating</Text>
+        <StarRating
+          disabled={false}
+          maxStars={5}
+          rating={minimumStars}
+          selectedStar={(rating) => setMinimumStars(rating)}
         />
       </View>
     </View>
