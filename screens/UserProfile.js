@@ -24,8 +24,9 @@ const UserProfile = ({ user, loadUserItems }) => {
   const [displayListAssociation, setDisplayListAssociation] = useState('badge')
 
   useEffect(() => {
+    console.log(user)
     loadUserItems(user.id)
-  })
+  }, [])
 
   setDisplayHandler = (name, label, association) => {
     console.log(`set display to ${name} - ${label} - ${association}`)
