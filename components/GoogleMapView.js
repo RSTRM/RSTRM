@@ -29,6 +29,8 @@ import {
   Header as HeaderB,
 } from "react-native-elements";
 import { GOOGLE_API_KEY } from "../secrets";
+import MapStyle from '../constants/mapStyle.json'
+
 import polyline from "@mapbox/polyline";
 import { getDistance } from "geolib";
 
@@ -284,6 +286,7 @@ class GoogleMapView extends Component {
       <View style={styles.container}>
         <MapView
           provider={PROVIDER_GOOGLE}
+          customMapStyle={MapStyle}
           ref={(map) => (this._map = map)}
           style={styles.mapStyle}
           initialRegion={this.state.region}

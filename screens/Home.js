@@ -2,40 +2,39 @@ import React from "react";
 import { connect } from "react-redux";
 import { logout } from "../store/user";
 import { StyleSheet, Text, View, Button, ImageBackground } from "react-native";
-import headerimg from "../assets/splash.png";
+import home from "../assets/home.png";
 
 function Home({ navigation, user, signOut }) {
   return (
-    <ImageBackground source={headerimg} style={styles.bottomTab}>
+    <ImageBackground source={home} style={styles.bottomTab}>
       <View style={styles.container}>
         {user.id ? (
           <View style={styles.textContainer}>
             <Text style={styles.textTitle}>
-              Welcome to RSTRM{', '}
               {user.nameFirst[0].toUpperCase() + user.nameFirst.slice(1)}
             </Text>
-            <Text style={styles.textSubTitle}>
-              Click the Map Icon to see your nearest restroom.
-            </Text>
-            <Button title="Logout" onPress={signOut} />
-            <Button
-              title="User Profile"
-              onPress={() => navigation.navigate('UserProfile')}
-            />
-          </View>
-        ) : (
-            <View style={styles.textContainer}>
-              <Text style={styles.textTitle}>Welcome to RSTRM!</Text>
-              <Text style={styles.textSubTitle}>For when you gotta go...</Text>
+            <View style={styles.textSubTitle}>
+              <Button title="Logout" onPress={signOut} />
               <Button
-                title="User Sign/Login"
-                onPress={() => navigation.navigate('User')}
+                title="User Profile"
+                onPress={() => navigation.navigate("UserProfile")}
               />
             </View>
-          )}
+          </View>
+        ) : (
+          <View style={styles.login}>
+            {/* <Text style={styles.textTitle}>Welcome to RSTRM!</Text>
+            <Text style={styles.textSubTitle}>For when you gotta go...</Text> */}
+            <Button
+              title="User Sign/Login"
+              onPress={() => navigation.navigate("User")}
+              color={"blue"}
+            />
+          </View>
+        )}
       </View>
     </ImageBackground>
-  )
+  );
 }
 
 const styles = StyleSheet.create({
@@ -43,39 +42,57 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: "center",
     justifyContent: "center",
-    color: 'white',
-    flex: 1,
-    backgroundColor: 'rgba(255, 255, 255, 0.96)',
-    justifyContent: 'center',
+    color: "white"
   },
   textContainer: {
-    padding: 15,
+    flex: 1,
+    position: "absolute",
+    alignSelf: "center",
+    padding: 20,
+    marginTop: 100
   },
   textTitle: {
-    fontSize: 28,
-    marginBottom: 10,
-    textAlign: 'center',
+    flex: 1,
+    position: "absolute",
+    alignSelf: "center",
+    paddingStart: 50,
+    fontSize: 30,
+    marginTop: 60,
+    textAlign: "center",
+    color: "blue",
+    fontWeight: "bold"
   },
   textSubTitle: {
-    fontSize: 18,
-    marginBottom: 10,
-    textAlign: 'center',
+    flex: 1,
+    position: "relative",
+    paddingStart: 50,
+    fontSize: 10,
+    marginTop: 80,
+    textAlign: "center",
+    fontWeight: "bold"
   },
   bottomTab: {
-    color: 'white',
+    color: "blue",
     flex: 1,
-    resizeMode: 'cover',
-    alignItems: 'center',
-    justifyContent: 'center',
+    resizeMode: "cover",
+    alignItems: "center",
+    justifyContent: "center"
   },
-})
+  login: {
+    flex: 1,
+    position: "absolute",
+    alignSelf: "flex-start",
+    marginStart: -35,
+    paddingVertical: 100
+  }
+});
 
-const mapStateToProps = ({ user }) => ({ user })
+const mapStateToProps = ({ user }) => ({ user });
 
 const mapDispatchToProps = dispatch => {
   return {
-    signOut: () => dispatch(logout()),
-  }
-}
+    signOut: () => dispatch(logout())
+  };
+};
 
-export default connect(mapStateToProps, mapDispatchToProps)(Home)
+export default connect(mapStateToProps, mapDispatchToProps)(Home);
