@@ -53,6 +53,8 @@ class GoogleMapView extends Component {
       accessibleFilter: false,
       changingFilter: false,
       minimumRating: 1,
+      travelDistance: '',
+      travelTime: '',
       gotDirections: false,
       bathroom: null,
     };
@@ -226,6 +228,9 @@ class GoogleMapView extends Component {
           `https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${desLocation}&mode=walking&key=${GOOGLE_API_KEY}`
         );
         let respJson = await resp.json();
+        let timeDistance = respJson.routes[0].legs[0]
+        let travelTime = timeDistance.duration.text
+        let travelDistance = timeDistance.distance.text
         let points = polyline.decode(
           respJson.routes[0].overview_polyline.points
         );
@@ -235,6 +240,8 @@ class GoogleMapView extends Component {
             longitude: point[1],
           };
         });
+        this.setState({travelDistance})
+        this.setState({travelTime})
         this.setState({ bathroom });
         this.setState({ directionCoords });
         this.setState({ gotDirections: "true" });
@@ -278,7 +285,7 @@ class GoogleMapView extends Component {
   };
 
   render() {
-    const { directionCoords, region, bathroom, gotDirections } = this.state;
+    const { directionCoords, region, bathroom, gotDirections, travelDistance, travelTime} = this.state;
     const { mapMarkers } = this;
     if (!this.state.region) return <Text>Loading...</Text>;
 
@@ -322,6 +329,10 @@ class GoogleMapView extends Component {
                 strokeWidth={2}
                 strokeColor="red"
               />
+              <View style={styles.travel}>
+                <Text style={{textAlign: "center"}}>Estimated time:{travelTime}</Text>
+                <Text>Estimated distance: {travelDistance}</Text>
+              </View>
             </View>
           ) : (
             mapMarkers()
@@ -341,10 +352,10 @@ class GoogleMapView extends Component {
             />
           </View>
         ) : (
-          <View style={styles.addFilter}>
+          <View style={styles.add}>
             <IconFilter
               size={36}
-              name="sort" //THIS NEEDS TO BE CHANGED TO A BACK ICON
+              name="undo"
               type="FontAwesome"
               color="#0077F6"
               onPress={() => this.setState({ gotDirections: false })}
@@ -373,7 +384,7 @@ class GoogleMapView extends Component {
             </View>
           </View>
         </Modal>
-        <View style={styles.add}>
+        {gotDirections === false && <View style={styles.add}>
           <IconB
             size={40}
             name="add-circle"
@@ -395,7 +406,7 @@ class GoogleMapView extends Component {
               region={this.state.region}
             />
           </Modal>
-        </View>
+        </View>}
         <View style={styles.searchBar}>
           <GoogleSearchBar onSearchRegionChange={this.onSearchRegionChange} />
         </View>
@@ -490,8 +501,7 @@ const styles = StyleSheet.create({
     flex: 1,
     position: "absolute",
     alignSelf: "flex-end",
-    marginTop: 130,
-    padding: 10,
+    marginTop: 150,
   },
   centeredView: {
     flex: 1,
@@ -500,11 +510,11 @@ const styles = StyleSheet.create({
     marginTop: 22,
   },
   modalFilter: {
-    height: 250,
+    height: 300,
     width: 300,
     backgroundColor: "white",
     borderRadius: 20,
-    padding: 35,
+    padding: 15,
     alignItems: "center",
     shadowColor: "#000",
     shadowOffset: {
@@ -515,6 +525,15 @@ const styles = StyleSheet.create({
     shadowRadius: 3.84,
     elevation: 10,
   },
+  travel: {
+    //flex: 1,
+    position: "absolute",
+    width: '65%',
+    backgroundColor: 'white',
+    alignItems: "center",
+    alignSelf: 'center',
+    marginTop: 100
+  }
 });
 
 const mapStateToProps = ({ bathrooms }) => ({ bathrooms });
