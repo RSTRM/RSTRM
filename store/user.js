@@ -1,6 +1,6 @@
 import axios from "axios";
-// const HOST = "https://server-rstrm.herokuapp.com";
-const HOST = "http://localhost:8080";
+const HOST = "https://server-rstrm.herokuapp.com";
+
 // import history from "../history";
 
 /**
@@ -8,7 +8,7 @@ const HOST = "http://localhost:8080";
  */
 const GET_USER = "GET_USER";
 const REMOVE_USER = "REMOVE_USER";
-const UPDATE_USER = "UPDATE_USER"
+const UPDATE_USER = "UPDATE_USER";
 
 /**
  * INITIAL STATE
@@ -20,7 +20,7 @@ const defaultUser = {};
  */
 const getUser = (user) => ({ type: GET_USER, user });
 const removeUser = () => ({ type: REMOVE_USER });
-const _updateUser = (user) => ({ type: UPDATE_USER, user })
+const _updateUser = (user) => ({ type: UPDATE_USER, user });
 
 /**
  * THUNK CREATORS
@@ -52,7 +52,7 @@ export const auth = (
         nameLast,
         username,
         email,
-        password,
+        googleId,
       });
     } else {
       res = await axios.post(`${HOST}/auth/${method}`, {
@@ -85,10 +85,14 @@ export const logout = () => async (dispatch) => {
   }
 };
 
-export const updateUser = (userId, action, propToUpdate) => async (dispatch) => {
-  const _updatedUser = (await axios.put(`${HOST}/api/users/${userId}/${action}`, { propToUpdate })).data
-  dispatch(_updateUser(_updatedUser))
-}
+export const updateUser = (userId, action, propToUpdate) => async (
+  dispatch
+) => {
+  const _updatedUser = (
+    await axios.put(`${HOST}/api/users/${userId}/${action}`, { propToUpdate })
+  ).data;
+  dispatch(_updateUser(_updatedUser));
+};
 
 /**
  * REDUCER

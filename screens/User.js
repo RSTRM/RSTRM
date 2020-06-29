@@ -6,8 +6,7 @@ import { connect } from "react-redux";
 import { auth, me } from "../store/user";
 import axios from "axios";
 
-// const HOST = "https://server-rstrm.herokuapp.com";
-const HOST = "http://localhost:8080";
+const HOST = "https://server-rstrm.herokuapp.com";
 
 function User(props) {
   const signIn = async () => {
@@ -23,15 +22,15 @@ function User(props) {
           (_user) => result.user.email === _user.email
         );
         if (selectedUser) {
-          await props.login(result.user.email, result.user.id, props);
+          await props.login(result.user.email, props, result.user.id);
         } else {
           await props.signUp(
             result.user.givenName,
             result.user.familyName,
             result.user.email,
             result.user.email,
-            result.user.id,
-            props
+            props,
+            result.user.id
           );
         }
       } else {
@@ -80,12 +79,21 @@ const mapStateToProps = ({ user }) => {
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    login(email, password, props) {
-      dispatch(auth("", "", "", email, password, "login", props));
+    login(email, props, googleId) {
+      dispatch(auth("", "", "", email, "", "login", props, googleId));
     },
-    signUp(nameFirst, nameLast, username, email, password, props) {
+    signUp(nameFirst, nameLast, username, email, props, googleId) {
       dispatch(
-        auth(nameFirst, nameLast, username, email, password, "signup", props)
+        auth(
+          nameFirst,
+          nameLast,
+          username,
+          email,
+          "",
+          "signup",
+          props,
+          googleId
+        )
       );
     },
   };
