@@ -25,9 +25,13 @@ const UserInfoView = ({ user }) => {
         }
     }
 
+    const onPressAvatar = () => {
+
+    }
+
     return (
         <Block flex>
-            <TouchableOpacity>
+            <TouchableOpacity >
                 <ImageBackground
                     //will connect data-image to source field below here
                     source={{ uri: user.imageURL || Images.Avatar }}
@@ -65,6 +69,7 @@ const styles = StyleSheet.create({
     profileImage: {
         width: width * 1.1,
         height: 'auto',
+        resizeMode: 'contain'
     },
     profileContainer: {
         width: width,

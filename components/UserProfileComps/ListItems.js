@@ -9,7 +9,7 @@ import { View } from 'native-base'
 import { HeaderHeight } from '../../constants/utils'
 import tpMarker from '../../assets/tp-marker.png'
 
-const ListItems = ({ name = 'userBadges', association, userItems }) => {
+const ListItems = ({ name, association, userItems }) => {
     const listToDisplay = userItems[name] || []
     const defaultImage = tpMarker
 
