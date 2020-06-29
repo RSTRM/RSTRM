@@ -1,5 +1,6 @@
 import axios from "axios";
-const HOST = "https://server-rstrm.herokuapp.com";
+// const HOST = "https://server-rstrm.herokuapp.com";
+const HOST = "http://localhost:8080";
 // import history from "../history";
 
 /**
@@ -38,17 +39,28 @@ export const auth = (
   email,
   password,
   method,
-  props
+  props,
+  googleId = null
 ) => async (dispatch) => {
   let res;
   try {
-    res = await axios.post(`${HOST}/auth/${method}`, {
-      nameFirst,
-      nameLast,
-      username,
-      email,
-      password,
-    });
+    if (googleId) {
+      res = await axios.post(`${HOST}/auth/${method}`, {
+        nameFirst,
+        nameLast,
+        username,
+        email,
+        password,
+      });
+    } else {
+      res = await axios.post(`${HOST}/auth/${method}`, {
+        nameFirst,
+        nameLast,
+        username,
+        email,
+        password,
+      });
+    }
   } catch (authError) {
     return dispatch(getUser({ error: authError }));
   }
