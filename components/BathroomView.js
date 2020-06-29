@@ -9,7 +9,7 @@ import {
   Button,
   Modal,
   View,
-  TouchableOpacity
+  TouchableOpacity,
 } from "react-native";
 import { Block, Text, theme } from "galio-framework";
 import { LinearGradient } from "expo-linear-gradient";
@@ -32,7 +32,7 @@ const thumbMeasure = (width - 48 - 32) / 3;
 
 const images = Restroom.Restroom;
 
-const randomizer = images => {
+const randomizer = (images) => {
   let arr = [];
   for (let i = 0; i < 3; i++) {
     const randomImages = images[Math.floor(Math.random() * images.length)];
@@ -48,7 +48,7 @@ class BathroomView extends Component {
       index: 0,
       modalVisible: false,
       checkin: {},
-      randomImgs: []
+      randomImgs: [],
     };
   }
   async componentDidMount() {
@@ -79,7 +79,7 @@ class BathroomView extends Component {
       backButton,
       postCheckin,
       getDirections,
-      reviews
+      reviews,
     } = this.props;
     const index = this.state.index || 0;
     const bathroom = this.props.bathrooms[index] || {};
@@ -108,11 +108,7 @@ class BathroomView extends Component {
                   onPress={() => backButton()}
                 />
               </Block>
-              <Text
-                color="white"
-                size={23}
-                style={styles.title}
-              >
+              <Text color="white" size={23} style={styles.title}>
                 {bathroom.establishment}{" "}
               </Text>
               <Block row space="between">
@@ -171,7 +167,6 @@ class BathroomView extends Component {
                 </Block>
                 <Block middle>
                   <Icon
-                    disabled={!user.id}
                     disabledStyle={{ backgroundColor: "none", color: "blue" }}
                     name="bookmark-check"
                     type="material-community"
@@ -181,10 +176,13 @@ class BathroomView extends Component {
                       if (user.id) {
                         await postCheckin({
                           userId: user.id,
-                          bathroomId: bathroom.id
+                          bathroomId: bathroom.id,
                         });
                         this.setState({ modalVisible: true });
-                      } else return;
+                      } else {
+                        await backButton();
+                        await this.props.navigation.navigate("User");
+                      }
                     }}
                   />
 
@@ -199,12 +197,12 @@ class BathroomView extends Component {
                 style={{
                   paddingVertical: 16,
                   alignItems: "baseline",
-                  color: "white"
+                  color: "white",
                 }}
               >
                 <Text
                   style={{
-                    fontWeight: "bold"
+                    fontWeight: "bold",
                   }}
                   color={"white"}
                   size={18}
@@ -214,7 +212,7 @@ class BathroomView extends Component {
               </Block>
               <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
                 <Block style={{ flex: 1, color: "white" }}>
-                  {reviews.map(review => (
+                  {reviews.map((review) => (
                     <View key={review.id}>
                       <Text
                         size={16}
@@ -251,29 +249,29 @@ class BathroomView extends Component {
 const styles = StyleSheet.create({
   profile: {
     marginTop: Platform.OS === "android" ? -HeaderHeight : 0,
-    marginBottom: -HeaderHeight * 2
+    marginBottom: -HeaderHeight * 2,
   },
   profileImage: {
     width: width * 1.1,
-    height: "auto"
+    height: "auto",
   },
   profileContainer: {
     width: width,
-    height: height / 2
+    height: height / 2,
   },
   profileDetails: {
     paddingTop: theme.SIZES.BASE * 4,
     justifyContent: "flex-end",
-    position: "relative"
+    position: "relative",
   },
   profileTexts: {
     paddingHorizontal: theme.SIZES.BASE * 2,
     paddingVertical: theme.SIZES.BASE * 2,
     zIndex: 1,
-    fontWeight: "bold"
+    fontWeight: "bold",
   },
   seller: {
-    marginRight: theme.SIZES.BASE / 2
+    marginRight: theme.SIZES.BASE / 2,
   },
   options: {
     position: "relative",
@@ -288,14 +286,14 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOpacity: 0.2,
     zIndex: 2,
-    color: "white"
+    color: "white",
   },
   thumb: {
     borderRadius: 4,
     marginVertical: 4,
     alignSelf: "center",
     width: thumbMeasure,
-    height: thumbMeasure
+    height: thumbMeasure,
   },
   gradient: {
     zIndex: 1,
@@ -303,19 +301,19 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: "0%",
-    position: "absolute"
+    position: "absolute",
   },
   backButton: {
     alignSelf: "flex-end",
     marginTop: 40,
     position: "absolute",
-    opacity: 0.7
+    opacity: 0.7,
   },
   getDirections: {
     alignSelf: "flex-end",
     marginTop: 1,
     position: "absolute",
-    opacity: 0.7
+    opacity: 0.7,
   },
   flex: {
     flex: 1,
@@ -331,30 +329,30 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOpacity: 0.2,
     zIndex: 2,
-    color: "white"
+    color: "white",
   },
   directions: {
     flex: 1,
     position: "absolute",
     alignSelf: "flex-end",
     marginTop: 70,
-    paddingHorizontal: 25
+    paddingHorizontal: 25,
   },
-  title:{
+  title: {
     textShadowRadius: 10,
     textShadowColor: "black",
-    paddingBottom: 150, 
-    fontWeight: "bold" 
-  }
+    paddingBottom: 150,
+    fontWeight: "bold",
+  },
 });
 
 const mapStateToProps = ({ bathrooms, reviews, user }) => ({
   bathrooms,
   reviews,
-  user
+  user,
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     loadReviews(id) {
       dispatch(loadReviews(id));
@@ -364,7 +362,7 @@ const mapDispatchToProps = dispatch => {
     },
     postCheckin(checkin) {
       dispatch(createCheckin(checkin));
-    }
+    },
   };
 };
 

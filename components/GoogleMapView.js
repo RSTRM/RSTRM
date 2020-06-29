@@ -29,7 +29,7 @@ import {
   Header as HeaderB,
 } from "react-native-elements";
 import { GOOGLE_API_KEY } from "../secrets";
-import MapStyle from '../constants/mapStyle.json'
+import MapStyle from "../constants/mapStyle.json";
 
 import polyline from "@mapbox/polyline";
 import { getDistance } from "geolib";
@@ -202,6 +202,7 @@ class GoogleMapView extends Component {
             backButton={this.backButton}
             index={this.state.idx}
             getDirections={this.getDirections}
+            {...this.props}
           />
         </Modal>
       </View>
@@ -280,6 +281,7 @@ class GoogleMapView extends Component {
   render() {
     const { directionCoords, region, bathroom, gotDirections } = this.state;
     const { mapMarkers } = this;
+    const { user } = this.props;
     if (!this.state.region) return <Text>Loading...</Text>;
 
     return (
@@ -380,8 +382,15 @@ class GoogleMapView extends Component {
             type="FontAwesome"
             color="#0077F6"
             underlayColor="purple"
+            // onPress={() => {
+            //   this.setState({ modal2Visible: true });
+            // }}
             onPress={() => {
-              this.setState({ modal2Visible: true });
+              if (user.id) {
+                this.setState({ modal2Visible: true });
+              } else {
+                this.props.navigation.navigate("User");
+              }
             }}
           />
           <Modal
@@ -393,6 +402,7 @@ class GoogleMapView extends Component {
             <AddBathroom
               backButton={this.backButton}
               region={this.state.region}
+              {...this.props}
             />
           </Modal>
         </View>
@@ -517,7 +527,7 @@ const styles = StyleSheet.create({
   },
 });
 
-const mapStateToProps = ({ bathrooms }) => ({ bathrooms });
+const mapStateToProps = ({ bathrooms, user }) => ({ bathrooms, user });
 
 const mapDispatchToProps = (dispatch) => {
   return {
