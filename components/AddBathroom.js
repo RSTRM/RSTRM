@@ -20,6 +20,7 @@ import { HeaderHeight } from "../constants/utils";
 import { connect } from "react-redux";
 import { loadReviews } from "../store/reviews";
 import { createBathroom } from "../store/bathrooms";
+import { createImage } from "../store/images";
 import headerimg from "../assets/header-img.png";
 import AddReview from "./AddReview";
 import GoogleSearchBar from "./GoogleSearchBar";
@@ -53,7 +54,7 @@ class AddBathroom extends Component {
       website: " ",
       modal2Visible: false,
       imgURI: "_",
-      imgURL:"_"
+      imgURL: "_"
     };
     this.getLocationData = this.getLocationData.bind(this);
     this.onSearchRegionChange = this.onSearchRegionChange.bind(this);
@@ -115,16 +116,15 @@ class AddBathroom extends Component {
       successActionStatus: 201
     };
 
-    console.log(options, 'opts', file, 'file');
+    console.log(options, "opts", file, "file");
 
     RNS3.put(file, options).then(response => {
       if (response.status !== 201)
         throw new Error("Failed to upload image to S3");
-     
-        console.log(response.body, "response after success!");
-        this.setState({imgURL: response.body.postResponse.location})
-    });
 
+      console.log(response.body, "response after success!");
+      this.setState({ imgURL: response.body.postResponse.location });
+    });
   }
 
   render() {
@@ -279,6 +279,10 @@ class AddBathroom extends Component {
                     longitude,
                     website
                   });
+                  // this.props.createImage(
+                  //   this.state.refugeId,
+                  //   this.state.imgURL
+                  // );
                   backButton();
                 }}
               ></Button>
@@ -417,6 +421,9 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => {
   return {
+    createImage(bathroomId, url) {
+      dispatch(createImage(bathroomId, url));
+    },
     createBathroom(bathroom) {
       dispatch(createBathroom(bathroom));
     }

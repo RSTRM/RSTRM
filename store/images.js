@@ -1,4 +1,5 @@
 import axios from "axios";
+const HOST = "https://server-rstrm.herokuapp.com";
 
 /**
  * ACTION TYPES ------------------------------------------------
@@ -24,16 +25,17 @@ const _deleteImage = (id) => ({ type: DELETE_IMAGE, id });
  */
 // UPDATE WITH OUR API
 
-const loadImages = (id) => {
+const loadImages = (refugeId) => {
   return async (dispatch) => {
-    const response = (await axios.get(`/api/images/${id}`)).data;
+    const response = (await axios.post(`${HOST}/api/images/${refugeId}`)).data;
     dispatch(_loadImages(response));
   };
 };
 
-const createImage = (image) => {
+const createImage = (refugeId, url) => {
   return async (dispatch) => {
-    const response = (await axios.post("/api/images", image)).data;
+    const response = (await axios.post(`${HOST}/api/images/${refugeId}/${url}`)).data;
+    console.log(response, 'createImage response in thunk');
     dispatch(_createImage(response));
   };
 };
