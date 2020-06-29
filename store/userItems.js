@@ -1,6 +1,5 @@
 import axios from "axios";
 const HOST = "https://server-rstrm.herokuapp.com";
-// const HOST = "http://localhost:8080"
 
 /**
  * ACTION TYPES ------------------------------------------------
@@ -29,7 +28,7 @@ const _loadItemsAll = (userItems) => ({ type: LOAD_ITEMS_ALL, userItems });
 const loadItemsAll = (userId) => {
     console.log('in thunk')
     return async (dispatch) => {
-        response = (
+        const response = (
             await axios.get(
                 `${HOST}/api/users/${userId}/all`
             )

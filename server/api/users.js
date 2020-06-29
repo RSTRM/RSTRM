@@ -58,3 +58,21 @@ router.get('/:id/checkins', async (req, res, next) => {
     next(err)
   }
 })
+
+
+//This route needed for loaditemsall call?
+router.get('/:id/all', async (req, res, next) => {
+  //To get recent, pass number of days to /:id/checkins?daysWithin=<numOfDays>
+  // try {
+  //   const user = await User.findByPk(req.params.id)
+  //   let checkins
+  //   if (req.query.daysWithin) {
+  //     checkins = await user.getCheckins(req.query.daysWithin)
+  //   } else {
+  //     checkins = await user.getCheckins()
+  //   }
+  //   res.json(checkins)
+  // } catch (err) {
+  //   next(err)
+  // }
+})
