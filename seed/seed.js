@@ -1,3 +1,5 @@
+/* eslint-disable max-statements */
+
 'use strict'
 
 const db = require('../server/db')
@@ -9,7 +11,7 @@ const {
   Review,
   User,
   Badge,
-  UserBadge,
+  UserBadge
 } = require('../server/db/models')
 
 const seedData = require('./seedData')
@@ -41,7 +43,7 @@ async function seed() {
 
   //BATHROOMS
   const bathrooms = await Promise.all(
-    filtered.map((item) => {
+    filtered.map(item => {
       return Bathroom.create({
         refugeId: item.id,
         unisex: item.unisex,
@@ -54,17 +56,18 @@ async function seed() {
         state: item.state,
         country: item.country,
         latitude: item.latitude,
-        longitude: item.longitude,
+        longitude: item.longitude
       })
     })
   )
 
   console.log(`seeded ${bathrooms.length} bathrooms sucessfully`)
 
+  //BADGES
   const badgesInfo = seedData.badgesInfo
 
   const badges = await Promise.all(
-    badgesInfo.map((badge) => {
+    badgesInfo.map(badge => {
       return Badge.create(badge)
     })
   )
@@ -72,31 +75,37 @@ async function seed() {
 
   //USERS
   const users = await Promise.all(
-    seedData.usersInfo.map((person) => {
+    seedData.usersInfo.map(person => {
       const { nameFirst, nameLast, admin } = person
       const username = nameFirst[0].toLowerCase() + nameLast.toLowerCase()
       const email = username + '@email.com'
+      const randAvatar =
+        seedData.avatarInfo[
+        Math.floor(Math.random() * seedData.avatarInfo.length)
+        ]
       return User.create({
         username,
         nameFirst,
         nameLast,
         email,
         password: '123',
-        admin,
+        imageURL: randAvatar.url,
+        admin
       })
     })
   )
 
   console.log(`seeded ${users.length} users sucessfully`)
 
-  const adminUsers = users.filter((user) => user.admin)
-  const regUsers = users.filter((user) => !user.admin)
+  const adminUsers = users.filter(user => user.admin)
+  const regUsers = users.filter(user => !user.admin)
 
   //utility function will create data in sequence. this is needed because postgres is multi-threaded
   const runInSequence = async (data, model) => {
     let results = []
     let chain = Promise.resolve()
-    data.forEach((d) => {
+    data.forEach(d => {
+      setTimeout(function () { }, 200)
       chain = chain.then(async () => {
         let result = await model.create(d)
         results.push(result)
@@ -110,7 +119,7 @@ async function seed() {
   const createAdminCheckins = () => {
     const checkinsPerUser = new Array(adminUsers.length)
       .fill(1)
-      .map((num) => (num = Math.floor(Math.random() * 10)))
+      .map(num => (num = Math.floor(Math.random() * 10)))
     const checkinArr = []
     adminUsers.forEach((user, idx) => {
       for (let i = 0; i < checkinsPerUser[idx]; i++) {
@@ -122,7 +131,7 @@ async function seed() {
           bathroomId: randBathoom.id,
           checkinDate: today.setDate(
             today.getDate() - Math.floor(Math.random() * 30)
-          ),
+          )
         })
       }
     })
@@ -133,7 +142,7 @@ async function seed() {
 
   console.log(`seeded ${adminCheckins.length} admin checkins sucessfully`)
 
-  const _checkins = bathrooms.map((bathroom) => {
+  const _checkins = bathrooms.map(bathroom => {
     const randUser = regUsers[Math.floor(Math.random() * regUsers.length)]
     const today = new Date()
     return {
@@ -141,7 +150,7 @@ async function seed() {
       userId: randUser.id,
       checkinDate: today.setDate(
         today.getDate() - Math.floor(Math.random() * 30)
-      ),
+      )
     }
   })
 
@@ -155,7 +164,7 @@ async function seed() {
     'I probably would not use this bathroom again if I could help it.',
     'Usable...',
     'Decent!',
-    'Excellent! Clean and beautiful.',
+    'Excellent! Clean and beautiful.'
   ]
 
   const _adminReviews = adminCheckins.reduce((acc, checkin, idx) => {
@@ -166,7 +175,7 @@ async function seed() {
         comments: randComments[rand],
         userId: checkin.userId,
         bathroomId: checkin.bathroomId,
-        checkinId: checkin.id,
+        checkinId: checkin.id
       })
     }
     return acc
@@ -181,17 +190,17 @@ async function seed() {
     "User only if you're desperate!",
     'Great in a pinch',
     'Solid choice for all your restoroom needs.',
-    'I want to live in this bathroom!',
+    'I want to live in this bathroom!'
   ]
 
-  const _reviews = checkins.map((checkin) => {
+  const _reviews = checkins.map(checkin => {
     const rand = Math.floor(Math.random() * 5)
     return {
       rating: rand + 1,
       comments: moreRandComments[rand],
       userId: checkin.userId,
       bathroomId: checkin.bathroomId,
-      checkinId: checkin.id,
+      checkinId: checkin.id
     }
   })
 

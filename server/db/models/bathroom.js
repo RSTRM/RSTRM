@@ -98,7 +98,7 @@ Bathroom.prototype.getAvgRating = async function () {
   try {
     let allRatings
     const reviews = await this.getReviews()
-    if (reviews.length < 1) {
+    if (reviews.length > 1) {
       allRatings = reviews.reduce((acc, curr) => {
         return acc.rating + curr.rating
       })
@@ -113,22 +113,19 @@ Bathroom.prototype.getAvgRating = async function () {
   }
 }
 
-Bathroom.prototype.getCheckins = async function (daysWithin) {
-  let checkins
+Bathroom.prototype.getCheckins = function (daysWithin) {
   if (daysWithin) {
     const date = new Date()
     date.setDate(date.getDate() - daysWithin)
-    checkins = await db.models.checkin.findAll({
+    return db.models.checkin.findAll({
       where: { bathroomId: this.id, createdAt: { [Op.gte]: date } },
       order: [['createdAt', 'DESC']]
     })
-  } else {
-    checkins = await db.models.checkin.findAll({
-      where: { bathroomId: this.id },
-      order: [['createdAt', 'DESC']]
-    })
   }
-  return checkins
+  return db.models.checkin.findAll({
+    where: { bathroomId: this.id },
+    order: [['createdAt', 'DESC']]
+  })
 }
 
 /**

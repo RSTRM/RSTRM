@@ -1,42 +1,42 @@
 const crypto = require('crypto')
-const { UUID, UUIDV4, STRING, BOOLEAN, INTEGER, Op } = require('sequelize')
+const { UUID, UUIDV4, STRING, BOOLEAN, INTEGER, TEXT, Op } = require('sequelize')
 const db = require('../db')
 
 const User = db.define('user', {
   id: {
     type: UUID,
     primaryKey: true,
-    defaultValue: UUIDV4,
+    defaultValue: UUIDV4
   },
   username: {
     type: STRING,
     unique: true,
     allowNull: false,
     validate: {
-      notEmpty: true,
-    },
+      notEmpty: true
+    }
   },
   nameFirst: {
     type: STRING,
     allowNull: false,
     validate: {
-      notEmpty: true,
-    },
+      notEmpty: true
+    }
   },
   nameLast: {
     type: STRING,
     allowNull: false,
     validate: {
-      notEmpty: true,
-    },
+      notEmpty: true
+    }
   },
   email: {
     type: STRING,
     unique: true,
     allowNull: false,
     validate: {
-      notEmpty: true,
-    },
+      notEmpty: true
+    }
   },
   password: {
     type: STRING,
@@ -44,7 +44,7 @@ const User = db.define('user', {
     // This is a hack to get around Sequelize's lack of a "private" option.
     get() {
       return () => this.getDataValue('password')
-    },
+    }
   },
   salt: {
     type: STRING,
@@ -52,23 +52,26 @@ const User = db.define('user', {
     // This is a hack to get around Sequelize's lack of a "private" option.
     get() {
       return () => this.getDataValue('salt')
-    },
+    }
   },
   googleId: {
-    type: STRING,
+    type: STRING
   },
   admin: {
     type: BOOLEAN,
-    defaultValue: false,
+    defaultValue: false
   },
   totalCheckins: {
     type: INTEGER,
-    defaultValue: 0,
+    defaultValue: 0
   },
   totalReviews: {
     type: INTEGER,
-    defaultValue: 0,
+    defaultValue: 0
   },
+  imageURL: {
+    type: TEXT
+  }
 })
 
 module.exports = User
@@ -81,68 +84,74 @@ User.prototype.correctPassword = function (candidatePwd) {
 }
 
 User.prototype.getBadges = async function () {
-  console.log('in method', this.id)
-  return db.models.userBadge.findAll({
+  const badges = await db.models.userBadge.findAll({
     where: { userId: this.id },
     order: [['createdAt', 'DESC']],
-    include: [{ model: db.models.badge }],
+    include: [{ model: db.models.badge }]
   })
+  return badges
 }
 
 User.prototype.getReviews = async function (daysWithin) {
+  let reviews
   if (daysWithin) {
     const date = new Date()
     date.setDate(date.getDate() - daysWithin)
-    return db.models.review.findAll({
+    reviews = await db.models.review.findAll({
       where: { userId: this.id, createdAt: { [Op.gte]: date } },
       order: [['createdAt', 'DESC']],
-      include: [{ model: db.models.bathroom }],
+      include: [{ model: db.models.bathroom }]
+    })
+  } else {
+    reviews = await db.models.review.findAll({
+      where: { userId: this.id },
+      order: [['createdAt', 'DESC']],
+      include: [{ model: db.models.bathroom }]
     })
   }
-  return db.models.review.findAll({
-    where: { userId: this.id },
-    order: [['createdAt', 'DESC']],
-    include: [{ model: db.models.bathroom }],
-  })
+  return reviews
 }
 
 User.prototype.getCheckins = async function (daysWithin) {
+  let checkins
   if (daysWithin) {
     const date = new Date()
     date.setDate(date.getDate() - daysWithin)
-    return db.models.checkin.findAll({
+    checkins = await db.models.checkin.findAll({
       where: { userId: this.id, createdAt: { [Op.gte]: date } },
       order: [['createdAt', 'DESC']],
-      include: [{ model: db.models.bathroom }],
+      include: [{ model: db.models.bathroom }]
+    })
+  } else {
+    checkins = db.models.checkin.findAll({
+      where: { userId: this.id },
+      order: [['createdAt', 'DESC']],
+      include: [{ model: db.models.bathroom }]
     })
   }
-  return db.models.checkin.findAll({
-    where: { userId: this.id },
-    order: [['createdAt', 'DESC']],
-    include: [{ model: db.models.bathroom }],
-  })
+  return checkins
 }
 
 User.prototype.updateUserCheckinBadges = async function () {
   try {
     const userBadges = await db.models.userBadge.findAll({
-      where: { userId: this.id },
+      where: { userId: this.id }
     })
-    const userBadgeIds = userBadges.map((badge) => badge.badgeId)
+    const userBadgeIds = userBadges.map(badge => badge.badgeId)
     const badges = await db.models.badge.findAll({
       where: {
         id: { [Op.notIn]: userBadgeIds },
         table: 'user',
-        formula: { [Op.startsWith]: 'total' },
-      },
+        formula: { [Op.startsWith]: 'total' }
+      }
     })
 
-    badges.forEach(async (badge) => {
+    badges.forEach(async badge => {
       const critera = 'this' + '.' + badge.formula
       if (eval(critera)) {
         await db.models.userBadge.create({
           userId: this.id,
-          badgeId: badge.id,
+          badgeId: badge.id
         })
       }
     })
@@ -169,7 +178,7 @@ User.encryptPassword = function (plainText, salt) {
 /**
  * hooks
  */
-const setSaltAndPassword = (user) => {
+const setSaltAndPassword = user => {
   if (user.changed('password')) {
     user.salt = User.generateSalt()
     user.password = User.encryptPassword(user.password(), user.salt())
@@ -178,14 +187,14 @@ const setSaltAndPassword = (user) => {
 
 User.beforeCreate(setSaltAndPassword)
 User.beforeUpdate(setSaltAndPassword)
-User.beforeBulkCreate((users) => {
+User.beforeBulkCreate(users => {
   users.forEach(setSaltAndPassword)
 })
 User.afterCreate(async function (user) {
   const badge = await db.models.badge.findOne({ where: { name: 'welcome' } })
   await db.models.userBadge.create({
     userId: user.id,
-    badgeId: badge.id,
+    badgeId: badge.id
   })
 })
 
