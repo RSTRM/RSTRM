@@ -430,6 +430,8 @@ class GoogleMapView extends Component {
   }
 }
 
+
+
 const styles = StyleSheet.create({
   container: {
     ...StyleSheet.absoluteFillObject,

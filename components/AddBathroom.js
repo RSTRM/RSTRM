@@ -27,6 +27,7 @@ import { white } from "color-name";
 import Cam from "./Cam";
 import { SliderBox } from "react-native-image-slider-box";
 import * as MediaLibrary from "expo-media-library";
+import { RNS3 } from "react-native-aws3";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -51,10 +52,12 @@ class AddBathroom extends Component {
       longitude: this.props.region.longitude || 0.0,
       website: " ",
       modal2Visible: false,
-      imgURI: "_"
+      imgURI: "_",
+      imgURL:"_"
     };
     this.getLocationData = this.getLocationData.bind(this);
     this.onSearchRegionChange = this.onSearchRegionChange.bind(this);
+    this.onImageAdded = this.onImageAdded.bind(this);
   }
   async componentDidMount() {
     this.setState({
@@ -70,8 +73,9 @@ class AddBathroom extends Component {
   backButton = () => {
     this.setState({ modal2Visible: false });
   };
-  bathroomImage = pic => {
-    this.setState({ imgURI: pic });
+  bathroomImage = asset => {
+    this.setState({ imgURI: asset.uri });
+    this.onImageAdded(asset);
   };
   getLocationData(data) {
     const firstWord = data.structured_formatting.main_text.split(" ");
@@ -93,6 +97,34 @@ class AddBathroom extends Component {
       latitude: coordinates.lat,
       longitude: coordinates.lng
     });
+  }
+
+  onImageAdded(asset) {
+    const file = {
+      uri: this.state.imgURI,
+      name: asset.filename,
+      type: "image/png"
+    };
+
+    const options = {
+      keyPrefix: "uploads/",
+      bucket: "rstrmimagesbucket",
+      region: "us-east-2",
+      accessKey: "AKIA2S5LYQMOQ7CIPMHF",
+      secretKey: "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",
+      successActionStatus: 201
+    };
+
+    console.log(options, 'opts', file, 'file');
+
+    RNS3.put(file, options).then(response => {
+      if (response.status !== 201)
+        throw new Error("Failed to upload image to S3");
+     
+        console.log(response.body, "response after success!");
+        this.setState({imgURL: response.body.postResponse.location})
+    });
+
   }
 
   render() {

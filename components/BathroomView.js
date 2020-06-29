@@ -151,7 +151,7 @@ class BathroomView extends Component {
                 </Block>
                 <Block middle>
                   <Text bold size={12} style={{ marginBottom: 8 }}>
-                    {bathroom.avgRating || 1}
+                    {bathroom.avgRating || 3}
                   </Text>
                   <Text muted size={12}>
                     Avg Rtg

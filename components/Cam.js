@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   StyleSheet,
   Text,
@@ -68,8 +69,9 @@ export default class App extends React.Component {
       const backButton = this.props.backButton;
       const { uri } = await this.camera.takePictureAsync();
       const asset = await MediaLibrary.createAssetAsync(uri);
-      this.setState({ imgURI: asset });
-      this.props.bathroomImage(this.state.imgURI);
+      console.log(asset, 'asset');
+      this.setState({ imgURI: asset.uri });
+      this.props.bathroomImage(asset);
       backButton();
     }
   };
@@ -83,6 +85,7 @@ export default class App extends React.Component {
     const backButton = this.props.backButton;
     backButton();
   };
+  
 
   render() {
     const { hasPermission, pictures } = this.state;
@@ -130,7 +133,6 @@ export default class App extends React.Component {
                   backgroundColor: "transparent"
                 }}
                 onPress={() => this.takePicture()}
-                // onPressOut={async() => await backButton()}
               >
                 <FontAwesome
                   name="camera"
