@@ -19,13 +19,14 @@ const { width, height } = Dimensions.get('screen')
 const thumbMeasure = (width - 48 - 32) / 3
 
 const UserProfile = ({ user, loadUserItems }) => {
-  const [displayListName, setDisplayListName] = useState('badges')
-  const [displayListLabel, setDisplayListLabel] = useState('Badges')
-  const [displayListAssociation, setDisplayListAssociation] = useState('badge')
+  const [displayListName, setDisplayListName] = useState('')
+  const [displayListLabel, setDisplayListLabel] = useState('')
+  const [displayListAssociation, setDisplayListAssociation] = useState('')
 
   useEffect(() => {
+    console.log(user)
     loadUserItems(user.id)
-  })
+  }, [])
 
   setDisplayHandler = (name, label, association) => {
     console.log(`set display to ${name} - ${label} - ${association}`)
@@ -44,8 +45,9 @@ const UserProfile = ({ user, loadUserItems }) => {
             row
             space="between"
             style={{ paddingVertical: 16, alignItems: 'baseline' }}>
-            <Text size={20}>{displayListLabel}</Text>
+            <Text size={20}>{displayListLabel || `Welcome, ${user.nameFirst}!`}</Text>
           </Block>
+          <Text style={{ opacity: !displayListLabel ? 100 : 0 }}>Checkout your badges, reviews, and checkins by clicking above!</Text>
           <ListItems name={displayListName} association={displayListAssociation} />
           <View>
           </View>

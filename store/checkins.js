@@ -1,4 +1,5 @@
 import axios from "axios";
+import { _addItemCheckin } from "./userItems";
 const HOST = "https://server-rstrm.herokuapp.com";
 /**
  * ACTION TYPES ------------------------------------------------
@@ -37,6 +38,7 @@ const createCheckin = (checkin) => {
   return async (dispatch) => {
     const response = (await axios.post(`${HOST}/api/checkins`, checkin)).data;
     dispatch(_createCheckin(response));
+    dispatch(_addItemCheckin(response));
   };
 };
 

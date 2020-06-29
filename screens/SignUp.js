@@ -17,35 +17,35 @@ const SignUp = (props) => {
         value={nameFirst}
         onChange={(event) => setNameFirst(event.nativeEvent.text)}
         style={styles.textInput}
-        placeholder="First Name"
+        placeholder="  First Name"
         autoCapitalize="none"
       ></TextInput>
       <TextInput
         value={nameLast}
         onChange={(event) => setNameLast(event.nativeEvent.text)}
         style={styles.textInput}
-        placeholder="Last Name"
+        placeholder="  Last Name"
         autoCapitalize="none"
       ></TextInput>
       <TextInput
         value={username}
         onChange={(event) => setUsername(event.nativeEvent.text)}
         style={styles.textInput}
-        placeholder="Username"
+        placeholder="  Username"
         autoCapitalize="none"
       ></TextInput>
       <TextInput
         value={email}
         onChange={(event) => setEmail(event.nativeEvent.text)}
         style={styles.textInput}
-        placeholder="Email"
+        placeholder="  Email"
         autoCapitalize="none"
       ></TextInput>
       <TextInput
         value={password}
         onChange={(event) => setPassword(event.nativeEvent.text)}
         style={styles.textInput}
-        placeholder="Password"
+        placeholder="  Password"
         autoCapitalize="none"
         secureTextEntry={true}
       ></TextInput>
@@ -53,7 +53,7 @@ const SignUp = (props) => {
         value={confirmPassword}
         onChange={(event) => setConfirmPassword(event.nativeEvent.text)}
         style={styles.textInput}
-        placeholder="Confirm Password"
+        placeholder="  Confirm Password"
         autoCapitalize="none"
         secureTextEntry={true}
       ></TextInput>

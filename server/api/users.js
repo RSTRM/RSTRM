@@ -8,7 +8,7 @@ router.get('/', async (req, res, next) => {
       // explicitly select only the id and email fields - even though
       // users' passwords are encrypted, it won't help if we just
       // send everything to anyone who asks!
-      attributes: ['id', 'email', 'totalCheckins', 'admin'],
+      attributes: ['id', 'email', 'totalCheckins', 'admin']
     })
     res.json(users)
   } catch (err) {
@@ -17,7 +17,6 @@ router.get('/', async (req, res, next) => {
 })
 
 router.get('/:id/badges', async (req, res, next) => {
-  console.log('in route', req.params.id)
   try {
     const user = await User.findByPk(req.params.id)
     const badges = await user.getBadges()
@@ -54,6 +53,33 @@ router.get('/:id/checkins', async (req, res, next) => {
       checkins = await user.getCheckins()
     }
     res.json(checkins)
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.get('/:id/all', async (req, res, next) => {
+  try {
+    const user = await User.findByPk(req.params.id)
+    const userBadges = await user.getBadges()
+    const userReviews = await user.getReviews()
+    const userCheckins = await user.getCheckins()
+    res.json({
+      userBadges,
+      userReviews,
+      userCheckins
+    })
+  } catch (err) {
+    next(err)
+  }
+})
+
+router.put('/:id/:action', async (req, res, next) => {
+  console.log('PUT', { [req.params.action]: req.body.propToUpdate })
+  try {
+    await User.findByPk(req.params.id)
+      .then(user => user.update({ [req.params.action]: req.body.propToUpdate }))
+      .then(user => res.send(user))
   } catch (err) {
     next(err)
   }

@@ -1,4 +1,5 @@
 import axios from "axios";
+import { _addItemReview } from "./userItems";
 const HOST = "https://server-rstrm.herokuapp.com";
 
 /**
@@ -49,6 +50,7 @@ const createReview = (review) => {
   return async (dispatch) => {
     const response = (await axios.post(`${HOST}/api/reviews`, review)).data;
     dispatch(_createReview(response));
+    dispatch(_addItemReview(response))
   };
 };
 

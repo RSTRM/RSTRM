@@ -9,7 +9,7 @@ import {
   Button,
   View,
   TextInput,
-  Modal
+  Modal,
 } from "react-native";
 
 import { Block, Text, theme } from "galio-framework";
@@ -63,7 +63,7 @@ class AddBathroom extends Component {
   async componentDidMount() {
     this.setState({
       latitude: this.props.region.latitude,
-      longitude: this.props.region.longitude
+      longitude: this.props.region.longitude,
     });
   }
 
@@ -89,14 +89,14 @@ class AddBathroom extends Component {
       establishment: data.structured_formatting.main_text,
       street: data.terms[1].value || "_",
       city: data.terms[2].value || "_",
-      website: `www.${firstWord[0]}.com` || " "
+      website: `www.${firstWord[0]}.com` || " ",
     });
     console.log(this.state, "updated state");
   }
   onSearchRegionChange(coordinates) {
     this.setState({
       latitude: coordinates.lat,
-      longitude: coordinates.lng
+      longitude: coordinates.lng,
     });
   }
 
@@ -146,7 +146,7 @@ class AddBathroom extends Component {
       country,
       latitude,
       longitude,
-      website
+      website,
     } = this.state;
     return (
       <Block flex style={styles.profile}>
@@ -219,7 +219,7 @@ class AddBathroom extends Component {
             <Text style={styles.text}>Establishment Name</Text>
             <TextInput
               value={establishment}
-              onChange={event =>
+              onChange={(event) =>
                 this.setState({ establishment: event.nativeEvent.text })
               }
               style={styles.textInput}
@@ -229,7 +229,7 @@ class AddBathroom extends Component {
             <Text style={styles.text}>Directions</Text>
             <TextInput
               value={directions}
-              onChange={event =>
+              onChange={(event) =>
                 this.setState({ directions: event.nativeEvent.text })
               }
               style={styles.textInput}
@@ -239,7 +239,7 @@ class AddBathroom extends Component {
             <Text style={styles.text}>Website</Text>
             <TextInput
               value={website}
-              onChange={event =>
+              onChange={(event) =>
                 this.setState({ website: event.nativeEvent.text })
               }
               style={styles.textInput}
@@ -253,7 +253,7 @@ class AddBathroom extends Component {
               style={styles.gradient}
               colors={[
                 materialTheme.COLORS.GRADIENT_START,
-                materialTheme.COLORS.GRADIENT_END
+                materialTheme.COLORS.GRADIENT_END,
               ]}
             >
               <Button
@@ -277,7 +277,7 @@ class AddBathroom extends Component {
                     country,
                     latitude,
                     longitude,
-                    website
+                    website,
                   });
                   // this.props.createImage(
                   //   this.state.refugeId,
@@ -305,25 +305,25 @@ class AddBathroom extends Component {
 const styles = StyleSheet.create({
   profile: {
     marginTop: Platform.OS === "android" ? -HeaderHeight : 0,
-    marginBottom: -HeaderHeight * 13
+    marginBottom: -HeaderHeight * 13,
   },
   profileImage: {
     width: width * 1.1,
-    height: "auto"
+    height: "auto",
   },
   profileContainer: {
     width: width,
-    height: height / 1.8
+    height: height / 1.8,
   },
   profileDetails: {
     paddingTop: theme.SIZES.BASE * 4,
     justifyContent: "flex-end",
-    position: "relative"
+    position: "relative",
   },
   profileTexts: {
     paddingHorizontal: theme.SIZES.BASE * 2,
     paddingVertical: theme.SIZES.BASE * 2,
-    zIndex: 2
+    zIndex: 2,
   },
   options: {
     position: "relative",
@@ -337,14 +337,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 8,
     shadowOpacity: 0.2,
-    zIndex: 2
+    zIndex: 2,
   },
   thumb: {
     borderRadius: 4,
     marginVertical: 4,
     alignSelf: "center",
     width: thumbMeasure,
-    height: thumbMeasure
+    height: thumbMeasure,
   },
   gradient: {
     flex: 1,
@@ -355,33 +355,33 @@ const styles = StyleSheet.create({
     height: "20%",
     marginBottom: -80,
     position: "absolute",
-    borderRadius: theme.SIZES.BASE * 1
+    borderRadius: theme.SIZES.BASE * 1,
   },
   backButton: {
     alignSelf: "flex-end",
     marginTop: -700,
     position: "absolute",
-    opacity: 0.7
+    opacity: 0.7,
   },
   searchBar: {
     flex: 1,
     position: "absolute",
     alignSelf: "center",
     width: "85%",
-    marginTop: 0
+    marginTop: 0,
   },
   textInput: {
     height: 40,
     width: "85%",
     backgroundColor: "#fff",
     borderRadius: 5,
-    alignSelf: "center"
+    alignSelf: "center",
   },
   text: {
     alignSelf: "center",
     position: "relative",
     marginTop: 10,
-    color: "white"
+    color: "white",
   },
   flex: {
     flex: 1,
@@ -397,13 +397,13 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOpacity: 0.2,
     zIndex: 2,
-    color: "white"
+    color: "white",
   },
   cameraIcon: {
     flex: 1,
     position: "absolute",
     marginTop: -700,
-    alignSelf: "flex-start"
+    alignSelf: "flex-start",
   },
   title: {
     flex: 1,
@@ -415,18 +415,18 @@ const styles = StyleSheet.create({
     textShadowRadius: 10,
     textShadowColor: "black",
     color: "white",
-    fontWeight: "bold"
-  }
+    fontWeight: "bold",
+  },
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     createImage(bathroomId, url) {
       dispatch(createImage(bathroomId, url));
     },
     createBathroom(bathroom) {
       dispatch(createBathroom(bathroom));
-    }
+    },
   };
 };
 
