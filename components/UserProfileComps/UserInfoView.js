@@ -7,6 +7,7 @@ import {
 import { Block, Text, theme } from 'galio-framework'
 import { LinearGradient } from 'expo-linear-gradient'
 import { Images, materialTheme } from '../../constants'
+import { TouchableOpacity } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
 
 const { width, height } = Dimensions.get('screen')
@@ -24,36 +25,42 @@ const UserInfoView = ({ user }) => {
         }
     }
 
+    const onPressAvatar = () => {
+
+    }
+
     return (
         <Block flex>
-            <ImageBackground
-                //will connect data-image to source field below here
-                source={{ uri: user.avatar || Images.Avatar }}
-                style={styles.profileContainer}
-                imageStyle={styles.profileImage}>
-                <Block flex style={styles.profileDetails}>
-                    <Block style={styles.profileTexts}>
-                        <Block row space="between">
-                            <Block row>
-                                <Block middle style={styles.status}>
-                                    <Text size={16} color="black">
-                                        {statusGenerator(user.totalReviews)}
+            <TouchableOpacity >
+                <ImageBackground
+                    //will connect data-image to source field below here
+                    source={{ uri: user.imageURL || Images.Avatar }}
+                    style={styles.profileContainer}
+                    imageStyle={styles.profileImage}>
+                    <Block flex style={styles.profileDetails}>
+                        <Block style={styles.profileTexts}>
+                            <Block row space="between">
+                                <Block row>
+                                    <Block middle style={styles.status}>
+                                        <Text size={16} color="black">
+                                            {statusGenerator(user.totalReviews)}
+                                        </Text>
+                                    </Block>
+                                </Block>
+                                <Block>
+                                    <Text color="white" size={16}>
+                                        {fullName}
                                     </Text>
                                 </Block>
                             </Block>
-                            <Block>
-                                <Text color="white" size={16}>
-                                    {fullName}
-                                </Text>
-                            </Block>
                         </Block>
+                        <LinearGradient
+                            colors={['rgba(0,0,0,0)', 'rgba(0,0,0,1)']}
+                            style={styles.gradient}
+                        />
                     </Block>
-                    <LinearGradient
-                        colors={['rgba(0,0,0,0)', 'rgba(0,0,0,1)']}
-                        style={styles.gradient}
-                    />
-                </Block>
-            </ImageBackground>
+                </ImageBackground>
+            </TouchableOpacity>
         </Block>
     )
 }
@@ -62,6 +69,7 @@ const styles = StyleSheet.create({
     profileImage: {
         width: width * 1.1,
         height: 'auto',
+        resizeMode: 'contain'
     },
     profileContainer: {
         width: width,
