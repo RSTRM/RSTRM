@@ -1,7 +1,7 @@
 import axios from "axios";
-import { _addItemReview } from "./userItems";
-const HOST = "https://server-rstrm.herokuapp.com";
-// const HOST = "http://localhost:8080";
+import { _updateUserItems } from "./user";
+// const HOST = "https://server-rstrm.herokuapp.com";
+const HOST = "http://localhost:8080";
 
 /**
  * ACTION TYPES ------------------------------------------------
@@ -51,7 +51,8 @@ const createReview = (review) => {
   return async (dispatch) => {
     const response = (await axios.post(`${HOST}/api/reviews`, review)).data;
     dispatch(_createReview(response));
-    dispatch(_addItemReview(response))
+    // dispatch(_addItemReview(response))
+    dispatch(_updateUserItems(response, 'reviews'))
   };
 };
 

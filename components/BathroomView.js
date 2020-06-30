@@ -56,7 +56,6 @@ class BathroomView extends Component {
     };
   }
   async componentDidMount() {
-    console.log("IN MOUNT", this.props.bathroom.id)
     this.props.loadReviews(this.props.bathroom.id)
     // this.setState({ index: this.props.index });
     // const index = this.state.index;

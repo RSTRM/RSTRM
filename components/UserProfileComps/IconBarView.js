@@ -17,13 +17,13 @@ export default IconBarView = ({ setDisplayHandler }) => {
         },
         {
             label: 'Reviews',
-            name: 'userReviews',
+            name: 'reviews',
             association: { table: 'bathroom', nameField: 'establishment' },
             icon: 'message-draw',
         },
         {
             label: 'Checkins',
-            name: 'userCheckins',
+            name: 'checkins',
             association: { table: 'bathroom', nameField: 'establishment' },
             icon: 'bookmark-check',
         },
