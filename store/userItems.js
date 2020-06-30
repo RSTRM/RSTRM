@@ -2,6 +2,8 @@ import axios from "axios";
 const HOST = "https://server-rstrm.herokuapp.com";
 // const HOST = "http://localhost:8080";
 
+//NO LONGER IN USE
+
 /**
  * ACTION TYPES ------------------------------------------------
  */
@@ -31,13 +33,14 @@ const _addItemCheckin = (review) => ({ type: ADD_ITEM_REVIEW, review })
 // UPDATE WITH OUR API
 
 const loadItemsAll = (userId) => {
-    console.log('in thunk')
+    console.log('in thunk - ', userId)
     return async (dispatch) => {
         const response = (
             await axios.get(
                 `${HOST}/api/users/${userId}/all`
             )
         ).data
+        console.log('in thunk', response)
         return dispatch(_loadItemsAll(response));
     };
 };
@@ -48,11 +51,14 @@ const loadItemsAll = (userId) => {
 const userItems = function (state = initialState, action) {
     switch (action.type) {
         case LOAD_ITEMS_ALL:
+            console.log('in reducer - LOAD_ITEMS_ALL')
             return action.userItems;
         case ADD_ITEM_REVIEW:
+            console.log('in reducer - ADD_ITEM_REVIEW')
             return { ...state, UserReviews: [action.review, ...state.userReviews] }
         case ADD_ITEM_CHECKIN:
-            return { ...state, userCheckins: [action.review, ...state.userCheckins] }
+            console.log('in reducer - ADD_ITEM_CHECKIN')
+            return { ...state, userCheckins: [action.checkin, ...state.userCheckins] }
         default:
             return state;
     }

@@ -46,7 +46,7 @@ class BathroomView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      index: 0,
+      // index: 0,
       modalVisible: false,
       checkin: {},
       imgURI: " ",
@@ -58,18 +58,23 @@ class BathroomView extends Component {
     };
   }
   async componentDidMount() {
-    this.setState({ index: this.props.index });
-    if (this.props.bathroom) {
-      this.props.loadReviews(this.props.bathroom.id);
-      this.setState({ bathroom: this.props.bathroom });
-    }
+    this.props.loadReviews(this.props.bathroom.id)
+    // this.setState({ index: this.props.index });
+    // const index = this.state.index;
+
+    // if (this.props.bathrooms) {
+    //   this.props.loadReviews(this.props.bathrooms[index].id);
+    // }
   }
 
   async componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      this.setState({ index: this.props.index });
-      this.setState({ bathroom: this.props.bathroom });
+    if (prevProps.bathroom.id !== this.props.bathroom.id) {
+      this.props.loadReviews(this.props.bathroom.id)
     }
+    // if (prevProps !== this.props) {
+    //   this.setState({ index: this.props.index });
+    //   const index = this.state.index;
+    // }
   }
 
   backButton = () => {
@@ -130,7 +135,8 @@ class BathroomView extends Component {
       reviews,
       bathroom
     } = this.props;
-    const index = this.state.index || 0;
+    // const index = this.state.index || 0;
+    const bathroom = this.props.bathroom || {}
     // const bathroom = this.props.bathrooms[index] || {};
     const desCoord = `${bathroom.latitude},${bathroom.longitude}`;
     const addImage = this.props.addImage;

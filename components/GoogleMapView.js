@@ -194,7 +194,7 @@ class GoogleMapView extends Component {
             : `${(distance / 1000).toFixed(1)} km`}
           )
         </Text>
-        <Modal
+        {/* <Modal
           animationType="slide"
           transparent={true}
           visible={this.state.modalVisible}
@@ -202,12 +202,13 @@ class GoogleMapView extends Component {
         >
           <BathroomView
             backButton={this.backButton}
+            bathroom={this.props.bathrooms[this.state.idx]}
             index={this.state.idx}
             bathroom={this.props.bathrooms[this.state.idx]}
             getDirections={this.getDirections}
             {...this.props}
           />
-        </Modal>
+        </Modal> */}
       </View>
     );
   };
@@ -301,6 +302,20 @@ class GoogleMapView extends Component {
 
     return (
       <View style={styles.container}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          on
+        >
+          <BathroomView
+            backButton={this.backButton}
+            bathroom={this.props.bathrooms[this.state.idx]}
+            index={this.state.idx}
+            getDirections={this.getDirections}
+            {...this.props}
+          />
+        </Modal>
         <MapView
           provider={PROVIDER_GOOGLE}
           customMapStyle={MapStyle}
@@ -347,8 +362,8 @@ class GoogleMapView extends Component {
               </View>
             </View>
           ) : (
-            mapMarkers()
-          )}
+              mapMarkers()
+            )}
         </MapView>
         <HeaderB backgroundImage={headerimg}></HeaderB>
         {gotDirections === false ? (
@@ -364,16 +379,16 @@ class GoogleMapView extends Component {
             />
           </View>
         ) : (
-          <View style={styles.add}>
-            <IconFilter
-              size={36}
-              name="undo"
-              type="FontAwesome"
-              color="#0077F6"
-              onPress={() => this.setState({ gotDirections: false })}
-            />
-          </View>
-        )}
+            <View style={styles.add}>
+              <IconFilter
+                size={36}
+                name="undo"
+                type="FontAwesome"
+                color="#0077F6"
+                onPress={() => this.setState({ gotDirections: false })}
+              />
+            </View>
+          )}
         <Modal
           animationType="fade"
           transparent={true}

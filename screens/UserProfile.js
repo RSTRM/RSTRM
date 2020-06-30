@@ -23,13 +23,13 @@ const UserProfile = ({ user, loadUserItems }) => {
   const [displayListLabel, setDisplayListLabel] = useState('')
   const [displayListAssociation, setDisplayListAssociation] = useState('')
 
-  useEffect(() => {
-    console.log(user)
-    loadUserItems(user.id)
-  }, [])
+  // useEffect(() => {
+  //   console.log(user)
+  //   loadUserItems(user.id)
+  // }, [])
 
   setDisplayHandler = (name, label, association) => {
-    console.log(`set display to ${name} - ${label} - ${association}`)
+    console.log(`set display to ${name} - ${label} - ${association.table}.${association.field}`)
     setDisplayListName(name)
     setDisplayListLabel(label)
     setDisplayListAssociation(association)
@@ -80,12 +80,12 @@ const styles = StyleSheet.create({
 
 const mapState = ({ user }) => ({ user })
 
-const mapDispatch = (dispatch) => {
-  return {
-    loadUserItems: (id) => {
-      dispatch(loadItemsAll(id))
-    },
-  }
-}
+// const mapDispatch = (dispatch) => {
+//   return {
+//     loadUserItems: (id) => {
+//       dispatch(loadItemsAll(id))
+//     },
+//   }
+// }
 
-export default connect(mapState, mapDispatch)(UserProfile)
+export default connect(mapState)(UserProfile)
