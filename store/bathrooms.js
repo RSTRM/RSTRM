@@ -87,9 +87,7 @@ const deleteBathroom = id => {
 
 const addImage = (bathroomId, url) => {
   return async (dispatch) => {
-    c//onsole.log(bathroomId, url, 'in thunk before post')
     const response = (await axios.post(`${HOST}/api/bathrooms/images/${bathroomId}/${url}`)).data;
-    //console.log(response, 'addImage response in thunk');
     dispatch(_addImage(response));
   };
 };
