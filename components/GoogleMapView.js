@@ -194,7 +194,7 @@ class GoogleMapView extends Component {
             : `${(distance / 1000).toFixed(1)} km`}
           )
         </Text>
-        <Modal
+        {/* <Modal
           animationType="slide"
           transparent={true}
           visible={this.state.modalVisible}
@@ -207,7 +207,7 @@ class GoogleMapView extends Component {
             getDirections={this.getDirections}
             {...this.props}
           />
-        </Modal>
+        </Modal> */}
       </View>
     );
   };
@@ -301,6 +301,20 @@ class GoogleMapView extends Component {
 
     return (
       <View style={styles.container}>
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={this.state.modalVisible}
+          on
+        >
+          <BathroomView
+            backButton={this.backButton}
+            bathroom={this.props.bathrooms[this.state.idx]}
+            index={this.state.idx}
+            getDirections={this.getDirections}
+            {...this.props}
+          />
+        </Modal>
         <MapView
           provider={PROVIDER_GOOGLE}
           customMapStyle={MapStyle}
