@@ -85,10 +85,10 @@ const deleteBathroom = id => {
   };
 };
 
-const addImage = (refugeId, url) => {
+const addImage = (bathroomId, url) => {
   return async (dispatch) => {
-    console.log(refugeId, url, 'valmik in thunk');
-    const response = (await axios.post(`${HOST}/api/bathrooms/${refugeId}/${url}`)).data;
+    console.log(bathroomId, url, 'in thunk before post')
+    const response = (await axios.post(`${HOST}/api/bathrooms/images/${bathroomId}/${url}`)).data;
     console.log(response, 'addImage response in thunk');
     dispatch(_addImage(response));
   };

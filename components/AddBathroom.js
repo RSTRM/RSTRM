@@ -348,9 +348,6 @@ const styles = StyleSheet.create({
 
 const mapDispatchToProps = dispatch => {
   return {
-    addImage(refugeId, url) {
-      dispatch(addImage(refugeId, url));
-    },
     createBathroom(bathroom) {
       dispatch(createBathroom(bathroom));
     }

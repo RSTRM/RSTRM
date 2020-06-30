@@ -25,6 +25,9 @@ import headerimg from "../assets/header-img.png";
 import * as MediaLibrary from "expo-media-library";
 import { RNS3 } from "react-native-aws3";
 import Cam from "./Cam";
+import { addImage } from "../store/bathrooms";
+import { AWS } from "../secrets";
+
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -50,15 +53,14 @@ class BathroomView extends Component {
       imgURI: " ",
       imgURL:
         "no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg",
-      modalVisible: false,
       modal2Visible: false,
-      modal3Visible: false
+      modal3Visible: false,
     };
   }
   async componentDidMount() {
     this.setState({ index: this.props.index });
     const index = this.state.index;
-
+    console.log(this.state)
     if (this.props.bathrooms) {
       this.props.loadReviews(this.props.bathrooms[index].id);
     }
@@ -74,13 +76,17 @@ class BathroomView extends Component {
   backButton = () => {
     this.setState({ modalVisible: false });
   };
+  backButton3 = () => {
+    this.setState({ modal3Visible: false });
+  };
+
 
   bathroomImage = asset => {
     this.setState({ imgURI: asset.uri });
     this.onImageAdded(asset);
   };
 
-  onImageAdded = asset => {
+  onImageAdded = async (asset) => {
     const file = {
       uri: this.state.imgURI,
       name: asset.filename,
@@ -91,12 +97,12 @@ class BathroomView extends Component {
       keyPrefix: "uploads/",
       bucket: "rstrmimagesbucket",
       region: "us-east-2",
-      accessKey: "AKIA2S5LYQMOQ7CIPMHF",
-      secretKey: "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",
+      accessKey: AWS.accessKey,
+      secretKey: AWS.secretKey,
       successActionStatus: 201
     };
 
-    RNS3.put(file, options).then(response => {
+    await RNS3.put(file, options).then(response => {
       if (response.status !== 201)
         throw new Error("Failed to upload image to S3");
 
@@ -104,8 +110,16 @@ class BathroomView extends Component {
 
       const url = response.body.postResponse.location.split("/");
       this.setState({ imgURL: url[3] });
+      console.log(this.state, 'afterwards');
+      this.submitPicture()
     });
   };
+
+  submitPicture = () => {
+    const index = this.state.index;
+    const bathroom = this.props.bathrooms[index];
+    this.props.addImage(bathroom.id, this.state.imgURL)
+  }
 
   render() {
     const {
@@ -118,6 +132,9 @@ class BathroomView extends Component {
     const index = this.state.index || 0;
     const bathroom = this.props.bathrooms[index] || {};
     const desCoord = `${bathroom.latitude},${bathroom.longitude}`;
+    const addImage = this.props.addImage;
+
+
     let images;
     if (!bathroom.images) {
       images = [
@@ -163,11 +180,11 @@ class BathroomView extends Component {
                 <Modal
                   animationType="slide"
                   transparent={true}
-                  visible={this.state.modal2Visible}
+                  visible={this.state.modal3Visible}
                   on
                 >
                   <Cam
-                    backButton={this.backButton}
+                    backButton={this.backButton3}
                     bathroomImage={this.bathroomImage}
                   />
                 </Modal>
@@ -432,6 +449,9 @@ const mapDispatchToProps = dispatch => {
     },
     loadImages(id) {
       dispatch(loadReviews(id));
+    },
+    addImage(refugeId, url) {
+      dispatch(addImage(refugeId, url));
     },
     postCheckin(checkin) {
       dispatch(createCheckin(checkin));
