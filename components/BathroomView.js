@@ -28,7 +28,6 @@ import Cam from "./Cam";
 import { addImage } from "../store/bathrooms";
 import { AWS } from "../secrets";
 
-
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
 
@@ -55,21 +54,21 @@ class BathroomView extends Component {
         "no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg",
       modal2Visible: false,
       modal3Visible: false,
+      bathroom: {}
     };
   }
   async componentDidMount() {
     this.setState({ index: this.props.index });
-    const index = this.state.index;
-    console.log(this.state)
-    if (this.props.bathrooms) {
-      this.props.loadReviews(this.props.bathrooms[index].id);
+    if (this.props.bathroom) {
+      this.props.loadReviews(this.props.bathroom.id);
+      this.setState({ bathroom: this.props.bathroom });
     }
   }
 
   async componentDidUpdate(prevProps) {
     if (prevProps !== this.props) {
       this.setState({ index: this.props.index });
-      const index = this.state.index;
+      this.setState({ bathroom: this.props.bathroom });
     }
   }
 
@@ -80,13 +79,12 @@ class BathroomView extends Component {
     this.setState({ modal3Visible: false });
   };
 
-
   bathroomImage = asset => {
     this.setState({ imgURI: asset.uri });
     this.onImageAdded(asset);
   };
 
-  onImageAdded = async (asset) => {
+  onImageAdded = async asset => {
     const file = {
       uri: this.state.imgURI,
       name: asset.filename,
@@ -110,38 +108,39 @@ class BathroomView extends Component {
 
       const url = response.body.postResponse.location.split("/");
       this.setState({ imgURL: url[3] });
-      console.log(this.state, 'afterwards');
-      this.submitPicture()
+      console.log(this.state, "afterwards");
+      console.log(this.props.bathroom, "ppp");
+      this.submitPicture();
     });
   };
 
-  submitPicture = () => {
-    const index = this.state.index;
-    const bathroom = this.props.bathrooms[index];
-    this.props.addImage(bathroom.id, this.state.imgURL)
-  }
+  submitPicture = async () => {
+    console.log(this.props.bathroom.id, "id");
+    console.log(this.state.imgURL, "imgURL in state");
+    await this.props.addImage(this.props.bathroom.id, this.state.imgURL);
+  };
 
   render() {
+    console.log(this.props, 'in render');
     const {
       user,
       backButton,
       postCheckin,
       getDirections,
-      reviews
+      reviews,
+      bathroom
     } = this.props;
     const index = this.state.index || 0;
-    const bathroom = this.props.bathrooms[index] || {};
+    // const bathroom = this.props.bathrooms[index] || {};
     const desCoord = `${bathroom.latitude},${bathroom.longitude}`;
     const addImage = this.props.addImage;
-
-
     let images;
     if (!bathroom.images) {
       images = [
         "https://thumbs.dreamstime.com/b/no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg"
       ];
     } else if (bathroom.images) {
-      images = bathroom.images.map(img => img.imageURL);
+      images = bathroom.images.map(img => img.imageURL).reverse();
     }
     return (
       <Block flex style={styles.profile}>
@@ -153,7 +152,7 @@ class BathroomView extends Component {
             dotColor="#FFEE58"
             inactiveDotColor="#90A4AE"
           />
-          
+
           <Block flex style={styles.profileDetails}>
             <Block style={styles.profileTexts}>
               <Block style={styles.backButton}>
@@ -165,7 +164,7 @@ class BathroomView extends Component {
                   color="black"
                   onPress={() => backButton()}
                 />
-                </Block>
+              </Block>
               <Block style={styles.cameraIcon}>
                 <Icon
                   reverse
@@ -321,8 +320,8 @@ class BathroomView extends Component {
           </ImageBackground>
         </Block>
         <Text color="white" size={23} style={styles.title}>
-            {bathroom.establishment}{" "}
-          </Text>
+          {bathroom.establishment}{" "}
+        </Text>
       </Block>
     );
   }

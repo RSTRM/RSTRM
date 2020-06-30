@@ -203,6 +203,7 @@ class GoogleMapView extends Component {
           <BathroomView
             backButton={this.backButton}
             index={this.state.idx}
+            bathroom={this.props.bathrooms[this.state.idx]}
             getDirections={this.getDirections}
             {...this.props}
           />
