@@ -18,13 +18,13 @@ const reducer = combineReducers({
   userItems
 });
 
-// const middleware = composeWithDevTools(applyMiddleware(thunkMiddleware));
+const middleware = composeWithDevTools(applyMiddleware(thunkMiddleware));
 
-// const store = createStore(reducer, middleware);
+const store = createStore(reducer, middleware);
 
-const middleware = composeWithDevTools(
-  applyMiddleware(thunkMiddleware, createLogger({ collapsed: true }))
-)
-const store = createStore(reducer, middleware)
+// const middleware = composeWithDevTools(
+//   applyMiddleware(thunkMiddleware, createLogger({ collapsed: true }))
+// )
+// const store = createStore(reducer, middleware)
 
 export default store;

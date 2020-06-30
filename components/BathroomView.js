@@ -113,7 +113,7 @@ class BathroomView extends Component {
 
       const url = response.body.postResponse.location.split("/");
       this.setState({ imgURL: url[3] });
-       this.submitPicture();
+      this.submitPicture();
     });
   };
 
@@ -143,7 +143,8 @@ class BathroomView extends Component {
         "https://thumbs.dreamstime.com/b/no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg"
       ];
     } else if (bathroom.images) {
-      images = bathroom.images.map(img => img.imageURL).reverse();
+      images = bathroom.images.map(img => img.imageURL)
+      // .reverse();
     }
     return (
       <Block flex style={styles.profile}>
