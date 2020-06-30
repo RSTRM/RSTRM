@@ -24,22 +24,26 @@ const ListItems = ({ name, association, user }) => {
         <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
             <Block >
                 {listToDisplay.map(item => {
+                    const comment = item.comments
                     const table = item[association.table]
                     const name = table[association.nameField]
                     const date = moment(table.createdAt).format("MMMM D, YYYY h:mma")
-                    return (<View key={item.id} style={styles.listItem}>
-                        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
-                            <Image
-                                style={{ width: 50, height: 50 }}
-                                source={imageMaker(table.imageURL)}
-                                resizeMode="cover"
-                            />
-                        </View >
-                        <View style={{ flex: 3, alignItems: "start", justifyContent: "center" }}>
-                            <Text style={styles.textItem}>{name}</Text>
-                            <Text style={styles.dateItem}>{date}</Text>
+                    return (
+                        <View key={item.id} style={styles.listItem}>
+                            <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+                                <Image
+                                    style={{ width: 50, height: 50 }}
+                                    source={imageMaker(table.imageURL)}
+                                    resizeMode="cover"
+                                />
+                            </View >
+                            <View style={{ flex: 3, alignItems: "start", justifyContent: "center" }}>
+                                <Text style={styles.textItem}>{name}</Text>
+                                {comment === undefined ? View : <Text style={styles.textComment}>{`"${comment}"`}</Text>}
+                                <Text style={styles.dateItem}>{date}</Text>
+                            </View>
                         </View>
-                    </View>)
+                    )
                 })
                 }
             </Block>
@@ -49,8 +53,13 @@ const ListItems = ({ name, association, user }) => {
 
 const styles = StyleSheet.create({
     textItem: {
-        fontSize: 16,
+        fontSize: 18,
         color: materialTheme.COLORS.GRADIENT_START,
+        padding: 1,
+    },
+    textComment: {
+        fontSize: 15,
+        color: "black",
         padding: 1,
     },
     dateItem: {
