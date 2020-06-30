@@ -12,7 +12,6 @@ import { Block, Text, theme } from 'galio-framework'
 import { HeaderHeight } from '../constants/utils'
 import { connect } from 'react-redux'
 import { TouchableOpacity } from 'react-native-gesture-handler'
-import { loadItemsAll } from '../store/userItems'
 import { IconBarView, UserInfoView, ListItems } from '../components/UserProfileComps'
 
 const { width, height } = Dimensions.get('screen')
@@ -22,11 +21,6 @@ const UserProfile = ({ user, loadUserItems }) => {
   const [displayListName, setDisplayListName] = useState('')
   const [displayListLabel, setDisplayListLabel] = useState('')
   const [displayListAssociation, setDisplayListAssociation] = useState('')
-
-  // useEffect(() => {
-  //   console.log(user)
-  //   loadUserItems(user.id)
-  // }, [])
 
   setDisplayHandler = (name, label, association) => {
     console.log(`set display to ${name} - ${label} - ${association.table}.${association.field}`)
@@ -79,13 +73,5 @@ const styles = StyleSheet.create({
 })
 
 const mapState = ({ user }) => ({ user })
-
-// const mapDispatch = (dispatch) => {
-//   return {
-//     loadUserItems: (id) => {
-//       dispatch(loadItemsAll(id))
-//     },
-//   }
-// }
 
 export default connect(mapState)(UserProfile)

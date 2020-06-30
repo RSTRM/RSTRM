@@ -23,7 +23,7 @@ const defaultUser = {};
  */
 const getUser = (user) => ({ type: GET_USER, user });
 const removeUser = () => ({ type: REMOVE_USER });
-const _updateUser = (user) => ({ type: UPDATE_USER, user });
+const _updateUser = (user, field) => ({ type: UPDATE_USER, user, field });
 export const _updateUserItems = (item, table) => ({ type: UPDATE_USER_ITEMS, item, table });
 
 /**
@@ -73,7 +73,7 @@ export const auth = (
 
   try {
     dispatch(getUser(res.data));
-    loadItemsAll(res.data.id)
+    // loadItemsAll(res.data.id)
     props.navigation.navigate("Home");
   } catch (dispatchOrHistoryErr) {
     console.error(dispatchOrHistoryErr);
@@ -90,14 +90,16 @@ export const logout = () => async (dispatch) => {
   }
 };
 
-export const updateUser = (userId, action, propToUpdate) => async (
-  dispatch
-) => {
-  const _updatedUser = (
-    await axios.put(`${HOST}/api/users/${userId}/${action}`, { propToUpdate })
-  ).data;
-  dispatch(_updateUser(_updatedUser));
-};
+
+export const updateUser = (userId, action, propToUpdate) => {
+  return async (dispatch) => {
+    const _updatedUser = (
+      await axios.put(`${HOST}/api/users/${userId}/${action}`, { propToUpdate })
+    ).data;
+    dispatch(_updateUser(_updatedUser, action));
+  }
+}
+
 
 /**
  * REDUCER
@@ -109,7 +111,10 @@ export default function (state = defaultUser, action) {
     case REMOVE_USER:
       return defaultUser;
     case UPDATE_USER:
-      return action.user;
+      action.user.reviews = state.reviews
+      action.user.checkins = state.checkins
+      action.user.userBadges = state.userBadges
+      return action.user
     case UPDATE_USER_ITEMS:
       return { ...state, [action.table]: [action.item, ...state[action.table]] }
     default:

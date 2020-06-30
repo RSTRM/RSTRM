@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { Block, Text, theme } from 'galio-framework'
 import { Icon, Image } from 'react-native-elements'
@@ -10,7 +10,6 @@ import { HeaderHeight } from '../../constants/utils'
 import tpMarker from '../../assets/tp-marker.png'
 
 const ListItems = ({ name, association, user }) => {
-    // console.log("IN LISTITEMS", user[name], association)
     const listToDisplay = user[name] || []
     const defaultImage = tpMarker
 
