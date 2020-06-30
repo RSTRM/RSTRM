@@ -1,7 +1,7 @@
 import axios from "axios";
 import { _updateUserItems } from "./user";
-// const HOST = "https://server-rstrm.herokuapp.com";
-const HOST = "http://localhost:8080";
+const HOST = "https://server-rstrm.herokuapp.com";
+// const HOST = "http://localhost:8080";
 
 /**
  * ACTION TYPES ------------------------------------------------
