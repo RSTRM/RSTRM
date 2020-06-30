@@ -30,7 +30,7 @@ export default class App extends React.Component {
     cameraType: Camera.Constants.Type.back,
     imgURI:
       "assets-library://asset/asset.JPG?id=46F60C34-0D97-4691-928D-ABDE79C44782&ext=JPG",
-    modalVisible: false
+    modal3Visible: false
   };
 
   async componentDidMount() {
