@@ -23,7 +23,6 @@ const UserProfile = ({ user, loadUserItems }) => {
   const [displayListAssociation, setDisplayListAssociation] = useState('')
 
   setDisplayHandler = (name, label, association) => {
-    //console.log(`set display to ${name} - ${label} - ${association.table}.${association.field}`)
     setDisplayListName(name)
     setDisplayListLabel(label)
     setDisplayListAssociation(association)

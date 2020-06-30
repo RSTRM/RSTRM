@@ -26,7 +26,7 @@ const ListItems = ({ name, association, user }) => {
                 {listToDisplay.map(item => {
                     const table = item[association.table]
                     const name = table[association.nameField]
-                    const date = moment(table.createdAt).format("MMMM D, YYYY h:mma")
+                    const date = moment(item.createdAt).format("MMMM D, YYYY h:mma")
                     return (<View key={item.id} style={styles.listItem}>
                         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                             <Image
