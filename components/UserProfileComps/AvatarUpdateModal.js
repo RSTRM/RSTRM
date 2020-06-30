@@ -33,7 +33,6 @@ const AvatarUpdateModal = ({ user, visible, avatarViewUpdate, updateUserAvatar }
     }
 
     const updateAvatar = () => {
-        console.log('PRESSED', avatarSelected, avatarSelectedImageUrl)
         const action = 'imageURL'
         updateUserAvatar(user.id, action, avatarSelectedImageUrl)
         updateViewMode(false)
