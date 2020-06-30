@@ -114,13 +114,13 @@ const bathrooms = function(state = initialState, action) {
       return state.filter(bathroom => bathroom.id !== action.id);
 
     case ADD_IMAGE:
-      console.log(action)
+      console.log(action, 'action in reducer')
       return [
         ...state,
         state.map(bathroom => {
           if (bathroom.id === action.bathroomId) {
             return bathroom.images.push(action.image);
-          }
+          } 
           return bathroom;
         })
       ];

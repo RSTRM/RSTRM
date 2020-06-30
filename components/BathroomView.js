@@ -84,9 +84,9 @@ class BathroomView extends Component {
     this.setState({ modal3Visible: false });
   };
 
-  bathroomImage = asset => {
+  bathroomImage = async asset => {
     this.setState({ imgURI: asset.uri });
-    this.onImageAdded(asset);
+    await this.onImageAdded(asset);
   };
 
   onImageAdded = async asset => {
@@ -113,9 +113,7 @@ class BathroomView extends Component {
 
       const url = response.body.postResponse.location.split("/");
       this.setState({ imgURL: url[3] });
-      console.log(this.state, "afterwards");
-      console.log(this.props.bathroom, "ppp");
-      this.submitPicture();
+       this.submitPicture();
     });
   };
 
@@ -133,10 +131,9 @@ class BathroomView extends Component {
       postCheckin,
       getDirections,
       reviews,
-      bathroom
     } = this.props;
     // const index = this.state.index || 0;
-    const bathroom = this.props.bathroom || {}
+    const bathroom = this.props.bathroom || {};
     // const bathroom = this.props.bathrooms[index] || {};
     const desCoord = `${bathroom.latitude},${bathroom.longitude}`;
     const addImage = this.props.addImage;
