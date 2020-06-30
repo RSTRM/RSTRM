@@ -9,7 +9,7 @@ import {
   Button,
   Modal,
   View,
-  TouchableOpacity,
+  TouchableOpacity
 } from "react-native";
 import { Block, Text, theme } from "galio-framework";
 import { LinearGradient } from "expo-linear-gradient";
@@ -20,26 +20,25 @@ import { connect } from "react-redux";
 import AddReview from "./AddReview";
 import { createCheckin } from "../store/checkins";
 import { loadReviews } from "../store/reviews";
-import { loadImages } from "../store/images";
 import { SliderBox } from "react-native-image-slider-box";
 import headerimg from "../assets/header-img.png";
-import { RNCamera } from "react-native-camera";
-import { bathrooms } from "../store/bathrooms";
-import Restroom from "../constants/Images";
+import * as MediaLibrary from "expo-media-library";
+import { RNS3 } from "react-native-aws3";
+import Cam from "./Cam";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
 
-const images = Restroom.Restroom;
+// const images = Restroom.Restroom;
 
-const randomizer = (images) => {
-  let arr = [];
-  for (let i = 0; i < 3; i++) {
-    const randomImages = images[Math.floor(Math.random() * images.length)];
-    arr.push(randomImages);
-  }
-  return arr;
-};
+// const randomizer = (images) => {
+//   let arr = [];
+//   for (let i = 0; i < 3; i++) {
+//     const randomImages = images[Math.floor(Math.random() * images.length)];
+//     arr.push(randomImages);
+//   }
+//   return arr;
+// };
 
 class BathroomView extends Component {
   constructor(props) {
@@ -48,7 +47,12 @@ class BathroomView extends Component {
       index: 0,
       modalVisible: false,
       checkin: {},
-      randomImgs: [],
+      imgURI: " ",
+      imgURL:
+        "no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg",
+      modalVisible: false,
+      modal2Visible: false,
+      modal3Visible: false
     };
   }
   async componentDidMount() {
@@ -58,8 +62,6 @@ class BathroomView extends Component {
     if (this.props.bathrooms) {
       this.props.loadReviews(this.props.bathrooms[index].id);
     }
-    const imgs = randomizer(images);
-    this.setState({ randomImgs: imgs });
   }
 
   async componentDidUpdate(prevProps) {
@@ -73,32 +75,71 @@ class BathroomView extends Component {
     this.setState({ modalVisible: false });
   };
 
+  bathroomImage = asset => {
+    this.setState({ imgURI: asset.uri });
+    this.onImageAdded(asset);
+  };
+
+  onImageAdded = asset => {
+    const file = {
+      uri: this.state.imgURI,
+      name: asset.filename,
+      type: "image/png"
+    };
+
+    const options = {
+      keyPrefix: "uploads/",
+      bucket: "rstrmimagesbucket",
+      region: "us-east-2",
+      accessKey: "AKIA2S5LYQMOQ7CIPMHF",
+      secretKey: "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",
+      successActionStatus: 201
+    };
+
+    RNS3.put(file, options).then(response => {
+      if (response.status !== 201)
+        throw new Error("Failed to upload image to S3");
+
+      console.log(response.body, "response after success!");
+
+      const url = response.body.postResponse.location.split("/");
+      this.setState({ imgURL: url[3] });
+    });
+  };
+
   render() {
     const {
       user,
       backButton,
       postCheckin,
       getDirections,
-      reviews,
+      reviews
     } = this.props;
     const index = this.state.index || 0;
     const bathroom = this.props.bathrooms[index] || {};
     const desCoord = `${bathroom.latitude},${bathroom.longitude}`;
-
+    let images;
+    if (!bathroom.images) {
+      images = [
+        "https://thumbs.dreamstime.com/b/no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg"
+      ];
+    } else if (bathroom.images) {
+      images = bathroom.images.map(img => img.imageURL);
+    }
     return (
       <Block flex style={styles.profile}>
         <Block flex>
           <SliderBox
-            images={this.state.randomImgs}
+            images={images}
             style={styles.profileContainer}
             sliderBoxHeight={100}
             dotColor="#FFEE58"
             inactiveDotColor="#90A4AE"
           />
-
+          
           <Block flex style={styles.profileDetails}>
             <Block style={styles.profileTexts}>
-              <Block style={styles.getDirections}>
+              <Block style={styles.backButton}>
                 <Icon
                   raised
                   reverse
@@ -107,10 +148,31 @@ class BathroomView extends Component {
                   color="black"
                   onPress={() => backButton()}
                 />
+                </Block>
+              <Block style={styles.cameraIcon}>
+                <Icon
+                  reverse
+                  name="camera"
+                  type="material-community"
+                  color="#0077F6"
+                  underlayColor="purple"
+                  onPress={() => {
+                    this.setState({ modal3Visible: true });
+                  }}
+                />
+                <Modal
+                  animationType="slide"
+                  transparent={true}
+                  visible={this.state.modal2Visible}
+                  on
+                >
+                  <Cam
+                    backButton={this.backButton}
+                    bathroomImage={this.bathroomImage}
+                  />
+                </Modal>
               </Block>
-              <Text color="white" size={23} style={styles.title}>
-                {bathroom.establishment}{" "}
-              </Text>
+
               <Block row space="between">
                 <Block row>
                   <Text color="white" size={16} muted style={styles.seller}>
@@ -147,7 +209,7 @@ class BathroomView extends Component {
                 </Block>
                 <Block middle>
                   <Text bold size={12} style={{ marginBottom: 8 }}>
-                    {bathroom.avgRating || 1}
+                    {bathroom.avgRating || 3}
                   </Text>
                   <Text muted size={12}>
                     Avg Rtg
@@ -176,7 +238,7 @@ class BathroomView extends Component {
                       if (user.id) {
                         await postCheckin({
                           userId: user.id,
-                          bathroomId: bathroom.id,
+                          bathroomId: bathroom.id
                         });
                         this.setState({ modalVisible: true });
                       } else {
@@ -197,12 +259,12 @@ class BathroomView extends Component {
                 style={{
                   paddingVertical: 16,
                   alignItems: "baseline",
-                  color: "white",
+                  color: "white"
                 }}
               >
                 <Text
                   style={{
-                    fontWeight: "bold",
+                    fontWeight: "bold"
                   }}
                   color={"white"}
                   size={18}
@@ -212,7 +274,7 @@ class BathroomView extends Component {
               </Block>
               <Block style={{ paddingBottom: -HeaderHeight * 2 }}>
                 <Block style={{ flex: 1, color: "white" }}>
-                  {reviews.map((review) => (
+                  {reviews.map(review => (
                     <View key={review.id}>
                       <Text
                         size={16}
@@ -241,6 +303,9 @@ class BathroomView extends Component {
             </ScrollView>
           </ImageBackground>
         </Block>
+        <Text color="white" size={23} style={styles.title}>
+            {bathroom.establishment}{" "}
+          </Text>
       </Block>
     );
   }
@@ -249,29 +314,29 @@ class BathroomView extends Component {
 const styles = StyleSheet.create({
   profile: {
     marginTop: Platform.OS === "android" ? -HeaderHeight : 0,
-    marginBottom: -HeaderHeight * 2,
+    marginBottom: -HeaderHeight * 2
   },
   profileImage: {
     width: width * 1.1,
-    height: "auto",
+    height: "auto"
   },
   profileContainer: {
     width: width,
-    height: height / 2,
+    height: height / 2
   },
   profileDetails: {
     paddingTop: theme.SIZES.BASE * 4,
     justifyContent: "flex-end",
-    position: "relative",
+    position: "relative"
   },
   profileTexts: {
     paddingHorizontal: theme.SIZES.BASE * 2,
     paddingVertical: theme.SIZES.BASE * 2,
     zIndex: 1,
-    fontWeight: "bold",
+    fontWeight: "bold"
   },
   seller: {
-    marginRight: theme.SIZES.BASE / 2,
+    marginRight: theme.SIZES.BASE / 2
   },
   options: {
     position: "relative",
@@ -286,14 +351,14 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOpacity: 0.2,
     zIndex: 2,
-    color: "white",
+    color: "white"
   },
   thumb: {
     borderRadius: 4,
     marginVertical: 4,
     alignSelf: "center",
     width: thumbMeasure,
-    height: thumbMeasure,
+    height: thumbMeasure
   },
   gradient: {
     zIndex: 1,
@@ -301,19 +366,20 @@ const styles = StyleSheet.create({
     right: 0,
     bottom: 0,
     height: "0%",
-    position: "absolute",
+    position: "absolute"
   },
   backButton: {
+    flex: 1,
     alignSelf: "flex-end",
-    marginTop: 40,
+    marginTop: -120,
     position: "absolute",
-    opacity: 0.7,
+    opacity: 0.7
   },
   getDirections: {
     alignSelf: "flex-end",
     marginTop: 1,
     position: "absolute",
-    opacity: 0.7,
+    opacity: 0.7
   },
   flex: {
     flex: 1,
@@ -329,30 +395,37 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOpacity: 0.2,
     zIndex: 2,
-    color: "white",
+    color: "white"
   },
   directions: {
     flex: 1,
     position: "absolute",
     alignSelf: "flex-end",
     marginTop: 70,
-    paddingHorizontal: 25,
+    paddingHorizontal: 25
   },
   title: {
     textShadowRadius: 10,
     textShadowColor: "black",
-    paddingBottom: 150,
-    fontWeight: "bold",
+    paddingTop: 100,
+    position: "absolute",
+    fontWeight: "bold"
   },
+  cameraIcon: {
+    flex: 1,
+    position: "absolute",
+    marginTop: -120,
+    alignSelf: "flex-start"
+  }
 });
 
 const mapStateToProps = ({ bathrooms, reviews, user }) => ({
   bathrooms,
   reviews,
-  user,
+  user
 });
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     loadReviews(id) {
       dispatch(loadReviews(id));
@@ -362,7 +435,7 @@ const mapDispatchToProps = (dispatch) => {
     },
     postCheckin(checkin) {
       dispatch(createCheckin(checkin));
-    },
+    }
   };
 };
 

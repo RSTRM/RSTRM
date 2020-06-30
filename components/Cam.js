@@ -1,4 +1,5 @@
 import React from "react";
+
 import {
   StyleSheet,
   Text,
@@ -29,7 +30,7 @@ export default class App extends React.Component {
     cameraType: Camera.Constants.Type.back,
     imgURI:
       "assets-library://asset/asset.JPG?id=46F60C34-0D97-4691-928D-ABDE79C44782&ext=JPG",
-    modal2Visible: false
+    modalVisible: false
   };
 
   async componentDidMount() {
@@ -49,7 +50,7 @@ export default class App extends React.Component {
     this.setState({ hasPermission: status === "granted" });
   };
   backButton = () => {
-    this.setState({ modal2Visible: false });
+    this.setState({ modal3Visible: false });
   };
 
   handleCameraType = () => {
@@ -68,8 +69,9 @@ export default class App extends React.Component {
       const backButton = this.props.backButton;
       const { uri } = await this.camera.takePictureAsync();
       const asset = await MediaLibrary.createAssetAsync(uri);
-      this.setState({ imgURI: asset });
-      this.props.bathroomImage(this.state.imgURI);
+      console.log(asset, 'asset');
+      this.setState({ imgURI: asset.uri });
+      this.props.bathroomImage(asset);
       backButton();
     }
   };
@@ -83,6 +85,7 @@ export default class App extends React.Component {
     const backButton = this.props.backButton;
     backButton();
   };
+  
 
   render() {
     const { hasPermission, pictures } = this.state;
@@ -130,7 +133,6 @@ export default class App extends React.Component {
                   backgroundColor: "transparent"
                 }}
                 onPress={() => this.takePicture()}
-                // onPressOut={async() => await backButton()}
               >
                 <FontAwesome
                   name="camera"

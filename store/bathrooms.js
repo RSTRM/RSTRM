@@ -1,5 +1,6 @@
 import axios from "axios";
 const HOST = "https://server-rstrm.herokuapp.com";
+// const HOST = "http://localhost:8080";
 /**
  * ACTION TYPES ------------------------------------------------
  */
@@ -7,6 +8,7 @@ const LOAD_BATHROOMS = "LOAD_BATHROOMS";
 const CREATE_BATHROOM = "CREATE_BATHROOM";
 const UPDATE_BATHROOM = "UPDATE_BATHROOM";
 const DELETE_BATHROOM = "DELETE_BATHROOM";
+const ADD_IMAGE = "ADD_IMAGE";
 
 /**
  * INITIAL STATE --------------------------------------------------
@@ -16,11 +18,11 @@ const initialState = [];
 /**
  * ACTION CREATORS
  */
-const _loadBathrooms = (bathrooms) => ({ type: LOAD_BATHROOMS, bathrooms });
-const _createBathroom = (bathroom) => ({ type: CREATE_BATHROOM, bathroom });
-const _updateBathroom = (bathroom) => ({ type: UPDATE_BATHROOM, bathroom });
-const _deleteBathroom = (id) => ({ type: DELETE_BATHROOM, id });
-// const _loadReviews = reviews => ({ type: LOAD_REVIEWS, reviews });
+const _loadBathrooms = bathrooms => ({ type: LOAD_BATHROOMS, bathrooms });
+const _createBathroom = bathroom => ({ type: CREATE_BATHROOM, bathroom });
+const _updateBathroom = bathroom => ({ type: UPDATE_BATHROOM, bathroom });
+const _deleteBathroom = id => ({ type: DELETE_BATHROOM, id });
+const _addImage = image => ({ type: ADD_IMAGE, image });
 
 /**
  * THUNK CREATORS -------------------------------------------------
@@ -38,7 +40,7 @@ const loadBathrooms = (
   const latitude = region.latitude;
   const longitude = region.longitude;
 
-  return async (dispatch) => {
+  return async dispatch => {
     let filterText = "";
     if (unisexFilter) filterText += "unisexFilter=on&";
     if (accessibleFilter) filterText += "accessibleFilter=on&";
@@ -57,8 +59,8 @@ const loadBathrooms = (
   };
 };
 
-const createBathroom = (bathroom) => {
-  return async (dispatch) => {
+const createBathroom = bathroom => {
+  return async dispatch => {
     const response = (
       await axios.post(`${HOST}/api/bathrooms/${bathroom.refugeId}`, bathroom)
     ).data;
@@ -66,8 +68,8 @@ const createBathroom = (bathroom) => {
   };
 };
 
-const updateBathroom = (bathroom) => {
-  return async (dispatch) => {
+const updateBathroom = bathroom => {
+  return async dispatch => {
     const { data: updatedBathroom } = await axios.put(
       `/api/bathrooms/${bathroom.id}`,
       bathroom
@@ -76,17 +78,26 @@ const updateBathroom = (bathroom) => {
   };
 };
 
-const deleteBathroom = (id) => {
-  return async (dispatch) => {
+const deleteBathroom = id => {
+  return async dispatch => {
     await axios.delete(`/api/bathrooms/${id}`);
     dispatch(_deleteBathroom(id));
+  };
+};
+
+const addImage = (refugeId, url) => {
+  return async (dispatch) => {
+    console.log(refugeId, url, 'valmik in thunk');
+    const response = (await axios.post(`${HOST}/api/bathrooms/${refugeId}/${url}`)).data;
+    console.log(response, 'addImage response in thunk');
+    dispatch(_addImage(response));
   };
 };
 
 /**
  * REDUCER -------------------------------------------------------
  */
-const bathrooms = function (state = initialState, action) {
+const bathrooms = function(state = initialState, action) {
   switch (action.type) {
     case LOAD_BATHROOMS:
       return action.bathrooms;
@@ -95,12 +106,24 @@ const bathrooms = function (state = initialState, action) {
       return [...state, action.bathroom];
 
     case UPDATE_BATHROOM:
-      return state.map((bathroom) =>
+      return state.map(bathroom =>
         bathroom.id === action.bathroom.id ? action.bathroom : bathroom
       );
 
     case DELETE_BATHROOM:
-      return state.filter((bathroom) => bathroom.id !== action.id);
+      return state.filter(bathroom => bathroom.id !== action.id);
+
+    case ADD_IMAGE:
+      console.log(action)
+      return [
+        ...state,
+        state.map(bathroom => {
+          if (bathroom.id === action.bathroomId) {
+            return bathroom.images.push(action.image);
+          }
+          return bathroom;
+        })
+      ];
 
     default:
       return state;
@@ -113,4 +136,5 @@ export {
   createBathroom,
   updateBathroom,
   deleteBathroom,
+  addImage
 };
