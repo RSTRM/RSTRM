@@ -287,16 +287,22 @@ class GoogleMapView extends Component {
     );
   };
 
+  travel = () => {
+    return (
+      <View style={styles.travel}>
+        <Text>Estimated time:{this.state.travelTime}</Text>
+        <Text>Estimated distance: {this.state.travelDistance}</Text>
+      </View>
+    )
+  }
+
   render() {
     const {
       directionCoords,
       region,
       bathroom,
-      gotDirections,
-      travelDistance,
-      travelTime,
+      gotDirections
     } = this.state;
-    const { mapMarkers } = this;
     const { user } = this.props;
     if (!this.state.region) return <Text>Loading...</Text>;
 
@@ -354,18 +360,13 @@ class GoogleMapView extends Component {
                 strokeWidth={2}
                 strokeColor="red"
               />
-              <View style={styles.travel}>
-                <Text style={{ textAlign: "center" }}>
-                  Estimated time:{travelTime}
-                </Text>
-                <Text>Estimated distance: {travelDistance}</Text>
-              </View>
             </View>
           ) : (
-              mapMarkers()
+              <this.mapMarkers/>
             )}
         </MapView>
         <HeaderB backgroundImage={headerimg}></HeaderB>
+        {gotDirections === true ? <this.travel/> : <View/>}
         {gotDirections === false ? (
           <View style={styles.addFilter}>
             <IconFilter
@@ -564,7 +565,6 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   travel: {
-    //flex: 1,
     position: "absolute",
     width: "65%",
     backgroundColor: "white",

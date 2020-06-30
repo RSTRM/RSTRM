@@ -87,9 +87,9 @@ const deleteBathroom = id => {
 
 const addImage = (bathroomId, url) => {
   return async (dispatch) => {
-    console.log(bathroomId, url, 'in thunk before post')
+    c//onsole.log(bathroomId, url, 'in thunk before post')
     const response = (await axios.post(`${HOST}/api/bathrooms/images/${bathroomId}/${url}`)).data;
-    console.log(response, 'addImage response in thunk');
+    //console.log(response, 'addImage response in thunk');
     dispatch(_addImage(response));
   };
 };
@@ -114,7 +114,7 @@ const bathrooms = function(state = initialState, action) {
       return state.filter(bathroom => bathroom.id !== action.id);
 
     case ADD_IMAGE:
-      console.log(action, 'action in reducer')
+      //console.log(action, 'action in reducer')
       return [
         ...state,
         state.map(bathroom => {
