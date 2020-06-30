@@ -85,10 +85,10 @@ const deleteBathroom = id => {
   };
 };
 
-const addImage = (refugeId, url) => {
+const addImage = (bathroomId, url) => {
   return async (dispatch) => {
-    console.log(refugeId, url, 'valmik in thunk');
-    const response = (await axios.post(`${HOST}/api/bathrooms/${refugeId}/${url}`)).data;
+    console.log(bathroomId, url, 'in thunk before post')
+    const response = (await axios.post(`${HOST}/api/bathrooms/images/${bathroomId}/${url}`)).data;
     console.log(response, 'addImage response in thunk');
     dispatch(_addImage(response));
   };
@@ -114,13 +114,13 @@ const bathrooms = function(state = initialState, action) {
       return state.filter(bathroom => bathroom.id !== action.id);
 
     case ADD_IMAGE:
-      console.log(action)
+      console.log(action, 'action in reducer')
       return [
         ...state,
         state.map(bathroom => {
           if (bathroom.id === action.bathroomId) {
             return bathroom.images.push(action.image);
-          }
+          } 
           return bathroom;
         })
       ];
