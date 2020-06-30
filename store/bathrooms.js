@@ -97,7 +97,7 @@ const addImage = (bathroomId, url) => {
 /**
  * REDUCER -------------------------------------------------------
  */
-const bathrooms = function(state = initialState, action) {
+const bathrooms = function (state = initialState, action) {
   switch (action.type) {
     case LOAD_BATHROOMS:
       return action.bathrooms;
@@ -114,16 +114,15 @@ const bathrooms = function(state = initialState, action) {
       return state.filter(bathroom => bathroom.id !== action.id);
 
     case ADD_IMAGE:
-      //console.log(action, 'action in reducer')
+      const index = state.findIndex(bathroom => bathroom.id === action.image.bathroomId)
       return [
-        ...state,
-        state.map(bathroom => {
-          if (bathroom.id === action.bathroomId) {
-            return bathroom.images.push(action.image);
-          } 
-          return bathroom;
-        })
-      ];
+        ...state.slice(0, index), // everything before bathroom to edit
+        {
+          ...state[index],
+          images: [action.image, ...state[index].images]
+        },
+        ...state.slice(index + 1), // everything after bathroom to edit
+      ]
 
     default:
       return state;
