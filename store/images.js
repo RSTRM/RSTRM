@@ -36,7 +36,7 @@ const loadImages = (refugeId) => {
 const createImage = (refugeId, url) => {
   return async (dispatch) => {
     const response = (await axios.post(`${HOST}/api/images/${refugeId}/${url}`)).data;
-    console.log(response, 'createImage response in thunk');
+    //console.log(response, 'createImage response in thunk');
     dispatch(_createImage(response));
   };
 };

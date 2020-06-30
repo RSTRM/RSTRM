@@ -8,7 +8,7 @@ router.get('/:bathroomId', async (req, res, next) => {
     const bathroom = await Bathroom.findByPk(req.params.bathroomId)
     const images = await Image.findAll({include: [{model: Bathroom}]})
 
-    console.log(images, 'images in server')
+    //console.log(images, 'images in server')
     res.json(images)
   } catch (err) {
     next(err)

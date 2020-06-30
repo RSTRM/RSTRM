@@ -23,6 +23,7 @@ const middleware = composeWithDevTools(applyMiddleware(thunkMiddleware));
 const store = createStore(reducer, middleware);
 
 // const middleware = composeWithDevTools(
+
 //   applyMiddleware(thunkMiddleware, createLogger({ collapsed: true }))
 // )
 // const store = createStore(reducer, middleware)

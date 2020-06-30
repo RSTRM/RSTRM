@@ -69,7 +69,7 @@ export default class App extends React.Component {
       const backButton = this.props.backButton;
       const { uri } = await this.camera.takePictureAsync();
       const asset = await MediaLibrary.createAssetAsync(uri);
-      console.log(asset, 'asset');
+      //console.log(asset, 'asset');
       this.setState({ imgURI: asset.uri });
       this.props.bathroomImage(asset);
       backButton();

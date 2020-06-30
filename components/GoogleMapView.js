@@ -224,6 +224,7 @@ class GoogleMapView extends Component {
   minimumRatingFn = (minimumRating) => this.setState({ minimumRating });
 
   getDirections = async (desLocation, bathroom) => {
+    this.setState({modalVisible: false})
     const startLoc = `${this.state.region.latitude},${this.state.region.longitude}`;
     if (desLocation) {
       try {
@@ -247,7 +248,7 @@ class GoogleMapView extends Component {
         this.setState({ travelTime });
         this.setState({ bathroom });
         this.setState({ directionCoords });
-        this.setState({ gotDirections: "true" });
+        this.setState({ gotDirections: true });
       } catch (error) {
         this.setState({ gotDirections: "error" });
         return error;
@@ -287,16 +288,22 @@ class GoogleMapView extends Component {
     );
   };
 
+  travel = () => {
+    return (
+      <View style={styles.travel}>
+        <Text>Estimated time:{this.state.travelTime}</Text>
+        <Text>Estimated distance: {this.state.travelDistance}</Text>
+      </View>
+    )
+  }
+
   render() {
     const {
       directionCoords,
       region,
       bathroom,
-      gotDirections,
-      travelDistance,
-      travelTime,
+      gotDirections
     } = this.state;
-    const { mapMarkers } = this;
     const { user } = this.props;
     if (!this.state.region) return <Text>Loading...</Text>;
 
@@ -333,7 +340,7 @@ class GoogleMapView extends Component {
               longitude: this.state.region.longitude,
             }}
           />
-          {gotDirections == "true" ? (
+          {gotDirections === true ? (
             <View>
               <Marker
                 coordinate={{
@@ -354,18 +361,13 @@ class GoogleMapView extends Component {
                 strokeWidth={2}
                 strokeColor="red"
               />
-              <View style={styles.travel}>
-                <Text style={{ textAlign: "center" }}>
-                  Estimated time:{travelTime}
-                </Text>
-                <Text>Estimated distance: {travelDistance}</Text>
-              </View>
             </View>
           ) : (
-              mapMarkers()
+              <this.mapMarkers/>
             )}
         </MapView>
         <HeaderB backgroundImage={headerimg}></HeaderB>
+        {gotDirections === true ? <this.travel/> : <View/>}
         {gotDirections === false ? (
           <View style={styles.addFilter}>
             <IconFilter
@@ -564,7 +566,6 @@ const styles = StyleSheet.create({
     elevation: 10,
   },
   travel: {
-    //flex: 1,
     position: "absolute",
     width: "65%",
     backgroundColor: "white",

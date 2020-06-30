@@ -75,7 +75,7 @@ router.get('/:id/all', async (req, res, next) => {
 })
 
 router.put('/:id/:action', async (req, res, next) => {
-  console.log('PUT', { [req.params.action]: req.body.propToUpdate })
+  //console.log('PUT', { [req.params.action]: req.body.propToUpdate })
   try {
     await User.findByPk(req.params.id)
       .then(user => user.update({ [req.params.action]: req.body.propToUpdate }))

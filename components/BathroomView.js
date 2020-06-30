@@ -118,13 +118,13 @@ class BathroomView extends Component {
   };
 
   submitPicture = async () => {
-    console.log(this.props.bathroom.id, "id");
-    console.log(this.state.imgURL, "imgURL in state");
+    //console.log(this.props.bathroom.id, "id");
+    //console.log(this.state.imgURL, "imgURL in state");
     await this.props.addImage(this.props.bathroom.id, this.state.imgURL);
   };
 
   render() {
-    console.log(this.props, 'in render');
+    //console.log(this.props, 'in render');
     const {
       user,
       backButton,
