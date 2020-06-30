@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import {
     StyleSheet,
     Dimensions,
@@ -9,11 +9,14 @@ import { LinearGradient } from 'expo-linear-gradient'
 import { Images, materialTheme } from '../../constants'
 import { TouchableOpacity } from 'react-native-gesture-handler'
 import { connect } from 'react-redux'
+import AvatarUpdateModal from './AvatarUpdateModal'
 
 const { width, height } = Dimensions.get('screen')
 const thumbMeasure = (width - 48 - 32) / 3
 
 const UserInfoView = ({ user }) => {
+    const [avatarUpdateView, setAvatarUpdateView] = useState(false)
+
     const fullName = `${user.nameFirst} ${user.nameLast}`
     const statusGenerator = (reviewCount = 0) => {
         if (reviewCount > 30) {
@@ -25,13 +28,13 @@ const UserInfoView = ({ user }) => {
         }
     }
 
-    const onPressAvatar = () => {
-
+    const avatarViewUpdate = (viewable = false) => {
+        setAvatarUpdateView(viewable)
     }
 
     return (
         <Block flex>
-            <TouchableOpacity >
+            <TouchableOpacity onPress={avatarViewUpdate.bind(this, true)}>
                 <ImageBackground
                     //will connect data-image to source field below here
                     source={{ uri: user.imageURL || Images.Avatar }}
@@ -61,6 +64,7 @@ const UserInfoView = ({ user }) => {
                     </Block>
                 </ImageBackground>
             </TouchableOpacity>
+            <AvatarUpdateModal visible={avatarUpdateView} avatarViewUpdate={avatarViewUpdate} />
         </Block>
     )
 }
