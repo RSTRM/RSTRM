@@ -44,7 +44,7 @@ class BathroomView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      index: 0,
+      // index: 0,
       modalVisible: false,
       checkin: {},
       imgURI: " ",
@@ -56,19 +56,23 @@ class BathroomView extends Component {
     };
   }
   async componentDidMount() {
-    this.setState({ index: this.props.index });
-    const index = this.state.index;
+    this.props.loadReviews(this.props.bathroom.id)
+    // this.setState({ index: this.props.index });
+    // const index = this.state.index;
 
-    if (this.props.bathrooms) {
-      this.props.loadReviews(this.props.bathrooms[index].id);
-    }
+    // if (this.props.bathrooms) {
+    //   this.props.loadReviews(this.props.bathrooms[index].id);
+    // }
   }
 
   async componentDidUpdate(prevProps) {
-    if (prevProps !== this.props) {
-      this.setState({ index: this.props.index });
-      const index = this.state.index;
+    if (prevProps.bathroom.id !== this.props.bathroom.id) {
+      this.props.loadReviews(this.props.bathroom.id)
     }
+    // if (prevProps !== this.props) {
+    //   this.setState({ index: this.props.index });
+    //   const index = this.state.index;
+    // }
   }
 
   backButton = () => {
@@ -115,8 +119,9 @@ class BathroomView extends Component {
       getDirections,
       reviews
     } = this.props;
-    const index = this.state.index || 0;
-    const bathroom = this.props.bathrooms[index] || {};
+    // const index = this.state.index || 0;
+    const bathroom = this.props.bathroom || {}
+    // const bathroom = this.props.bathrooms[index] || {};
     const desCoord = `${bathroom.latitude},${bathroom.longitude}`;
     let images;
     if (!bathroom.images) {
@@ -136,7 +141,7 @@ class BathroomView extends Component {
             dotColor="#FFEE58"
             inactiveDotColor="#90A4AE"
           />
-          
+
           <Block flex style={styles.profileDetails}>
             <Block style={styles.profileTexts}>
               <Block style={styles.backButton}>
@@ -148,7 +153,7 @@ class BathroomView extends Component {
                   color="black"
                   onPress={() => backButton()}
                 />
-                </Block>
+              </Block>
               <Block style={styles.cameraIcon}>
                 <Icon
                   reverse
@@ -304,8 +309,8 @@ class BathroomView extends Component {
           </ImageBackground>
         </Block>
         <Text color="white" size={23} style={styles.title}>
-            {bathroom.establishment}{" "}
-          </Text>
+          {bathroom.establishment}{" "}
+        </Text>
       </Block>
     );
   }

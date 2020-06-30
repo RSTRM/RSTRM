@@ -1,5 +1,5 @@
 import axios from "axios";
-import { _addItemCheckin } from "./userItems";
+import { _updateUserItems } from "./user";
 const HOST = "https://server-rstrm.herokuapp.com";
 // const HOST = "http://localhost:8080";
 
@@ -40,7 +40,8 @@ const createCheckin = (checkin) => {
   return async (dispatch) => {
     const response = (await axios.post(`${HOST}/api/checkins`, checkin)).data;
     dispatch(_createCheckin(response));
-    dispatch(_addItemCheckin(response));
+    // dispatch(_addItemCheckin(response));
+    dispatch(_updateUserItems(response, 'checkins'))
   };
 };
 

@@ -9,8 +9,9 @@ import { View } from 'native-base'
 import { HeaderHeight } from '../../constants/utils'
 import tpMarker from '../../assets/tp-marker.png'
 
-const ListItems = ({ name, association, userItems }) => {
-    const listToDisplay = userItems[name] || []
+const ListItems = ({ name, association, user }) => {
+    // console.log("IN LISTITEMS", user[name], association)
+    const listToDisplay = user[name] || []
     const defaultImage = tpMarker
 
     const imageMaker = (path = null) => {
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     },
 })
 
-const mapState = ({ userItems }) => ({ userItems })
+const mapState = ({ user }) => ({ user })
 
 
 export default connect(mapState)(ListItems)

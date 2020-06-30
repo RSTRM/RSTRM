@@ -1,4 +1,5 @@
 import axios from "axios";
+import { loadItemsAll } from "./userItems";
 const HOST = "https://server-rstrm.herokuapp.com";
 // const HOST = "http://localhost:8080";
 
@@ -10,6 +11,7 @@ const HOST = "https://server-rstrm.herokuapp.com";
 const GET_USER = "GET_USER";
 const REMOVE_USER = "REMOVE_USER";
 const UPDATE_USER = "UPDATE_USER";
+const UPDATE_USER_ITEMS = "UPDATE_USER_ITEMS"
 
 /**
  * INITIAL STATE
@@ -22,6 +24,7 @@ const defaultUser = {};
 const getUser = (user) => ({ type: GET_USER, user });
 const removeUser = () => ({ type: REMOVE_USER });
 const _updateUser = (user) => ({ type: UPDATE_USER, user });
+export const _updateUserItems = (item, table) => ({ type: UPDATE_USER_ITEMS, item, table });
 
 /**
  * THUNK CREATORS
@@ -70,6 +73,7 @@ export const auth = (
 
   try {
     dispatch(getUser(res.data));
+    loadItemsAll(res.data.id)
     props.navigation.navigate("Home");
   } catch (dispatchOrHistoryErr) {
     console.error(dispatchOrHistoryErr);
@@ -106,6 +110,8 @@ export default function (state = defaultUser, action) {
       return defaultUser;
     case UPDATE_USER:
       return action.user;
+    case UPDATE_USER_ITEMS:
+      return { ...state, [action.table]: [action.item, ...state[action.table]] }
     default:
       return state;
   }
