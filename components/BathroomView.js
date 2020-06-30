@@ -25,6 +25,8 @@ import headerimg from "../assets/header-img.png";
 import * as MediaLibrary from "expo-media-library";
 import { RNS3 } from "react-native-aws3";
 import Cam from "./Cam";
+import { addImage } from "../store/bathrooms";
+import { AWS } from "../secrets";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
@@ -50,9 +52,9 @@ class BathroomView extends Component {
       imgURI: " ",
       imgURL:
         "no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg",
-      modalVisible: false,
       modal2Visible: false,
-      modal3Visible: false
+      modal3Visible: false,
+      bathroom: {}
     };
   }
   async componentDidMount() {
@@ -78,13 +80,16 @@ class BathroomView extends Component {
   backButton = () => {
     this.setState({ modalVisible: false });
   };
-
-  bathroomImage = asset => {
-    this.setState({ imgURI: asset.uri });
-    this.onImageAdded(asset);
+  backButton3 = () => {
+    this.setState({ modal3Visible: false });
   };
 
-  onImageAdded = asset => {
+  bathroomImage = async asset => {
+    this.setState({ imgURI: asset.uri });
+    await this.onImageAdded(asset);
+  };
+
+  onImageAdded = async asset => {
     const file = {
       uri: this.state.imgURI,
       name: asset.filename,
@@ -95,12 +100,12 @@ class BathroomView extends Component {
       keyPrefix: "uploads/",
       bucket: "rstrmimagesbucket",
       region: "us-east-2",
-      accessKey: "AKIA2S5LYQMOQ7CIPMHF",
-      secretKey: "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",
+      accessKey: AWS.accessKey,
+      secretKey: AWS.secretKey,
       successActionStatus: 201
     };
 
-    RNS3.put(file, options).then(response => {
+    await RNS3.put(file, options).then(response => {
       if (response.status !== 201)
         throw new Error("Failed to upload image to S3");
 
@@ -108,28 +113,37 @@ class BathroomView extends Component {
 
       const url = response.body.postResponse.location.split("/");
       this.setState({ imgURL: url[3] });
+       this.submitPicture();
     });
   };
 
+  submitPicture = async () => {
+    console.log(this.props.bathroom.id, "id");
+    console.log(this.state.imgURL, "imgURL in state");
+    await this.props.addImage(this.props.bathroom.id, this.state.imgURL);
+  };
+
   render() {
+    console.log(this.props, 'in render');
     const {
       user,
       backButton,
       postCheckin,
       getDirections,
-      reviews
+      reviews,
     } = this.props;
     // const index = this.state.index || 0;
-    const bathroom = this.props.bathroom || {}
+    const bathroom = this.props.bathroom || {};
     // const bathroom = this.props.bathrooms[index] || {};
     const desCoord = `${bathroom.latitude},${bathroom.longitude}`;
+    const addImage = this.props.addImage;
     let images;
     if (!bathroom.images) {
       images = [
         "https://thumbs.dreamstime.com/b/no-image-available-icon-photo-camera-flat-vector-illustration-132483141.jpg"
       ];
     } else if (bathroom.images) {
-      images = bathroom.images.map(img => img.imageURL);
+      images = bathroom.images.map(img => img.imageURL).reverse();
     }
     return (
       <Block flex style={styles.profile}>
@@ -168,11 +182,11 @@ class BathroomView extends Component {
                 <Modal
                   animationType="slide"
                   transparent={true}
-                  visible={this.state.modal2Visible}
+                  visible={this.state.modal3Visible}
                   on
                 >
                   <Cam
-                    backButton={this.backButton}
+                    backButton={this.backButton3}
                     bathroomImage={this.bathroomImage}
                   />
                 </Modal>
@@ -437,6 +451,9 @@ const mapDispatchToProps = dispatch => {
     },
     loadImages(id) {
       dispatch(loadReviews(id));
+    },
+    addImage(refugeId, url) {
+      dispatch(addImage(refugeId, url));
     },
     postCheckin(checkin) {
       dispatch(createCheckin(checkin));
