@@ -9,9 +9,9 @@ import {
   Button,
   View,
   TextInput,
-  Modal
+  Modal,
+  Switch,
 } from "react-native";
-
 import { Block, Text, theme } from "galio-framework";
 import { LinearGradient } from "expo-linear-gradient";
 import { Icon } from "react-native-elements";
@@ -31,9 +31,9 @@ class AddBathroom extends Component {
     super(props);
     this.state = {
       refugeId: Math.ceil(Math.random() * 140089000),
-      unisex: true,
-      accessible: true,
-      changingTable: true,
+      unisex: false,
+      accessible: false,
+      changingTable: false,
       directions: "go to the back",
       AvgRating: 1,
       checkinCount: 1,
@@ -45,7 +45,7 @@ class AddBathroom extends Component {
       latitude: this.props.region.latitude || 0.0,
       longitude: this.props.region.longitude || 0.0,
       website: " ",
-      modal2Visible: false
+      modal2Visible: false,
     };
     this.getLocationData = this.getLocationData.bind(this);
     this.onSearchRegionChange = this.onSearchRegionChange.bind(this);
@@ -53,7 +53,7 @@ class AddBathroom extends Component {
   async componentDidMount() {
     this.setState({
       latitude: this.props.region.latitude,
-      longitude: this.props.region.longitude
+      longitude: this.props.region.longitude,
     });
   }
 
@@ -68,21 +68,18 @@ class AddBathroom extends Component {
   getLocationData(data) {
     const firstWord = data.structured_formatting.main_text.split(" ");
     this.setState({
-      unisex: true,
-      accessible: true,
-      changingTable: true,
       AvgRating: 1,
       checkinCount: 1,
       establishment: data.structured_formatting.main_text,
       street: data.terms[1].value || "_",
       city: data.terms[2].value || "_",
-      website: `www.${firstWord[0]}.com` || " "
+      website: `www.${firstWord[0]}.com` || " ",
     });
   }
   onSearchRegionChange(coordinates) {
     this.setState({
       latitude: coordinates.lat,
-      longitude: coordinates.lng
+      longitude: coordinates.lng,
     });
   }
 
@@ -105,7 +102,7 @@ class AddBathroom extends Component {
       country,
       latitude,
       longitude,
-      website
+      website,
     } = this.state;
     return (
       <Block flex style={styles.profile}>
@@ -148,7 +145,7 @@ class AddBathroom extends Component {
             <Text style={styles.text}>Establishment Name</Text>
             <TextInput
               value={establishment}
-              onChange={event =>
+              onChange={(event) =>
                 this.setState({ establishment: event.nativeEvent.text })
               }
               style={styles.textInput}
@@ -158,23 +155,52 @@ class AddBathroom extends Component {
             <Text style={styles.text}>Directions</Text>
             <TextInput
               value={directions}
-              onChange={event =>
+              onChange={(event) =>
                 this.setState({ directions: event.nativeEvent.text })
               }
               style={styles.textInput}
-              placeholder="Website"
+              placeholder="Directions"
               autoCapitalize="none"
             ></TextInput>
             <Text style={styles.text}>Website</Text>
             <TextInput
               value={website}
-              onChange={event =>
+              onChange={(event) =>
                 this.setState({ website: event.nativeEvent.text })
               }
               style={styles.textInput}
               placeholder="Website"
               autoCapitalize="none"
             ></TextInput>
+            <View style={styles.switchView}>
+              <Text style={styles.switchText}>Unisex</Text>
+              <Switch
+                style={styles.switch}
+                ios_backgroundColor="red"
+                value={unisex}
+                onChange={() => this.setState({ unisex: !unisex })}
+              />
+            </View>
+            <View style={styles.switchView}>
+              <Text style={styles.switchText}>Accessible</Text>
+              <Switch
+                style={styles.switch}
+                ios_backgroundColor="red"
+                value={accessible}
+                onChange={() => this.setState({ accessible: !accessible })}
+              />
+            </View>
+            <View style={styles.switchView}>
+              <Text style={styles.switchText}>Changing Table</Text>
+              <Switch
+                style={styles.switch}
+                ios_backgroundColor="red"
+                value={changingTable}
+                onChange={() =>
+                  this.setState({ changingTable: !changingTable })
+                }
+              />
+            </View>
             <LinearGradient
               start={{ x: 0, y: 0 }}
               end={{ x: 1, y: 0 }}
@@ -182,7 +208,7 @@ class AddBathroom extends Component {
               style={styles.gradient}
               colors={[
                 materialTheme.COLORS.GRADIENT_START,
-                materialTheme.COLORS.GRADIENT_END
+                materialTheme.COLORS.GRADIENT_END,
               ]}
             >
               <Button
@@ -206,7 +232,7 @@ class AddBathroom extends Component {
                     country,
                     latitude,
                     longitude,
-                    website
+                    website,
                   });
                   backButton();
                 }}
@@ -230,25 +256,25 @@ class AddBathroom extends Component {
 const styles = StyleSheet.create({
   profile: {
     marginTop: Platform.OS === "android" ? -HeaderHeight : 0,
-    marginBottom: -HeaderHeight * 8
+    marginBottom: -HeaderHeight * 8,
   },
   profileImage: {
     width: width * 1.1,
-    height: "auto"
+    height: "auto",
   },
   profileContainer: {
     width: width,
-    height: height / 1.8
+    height: height / 1.8,
   },
   profileDetails: {
     paddingTop: theme.SIZES.BASE * 4,
     justifyContent: "flex-end",
-    position: "relative"
+    position: "relative",
   },
   profileTexts: {
     paddingHorizontal: theme.SIZES.BASE * 2,
     paddingVertical: theme.SIZES.BASE * 2,
-    zIndex: 2
+    zIndex: 2,
   },
   options: {
     position: "relative",
@@ -262,14 +288,14 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 0 },
     shadowRadius: 8,
     shadowOpacity: 0.2,
-    zIndex: 2
+    zIndex: 2,
   },
   thumb: {
     borderRadius: 4,
     marginVertical: 4,
     alignSelf: "center",
     width: thumbMeasure,
-    height: thumbMeasure
+    height: thumbMeasure,
   },
   gradient: {
     flex: 1,
@@ -279,35 +305,35 @@ const styles = StyleSheet.create({
     bottom: 0,
     paddingHorizontal: 100,
     height: "15%",
-    marginBottom: -200,
+    marginBottom: -80,
     position: "absolute",
-    borderRadius: theme.SIZES.BASE * 0.5
+    borderRadius: theme.SIZES.BASE * 0.5,
   },
   backButton: {
     alignSelf: "flex-end",
     marginTop: -700,
     position: "absolute",
-    opacity: 0.7
+    opacity: 0.7,
   },
   searchBar: {
     flex: 1,
     position: "absolute",
     alignSelf: "center",
     width: "85%",
-    marginTop: 0
+    marginTop: 0,
   },
   textInput: {
     height: 40,
     width: "85%",
     backgroundColor: "#fff",
     borderRadius: 5,
-    alignSelf: "center"
+    alignSelf: "center",
   },
   text: {
     alignSelf: "center",
     position: "relative",
     marginTop: 10,
-    color: "white"
+    color: "white",
   },
   flex: {
     flex: 1,
@@ -323,14 +349,14 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     shadowOpacity: 0.2,
     zIndex: 2,
-    color: "white"
+    color: "white",
   },
   textButton: {
     alignSelf: "center",
     position: "absolute",
     padding: 100,
     marginTop: 100,
-    color: "white"
+    color: "white",
   },
   title: {
     flex: 1,
@@ -342,18 +368,31 @@ const styles = StyleSheet.create({
     textShadowRadius: 10,
     textShadowColor: "black",
     color: "white",
-    fontWeight: "bold"
-  }
+    fontWeight: "bold",
+  },
+  switchView: {
+    marginTop: 10,
+    marginBottom: 10,
+  },
+  switchText: {
+    position: "absolute",
+    marginTop: 10,
+    color: "white",
+  },
+  switch: {
+    flex: 1,
+    alignSelf: "flex-end",
+  },
 });
 
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
     addImage(refugeId, url) {
       dispatch(addImage(refugeId, url));
     },
     createBathroom(bathroom) {
       dispatch(createBathroom(bathroom));
-    }
+    },
   };
 };
 
