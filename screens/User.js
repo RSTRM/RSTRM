@@ -7,6 +7,7 @@ import { auth, me } from "../store/user";
 import axios from "axios";
 
 const HOST = "https://server-rstrm.herokuapp.com";
+// const HOST = "http://localhost:8080";
 
 function User(props) {
   const signIn = async () => {

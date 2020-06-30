@@ -30,7 +30,7 @@ export default class App extends React.Component {
     cameraType: Camera.Constants.Type.back,
     imgURI:
       "assets-library://asset/asset.JPG?id=46F60C34-0D97-4691-928D-ABDE79C44782&ext=JPG",
-    modal2Visible: false
+    modalVisible: false
   };
 
   async componentDidMount() {
@@ -50,7 +50,7 @@ export default class App extends React.Component {
     this.setState({ hasPermission: status === "granted" });
   };
   backButton = () => {
-    this.setState({ modal2Visible: false });
+    this.setState({ modal3Visible: false });
   };
 
   handleCameraType = () => {

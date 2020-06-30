@@ -5,14 +5,14 @@ import {
   View,
   Text,
   Slider,
-  Modal,
+  Modal
 } from "react-native";
 import MapView, {
   PROVIDER_GOOGLE,
   Marker,
   Circle,
   Callout,
-  Polyline,
+  Polyline
 } from "react-native-maps";
 import Carousel from "react-native-snap-carousel";
 import * as Location from "expo-location";
@@ -26,7 +26,7 @@ import headerimg from "../assets/header-img.png";
 import {
   Icon as IconB,
   Icon as IconFilter,
-  Header as HeaderB,
+  Header as HeaderB
 } from "react-native-elements";
 import { GOOGLE_API_KEY } from "../secrets";
 import MapStyle from "../constants/mapStyle.json";
@@ -53,10 +53,10 @@ class GoogleMapView extends Component {
       accessibleFilter: false,
       changingFilter: false,
       minimumRating: 1,
-      travelDistance: '',
-      travelTime: '',
+      travelDistance: "",
+      travelTime: "",
       gotDirections: false,
-      bathroom: null,
+      bathroom: null
     };
     this.onSearchRegionChange = this.onSearchRegionChange.bind(this);
     this.onRegionChangeComplete = this.onRegionChangeComplete.bind(this);
@@ -71,8 +71,8 @@ class GoogleMapView extends Component {
           latitude: 40.7061,
           longitude: -73.9969,
           latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        },
+          longitudeDelta: 0.0421
+        }
       });
     } else {
       let location = await Location.getCurrentPositionAsync({});
@@ -82,8 +82,8 @@ class GoogleMapView extends Component {
           latitude: this.state.location.coords.latitude,
           longitude: this.state.location.coords.longitude,
           latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
-        },
+          longitudeDelta: 0.0421
+        }
       });
     }
     await this.props.load(
@@ -122,8 +122,8 @@ class GoogleMapView extends Component {
         latitude: event.nativeEvent.coordinate.latitude,
         longitude: event.nativeEvent.coordinate.longitude,
         latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      },
+        longitudeDelta: 0.0421
+      }
     });
   }
 
@@ -133,25 +133,25 @@ class GoogleMapView extends Component {
         latitude: coordinates.lat,
         longitude: coordinates.lng,
         latitudeDelta: 0.0922,
-        longitudeDelta: 0.0421,
-      },
+        longitudeDelta: 0.0421
+      }
     });
     this._map.animateToRegion({
       latitude: coordinates.lat,
       longitude: coordinates.lng,
       latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
+      longitudeDelta: 0.0421
     });
   }
 
-  onCarouselItemChange = (index) => {
+  onCarouselItemChange = index => {
     let location = this.props.bathrooms[index];
     this.setState({ idx: index });
     this._map.animateToRegion({
       latitude: location.latitude,
       longitude: location.longitude,
       latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
+      longitudeDelta: 0.0421
     });
     this.state.markers[index].showCallout();
   };
@@ -161,7 +161,7 @@ class GoogleMapView extends Component {
       latitude: location.latitude,
       longitude: location.longitude,
       latitudeDelta: 0.0922,
-      longitudeDelta: 0.0421,
+      longitudeDelta: 0.0421
     });
     this._carousel.snapToItem(index);
   };
@@ -170,7 +170,7 @@ class GoogleMapView extends Component {
     this.setState({
       modalVisible: false,
       modal2Visible: false,
-      modalFilter: false,
+      modalFilter: false
     });
   };
 
@@ -179,7 +179,7 @@ class GoogleMapView extends Component {
       { latitude: item.latitude, longitude: item.longitude },
       {
         latitude: this.state.region.latitude,
-        longitude: this.state.region.longitude,
+        longitude: this.state.region.longitude
       }
     );
     return (
@@ -216,10 +216,10 @@ class GoogleMapView extends Component {
     this.setState({ radius: newRadius });
   }
 
-  unisexFn = (unisexFilter) => this.setState({ unisexFilter });
-  accessibleFn = (accessibleFilter) => this.setState({ accessibleFilter });
-  changingFn = (changingFilter) => this.setState({ changingFilter });
-  minimumRatingFn = (minimumRating) => this.setState({ minimumRating });
+  unisexFn = unisexFilter => this.setState({ unisexFilter });
+  accessibleFn = accessibleFilter => this.setState({ accessibleFilter });
+  changingFn = changingFilter => this.setState({ changingFilter });
+  minimumRatingFn = minimumRating => this.setState({ minimumRating });
 
   getDirections = async (desLocation, bathroom) => {
     const startLoc = `${this.state.region.latitude},${this.state.region.longitude}`;
@@ -229,20 +229,20 @@ class GoogleMapView extends Component {
           `https://maps.googleapis.com/maps/api/directions/json?origin=${startLoc}&destination=${desLocation}&mode=walking&key=${GOOGLE_API_KEY}`
         );
         let respJson = await resp.json();
-        let timeDistance = respJson.routes[0].legs[0]
-        let travelTime = timeDistance.duration.text
-        let travelDistance = timeDistance.distance.text
+        let timeDistance = respJson.routes[0].legs[0];
+        let travelTime = timeDistance.duration.text;
+        let travelDistance = timeDistance.distance.text;
         let points = polyline.decode(
           respJson.routes[0].overview_polyline.points
         );
-        let directionCoords = points.map((point) => {
+        let directionCoords = points.map(point => {
           return {
             latitude: point[0],
-            longitude: point[1],
+            longitude: point[1]
           };
         });
-        this.setState({travelDistance})
-        this.setState({travelTime})
+        this.setState({ travelDistance });
+        this.setState({ travelTime });
         this.setState({ bathroom });
         this.setState({ directionCoords });
         this.setState({ gotDirections: "true" });
@@ -260,11 +260,11 @@ class GoogleMapView extends Component {
       this.props.bathrooms.map((marker, index) => (
         <View key={index}>
           <Marker
-            ref={(ref) => (this.state.markers[index] = ref)}
+            ref={ref => (this.state.markers[index] = ref)}
             onPress={() => this.onMarkerPressed(marker, index)}
             coordinate={{
               latitude: marker.latitude,
-              longitude: marker.longitude,
+              longitude: marker.longitude
             }}
           >
             <Callout
@@ -286,7 +286,14 @@ class GoogleMapView extends Component {
   };
 
   render() {
-    const { directionCoords, region, bathroom, gotDirections, travelDistance, travelTime} = this.state;
+    const {
+      directionCoords,
+      region,
+      bathroom,
+      gotDirections,
+      travelDistance,
+      travelTime
+    } = this.state;
     const { mapMarkers } = this;
     const { user } = this.props;
     if (!this.state.region) return <Text>Loading...</Text>;
@@ -296,7 +303,7 @@ class GoogleMapView extends Component {
         <MapView
           provider={PROVIDER_GOOGLE}
           customMapStyle={MapStyle}
-          ref={(map) => (this._map = map)}
+          ref={map => (this._map = map)}
           style={styles.mapStyle}
           initialRegion={this.state.region}
           showsUserLocation={true}
@@ -307,7 +314,7 @@ class GoogleMapView extends Component {
             onDragEnd={this.onRegionChangeComplete}
             coordinate={{
               latitude: this.state.region.latitude,
-              longitude: this.state.region.longitude,
+              longitude: this.state.region.longitude
             }}
           />
           {gotDirections == "true" ? (
@@ -315,14 +322,14 @@ class GoogleMapView extends Component {
               <Marker
                 coordinate={{
                   latitude: region.latitude,
-                  longitude: region.longitude,
+                  longitude: region.longitude
                 }}
                 title={"Your Location"}
               />
               <Marker
                 coordinate={{
                   latitude: bathroom.latitude,
-                  longitude: bathroom.longitude,
+                  longitude: bathroom.longitude
                 }}
                 title={"Your Destination"}
               />
@@ -332,7 +339,9 @@ class GoogleMapView extends Component {
                 strokeColor="red"
               />
               <View style={styles.travel}>
-                <Text style={{textAlign: "center"}}>Estimated time:{travelTime}</Text>
+                <Text style={{ textAlign: "center" }}>
+                  Estimated time:{travelTime}
+                </Text>
                 <Text>Estimated distance: {travelDistance}</Text>
               </View>
             </View>
@@ -386,43 +395,46 @@ class GoogleMapView extends Component {
             </View>
           </View>
         </Modal>
-        {gotDirections === false && <View style={styles.add}>
-          <IconB
-            size={40}
-            name="add-circle"
-            type="FontAwesome"
-            color="#0077F6"
-            underlayColor="purple"
-            // onPress={() => {
-            //   this.setState({ modal2Visible: true });
-            // }}
-            onPress={() => {
-              if (user.id) {
-                this.setState({ modal2Visible: true });
-              } else {
-                this.props.navigation.navigate("User");
-              }
-            }}
-          />
-          <Modal
-            animationType="slide"
-            transparent={true}
-            visible={this.state.modal2Visible}
-            on
-          >
-            <AddBathroom
-              backButton={this.backButton}
-              region={this.state.region}
-              {...this.props}
+        {gotDirections === false && (
+          <View style={styles.add}>
+            <IconB
+              size={40}
+              name="add-circle"
+              type="FontAwesome"
+              color="#0077F6"
+              underlayColor="purple"
+              // onPress={() => {
+              //   this.setState({ modal2Visible: true });
+              // }}
+              onPress={() => {
+                if (user.id) {
+                  this.setState({ modal2Visible: true });
+                } else {
+                  this.props.navigation.navigate("User");
+                }
+              }}
             />
-          </Modal>
-        </View>}
+            <Modal
+              animationType="slide"
+              transparent={true}
+              visible={this.state.modal2Visible}
+              on
+            >
+              <AddBathroom
+                user={this.props.user}
+                backButton={this.backButton}
+                region={this.state.region}
+                {...this.props}
+              />
+            </Modal>
+          </View>
+        )}
         <View style={styles.searchBar}>
           <GoogleSearchBar onSearchRegionChange={this.onSearchRegionChange} />
         </View>
         {gotDirections === false && (
           <Carousel
-            ref={(c) => {
+            ref={c => {
               this._carousel = c;
             }}
             data={this.props.bathrooms}
@@ -431,7 +443,7 @@ class GoogleMapView extends Component {
             sliderWidth={Dimensions.get("window").width}
             itemWidth={300}
             removeClippedSubviews={false}
-            onSnapToItem={(index) => this.onCarouselItemChange(index)}
+            onSnapToItem={index => this.onCarouselItemChange(index)}
           />
         )}
         {gotDirections === false && (
@@ -441,7 +453,7 @@ class GoogleMapView extends Component {
             maximumValue={2000}
             minimumValue={200}
             step={100}
-            onValueChange={(value) => this.setState({ radius: value })}
+            onValueChange={value => this.setState({ radius: value })}
           >
             <Text>{this.state.radius} meters</Text>
           </Slider>
@@ -451,75 +463,73 @@ class GoogleMapView extends Component {
   }
 }
 
-
-
 const styles = StyleSheet.create({
   container: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFillObject
   },
   mapStyle: {
-    ...StyleSheet.absoluteFillObject,
+    ...StyleSheet.absoluteFillObject
   },
   header: {
     position: "absolute",
-    top: 10,
+    top: 10
   },
   carousel: {
     position: "absolute",
     bottom: 0,
-    marginBottom: 70,
+    marginBottom: 70
   },
   cardContainer: {
     backgroundColor: "#0077F6",
     height: 50,
     width: 300,
     padding: 10,
-    borderRadius: 10,
+    borderRadius: 10
   },
   cardTitle: {
     color: "white",
     fontSize: 20,
-    alignSelf: "center",
+    alignSelf: "center"
   },
   permissions: {
     marginTop: 10,
-    color: "red",
+    color: "red"
   },
   slider: {
     flex: 1,
     position: "absolute",
     alignSelf: "center",
     bottom: 15,
-    width: "85%",
+    width: "85%"
   },
   callout: {
-    width: 200,
+    width: 200
   },
   searchBar: {
     flex: 1,
     position: "absolute",
     alignSelf: "center",
     width: "85%",
-    marginTop: 30,
+    marginTop: 30
   },
   add: {
     flex: 1,
     color: "blue",
     position: "absolute",
     alignSelf: "flex-end",
-    marginTop: 100,
+    marginTop: 100
   },
   addFilter: {
     flex: 1,
     position: "absolute",
     alignSelf: "flex-end",
-    marginTop: 150,
+    marginTop: 150
   },
   centeredView: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    marginTop: 22,
+    marginTop: 22
   },
   modalFilter: {
     height: 300,
@@ -531,26 +541,26 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: {
       width: 15,
-      height: 15,
+      height: 15
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 10,
+    elevation: 10
   },
   travel: {
     //flex: 1,
     position: "absolute",
-    width: '65%',
-    backgroundColor: 'white',
+    width: "65%",
+    backgroundColor: "white",
     alignItems: "center",
-    alignSelf: 'center',
+    alignSelf: "center",
     marginTop: 100
   }
 });
 
 const mapStateToProps = ({ bathrooms, user }) => ({ bathrooms, user });
 
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = dispatch => {
   return {
     load(
       region,
@@ -570,7 +580,7 @@ const mapDispatchToProps = (dispatch) => {
           minimumRating
         )
       );
-    },
+    }
   };
 };
 

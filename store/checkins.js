@@ -1,6 +1,8 @@
 import axios from "axios";
 import { _addItemCheckin } from "./userItems";
 const HOST = "https://server-rstrm.herokuapp.com";
+// const HOST = "http://localhost:8080";
+
 /**
  * ACTION TYPES ------------------------------------------------
  */
