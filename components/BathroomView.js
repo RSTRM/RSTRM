@@ -168,7 +168,7 @@ class BathroomView extends Component {
                 <Modal
                   animationType="slide"
                   transparent={true}
-                  visible={this.state.modal2Visible}
+                  visible={this.state.modal3Visible}
                   on
                 >
                   <Cam
