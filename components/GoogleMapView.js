@@ -202,6 +202,7 @@ class GoogleMapView extends Component {
         >
           <BathroomView
             backButton={this.backButton}
+            bathroom={this.props.bathrooms[this.state.idx]}
             index={this.state.idx}
             getDirections={this.getDirections}
             {...this.props}
@@ -346,8 +347,8 @@ class GoogleMapView extends Component {
               </View>
             </View>
           ) : (
-            mapMarkers()
-          )}
+              mapMarkers()
+            )}
         </MapView>
         <HeaderB backgroundImage={headerimg}></HeaderB>
         {gotDirections === false ? (
@@ -363,16 +364,16 @@ class GoogleMapView extends Component {
             />
           </View>
         ) : (
-          <View style={styles.add}>
-            <IconFilter
-              size={36}
-              name="undo"
-              type="FontAwesome"
-              color="#0077F6"
-              onPress={() => this.setState({ gotDirections: false })}
-            />
-          </View>
-        )}
+            <View style={styles.add}>
+              <IconFilter
+                size={36}
+                name="undo"
+                type="FontAwesome"
+                color="#0077F6"
+                onPress={() => this.setState({ gotDirections: false })}
+              />
+            </View>
+          )}
         <Modal
           animationType="fade"
           transparent={true}
