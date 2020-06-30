@@ -224,6 +224,7 @@ class GoogleMapView extends Component {
   minimumRatingFn = (minimumRating) => this.setState({ minimumRating });
 
   getDirections = async (desLocation, bathroom) => {
+    this.setState({modalVisible: false})
     const startLoc = `${this.state.region.latitude},${this.state.region.longitude}`;
     if (desLocation) {
       try {
@@ -247,7 +248,7 @@ class GoogleMapView extends Component {
         this.setState({ travelTime });
         this.setState({ bathroom });
         this.setState({ directionCoords });
-        this.setState({ gotDirections: "true" });
+        this.setState({ gotDirections: true });
       } catch (error) {
         this.setState({ gotDirections: "error" });
         return error;
@@ -339,7 +340,7 @@ class GoogleMapView extends Component {
               longitude: this.state.region.longitude,
             }}
           />
-          {gotDirections == "true" ? (
+          {gotDirections === true ? (
             <View>
               <Marker
                 coordinate={{
