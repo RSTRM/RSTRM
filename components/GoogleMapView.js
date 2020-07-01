@@ -320,7 +320,7 @@ class GoogleMapView extends Component {
             bathroom={this.props.bathrooms[this.state.idx]}
             index={this.state.idx}
             getDirections={this.getDirections}
-            {...this.props}
+            navigation = {this.props.navigation}
           />
         </Modal>
         <MapView
@@ -442,7 +442,7 @@ class GoogleMapView extends Component {
                 user={this.props.user}
                 backButton={this.backButton}
                 region={this.state.region}
-                {...this.props}
+                navigation = {this.props}
               />
             </Modal>
           </View>
