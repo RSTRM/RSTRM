@@ -11,5 +11,6 @@ web-build/
 web-report/
 secrets.js
 secrets2.js
+secrets3.js
 # macOS
 .DS_Store
