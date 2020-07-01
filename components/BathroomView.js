@@ -26,21 +26,10 @@ import * as MediaLibrary from "expo-media-library";
 import { RNS3 } from "react-native-aws3";
 import Cam from "./Cam";
 import { addImage } from "../store/bathrooms";
-import { AWS } from "../secrets";
+import { AWS } from "../secrets2";
 
 const { width, height } = Dimensions.get("screen");
 const thumbMeasure = (width - 48 - 32) / 3;
-
-// const images = Restroom.Restroom;
-
-// const randomizer = (images) => {
-//   let arr = [];
-//   for (let i = 0; i < 3; i++) {
-//     const randomImages = images[Math.floor(Math.random() * images.length)];
-//     arr.push(randomImages);
-//   }
-//   return arr;
-// };
 
 class BathroomView extends Component {
   constructor(props) {
