@@ -28,7 +28,7 @@ import {
   Icon as IconFilter,
   Header as HeaderB,
 } from "react-native-elements";
-import { GOOGLE_API_KEY } from "../secrets";
+import { GOOGLE_API_KEY } from "../secrets3";
 import MapStyle from "../constants/mapStyle.json";
 
 import polyline from "@mapbox/polyline";
