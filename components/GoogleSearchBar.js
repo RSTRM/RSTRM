@@ -1,6 +1,6 @@
 import React from "react";
 import { GooglePlacesAutocomplete } from "react-native-google-places-autocomplete";
-import {GOOGLE_API_KEY} from '../secrets'
+import {GOOGLE_API_KEY} from '../secrets3'
 
 
 const GoogleSearchBar = ({ onSearchRegionChange, getLocationData = {} }) => {
