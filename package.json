@@ -19,7 +19,7 @@
     "@react-navigation/drawer": "^5.8.2",
     "@react-navigation/native": "^5.5.1",
     "@react-navigation/stack": "^5.5.1",
-    "aws-sdk": "^2.706.0",
+    "aws-sdk": "^2.814.0",
     "axios": "^0.21.1",
     "base64-arraybuffer": "^0.2.0",
     "connect-session-sequelize": "^6.1.1",
